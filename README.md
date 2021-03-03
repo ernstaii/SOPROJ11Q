@@ -18,4 +18,4 @@
 - Use the issues for bugs, glitches and thrown errors.
 - An issue should include how to reproduce the issue.
 - An issue should include the expected result and current result.
-- If a pull request solves an issue, link them to the issue.
+- If a pull request solves an issue, connect it to the issue.
