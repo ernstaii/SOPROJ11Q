@@ -11,3 +11,5 @@
 - Reviews should come with useful feedback. Not just criticism.
 - Use the Code Highlight tool.
 - Merge conflicts should be solved by the merge request's owner.
+- Draft merge requests don't have to be reviewed. If it is a draft be sure to mark it with the WIP label.
+- The merge request owner is responsible for the assigning reviewers.
