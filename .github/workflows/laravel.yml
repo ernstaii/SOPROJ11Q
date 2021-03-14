@@ -2,9 +2,13 @@ name: Laravel
 
 on:
   push:
+    paths-ignore:
+        - '.github/**' 
     branches-ignore:
         - master
   pull_request:
+    paths-ignore:
+        - '.github/**' 
     branches-ignore:
         - master
 
@@ -27,3 +31,12 @@ jobs:
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     # Server is now set up for running tests, linters or other actions.
+    - name: Create Database
+      run: |
+        mkdir -p database
+        touch database/database.sqlite
+    - name: Execute tests (Unit and Feature tests) via PHPUnit
+      env:
+        DB_CONNECTION: sqlite
+        DB_DATABASE: database/database.sqlite
+      run: vendor/bin/phpunit
