@@ -2,6 +2,7 @@
 ![master](https://img.shields.io/github/workflow/status/lderkzen/SOPROJ11Q/Laravel/dev?label=master)
 ![dev](https://img.shields.io/github/workflow/status/lderkzen/SOPROJ11Q/Laravel/dev?label=dev)
 [![Issues](https://img.shields.io/github/issues/lderkzen/SOPROJ11Q)](https://github.com/lderkzen/SOPROJ11Q/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/lderkzen/SOPROJ11Q)](https://github.com/lderkzen/SOPROJ11Q/pulls)
 
 ## Features
 
