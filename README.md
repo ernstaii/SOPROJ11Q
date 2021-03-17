@@ -11,9 +11,9 @@
 - Clone the project.
 - cd into your project folder.
 - Run the following commands:
-  - `composer install` | Install all dependencies.
-  - `cp .env.example .env` | Create a fresh .env file.
-  - `php artisan key:generate` | Generate an unique encryption key.
+  - `composer install` | Install all dependencies
+  - `cp .env.example .env` | Create a fresh .env file
+  - `php artisan key:generate` | Generate an unique encryption key
 - Fill the .env file with all necessary information
 - (Opt.) If you're using a local database for testing purposes run the following commands:
   - `php artisan migrate:fresh` | Migrate the database
