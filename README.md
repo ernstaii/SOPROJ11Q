@@ -15,8 +15,8 @@
   - `php artisan key:generate` | This will generate an unique encryption key.
 - Fill the .env file with all necessary information
 - (Opt.) If you're using a local database for testing purposes run the following commands:
-  - `php artisan migrate:fresh`
-  - `php artisan db:seed`
+  - `php artisan migrate:fresh` | Migrate the database
+  - `php artisan db:seed` | Seed the database with test data
 
 
 ## Links
