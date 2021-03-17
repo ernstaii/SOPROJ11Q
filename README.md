@@ -22,6 +22,7 @@
 
 ## Links
 - [Wiki](https://github.com/lderkzen/SOPROJ11Q/wiki)
+- [Taiga](https://tree.taiga.io/project/leonniekus-project-everyware-q/epics)
 
 
 ---
