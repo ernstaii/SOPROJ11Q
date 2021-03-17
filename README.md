@@ -1,6 +1,6 @@
 # Hunted
 ![build](https://img.shields.io/github/workflow/status/lderkzen/SOPROJ11Q/Laravel/dev)
-[![Issues](https://img.shields.io/github/issues-raw/tterb/PlayMusic.svg?maxAge=25000)](https://github.com/lderkzen/SOPROJ11Q/issues)
+[![Issues](https://img.shields.io/github/issues/lderkzen/SOPROJ11Q)](https://github.com/lderkzen/SOPROJ11Q/issues)
 
 ## Features
 
