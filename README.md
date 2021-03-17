@@ -1,5 +1,5 @@
 # Hunted
-![dev](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=dev)
+![build](https://img.shields.io/github/workflow/status/lderkzen/SOPROJ11Q/Laravel/dev)
 [![Issues](https://img.shields.io/github/issues-raw/tterb/PlayMusic.svg?maxAge=25000)](https://github.com/lderkzen/SOPROJ11Q/issues)
 
 ## Features
