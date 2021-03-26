@@ -34,6 +34,12 @@ jobs:
     - name: Create Database
       run: |
         mkdir -p database
+    - name: Migrate Database
+      run: php artisan migrate:fresh
+    - name: Seed Database
+      run: php artisan db:seed
+    - name: Run Tests
+      run: php artisan test
         touch database/database.sqlite
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
