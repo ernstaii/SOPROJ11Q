@@ -22,6 +22,6 @@ class UserTest extends TestCase
 
         $response = $this->post('api/users', $request);
         $response->assertStatus(200);
-        $this->assertDatabaseCount('users', 1);
+        $this->assertDatabaseHas('users', $request);
     }
 }
