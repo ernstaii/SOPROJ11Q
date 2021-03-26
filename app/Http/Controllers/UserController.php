@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Symfony\Component\Console\Input\Input;
 
 class UserController extends Controller
 {
@@ -16,8 +15,8 @@ class UserController extends Controller
         ]);
 
         $user = new User();
-        $user->username = Input::get('username');
-        $user->location = Input::get('location');
+        $user->username = $request->get('username');
+        $user->location = $request->get('location');
         $user->save();
     }
 }
