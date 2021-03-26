@@ -39,5 +39,5 @@ jobs:
       run: php artisan migrate:fresh
     - name: Seed Database
       run: php artisan db:seed
-    - name: Run Tests
-      run: php artisan test
+    - name: Execute tests
+      run: vendor/bin/phpunit
