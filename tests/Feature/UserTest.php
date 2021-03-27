@@ -27,12 +27,14 @@ class UserTest extends TestCase
     /** @test */
     public function update_location()
     {
+        $this->post('api/users', ['id' => 999999, 'username' => 'Luke', 'location' => '51.498134,-0.201755']);
+
         $request = [
-            'location' => '51.498134,-0.201755'
+            'location' => '51.498134,-0.201754'
         ];
 
-        $response = $this->put('api/users/1', $request);
+        $response = $this->put('api/users/999999', $request);
         $response->assertStatus(200);
-        $this->assertEquals("51.498134,-0.201754", User::find(1)->pluck('location'));
+        $this->assertEquals("51.498134,-0.201754", User::find(999999)->location);
     }
 }

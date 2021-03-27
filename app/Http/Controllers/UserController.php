@@ -9,25 +9,24 @@ class UserController extends Controller
 {
     public function store(Request $request)
     {
-        $this->validateRequest($request);
+        $request->validate([
+            'id' => 'nullable',
+            'username' => 'required|min:3|max:255',
+            'location' => 'nullable|regex:/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i'
+        ]);
         $user = new User();
+        $user->id = $request->get('id');
         $user->username = $request->get('username');
         $user->location = $request->get('location');
         $user->save();
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $this->validateRequest($request);
-        $user = User::find($id);
-        $user->location = $request->get('location');
-        $user->save();
-    }
-
-    private function validateRequest(Request $request) {
         $request->validate([
-            'username' => 'required|min:3|max:255',
             'location' => 'nullable|regex:/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i'
         ]);
+        $user->location = $request->get('location');
+        $user->save();
     }
 }
