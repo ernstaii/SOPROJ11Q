@@ -10,7 +10,7 @@ use Tests\TestCase;
 class UserTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     /** @test */
     public function create_user()
     {
