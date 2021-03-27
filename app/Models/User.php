@@ -16,8 +16,6 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'username',
-        'location',
-        'created_at',
-        'updated_at'
+        'location'
     ];
 }
