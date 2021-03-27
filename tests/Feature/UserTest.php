@@ -37,4 +37,12 @@ class UserTest extends TestCase
         $response->assertStatus(200);
         $this->assertEquals("51.498134,-0.201754", User::find(999999)->location);
     }
+
+    /** @test */
+    public function get_user()
+    {
+        $this->post('api/users', ['id' => 999999, 'username' => 'Luke', 'location' => '51.498134,-0.201755']);
+
+        self::assertEquals($this->get('api/users/999999')->content(), User::find(999999));
+    }
 }

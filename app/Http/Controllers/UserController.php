@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function get(User $user): User
+    {
+        return $user;
+    }
+
     public function store(Request $request)
     {
         $request->validate([
