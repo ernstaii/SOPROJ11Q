@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'App\Http\Controllers\ConfigController@index');
+Route::get('/game/{id}', 'App\Http\Controllers\ConfigController@gameScreen');
+Route::post('/storeKeys', 'App\Http\Controllers\ConfigController@storeKeys');
