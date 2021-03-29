@@ -3,12 +3,12 @@ name: Laravel
 on:
   push:
     paths-ignore:
-        - '.github/**' 
+        - '.github/**'
     branches-ignore:
         - master
   pull_request:
     paths-ignore:
-        - '.github/**' 
+        - '.github/**'
     branches-ignore:
         - master
 
@@ -35,8 +35,9 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
-    - name: Execute tests (Unit and Feature tests) via PHPUnit
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
+    - name: Migrate Database
+      run: php artisan migrate:fresh
+    - name: Seed Database
+      run: php artisan db:seed
+    - name: Execute tests
       run: vendor/bin/phpunit
