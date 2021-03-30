@@ -18,7 +18,7 @@ class CreateInviteKeysTable extends Migration
             $table->unsignedBigInteger('game_id');
             $table->foreign('game_id')->references('id')->on('games');
             $table->timestamps();
-            $table->unique(['value', 'game_id']);
+            $table->primary(['value', 'game_id']);
         });
     }
 
