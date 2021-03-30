@@ -29,7 +29,7 @@ function generateKey(id) {
         for (i = 0; i < input; i++) {
             let key = '';
             for(j = 0; j < 4; j++) {
-                key += ALPHANUMERIC_CAPITALS[Math.floor(Math.random() * 36)];
+                key += ALPHANUMERIC_CAPITALS[Math.floor(Math.random() * ALPHANUMERIC_CAPITALS.length)];
             }
             let div = document.createElement('div');
             div.className = "key-item";
@@ -79,4 +79,3 @@ function hasDuplicates(array) {
     }
     return false;
 }
-
