@@ -24,7 +24,7 @@ class ConfigController extends Controller
 
     public function gameScreen($id)
     {
-        $keys = InviteKey::all()->where('game_id', '=', strval($id)); //TODO: get new game id, see if game exists etc.
+        $keys = InviteKey::all()->where('game_id', '=', strval($id));
         if (Game::find($id) != null) {
             return view('config.main', compact(['keys', 'id']));
         }
