@@ -1,0 +1,86 @@
+label {
+    color: black;
+}
+
+button {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5vw;
+}
+
+.box {
+    min-width: 375px;
+    width: 20vw;
+    background: #fff;
+    text-align: center;
+    border-radius: 1vw;
+    margin-right: 1vw;
+}
+
+.background-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.item-header {
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    border-radius: 1vw;
+}
+
+h2 {
+    margin: 1vh;
+    color: black;
+}
+
+.form-col-1, .form-col-2 {
+    max-width: 160px;
+}
+
+.config-form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin-bottom: 8vh;
+}
+
+.form-item {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2vh;
+    text-align: left;
+}
+
+.form-col-1 {
+    margin-left: 1vw;
+}
+
+.form-col-2 {
+    margin-right: 1vw;
+}
+
+.keys-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: stretch;
+    text-align: left;
+    overflow-y: auto;
+    max-height: 239px;
+}
+
+.key-item {
+    width: 49.4%;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+}
+
+.key-item p {
+    margin-left: 1vw;
+    color: black;
+    font-weight: bold;
+}

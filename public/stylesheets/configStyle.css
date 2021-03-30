@@ -1,0 +1,64 @@
+.main-screen {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    margin: 10px auto;
+    padding: 15px;
+    min-height: 300px;
+    height: auto;
+}
+
+.mini-box {
+    position: relative;
+    width: 30%;
+    background: #fff;
+    margin: 40px auto;
+    text-align: center;
+}
+
+h3, h5 {
+    margin: 5px;
+}
+
+a {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    border-radius: 1vw;
+    text-decoration: none;
+    font-size: 16px;
+    color: white;
+    cursor: auto;
+    width: 10vw;
+    margin-left: 25%;
+    margin-bottom: 1vh;
+}
+
+.big-text-box {
+    padding-bottom: 3vh;
+    padding-top: 1.2vh;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.text-box {
+    padding-bottom: 2vh;
+    margin-top: 2vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.shadow {
+    margin-top: 5px;
+    -webkit-box-shadow: 1px 3px 20px 5px darkgray;
+    -moz-box-shadow: 1px 3px 20px 5px darkgray;
+    box-shadow: 1px 3px 20px 5px darkgray;
+}
+
+body {
+    background-color: #ddd;
+    color: #888;
+    padding: 0;
+    margin: 0;
+    font: 80% 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
