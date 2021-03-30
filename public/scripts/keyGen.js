@@ -6,7 +6,7 @@ if (keysBox.childElementCount > 0) {
     formBox.innerHTML = '';
 }
 
-function generateKey() {
+function generateKey(id) {
     let input = parseInt(document.querySelector('#participants_number').value);
     let errorMsg = document.querySelector('#validation_msg');
     if (errorMsg !== null) {
@@ -34,11 +34,15 @@ function generateKey() {
             keysBox.appendChild(item);
             keys[i] = key;
         }
-        submitKeys(keys);
+        if (hasDuplicates(keys)) {
+            generateKey(id);
+            return;
+        }
+        submitKeys(keys, id);
     }
 }
 
-async function submitKeys(keys) {
+async function submitKeys(keys, id) {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -47,9 +51,25 @@ async function submitKeys(keys) {
     await $.ajax({
         url: '/storeKeys',
         type: 'POST',
-        data: { keys: keys },
-        success:function(){alert('success!');},
-        error: function (){alert('error');},
+        data: { keys: keys, id: id },
+        success:function() {
+            formBox.innerHTML = '';
+        },
+        error: function () {
+            console.log('An unknown error occurred.');
+        },
     });
+}
+
+function hasDuplicates(array) {
+    var valuesSoFar = Object.create(null);
+    for (var i = 0; i < array.length; i++) {
+        var value = array[i];
+        if (value in valuesSoFar) {
+            return true;
+        }
+        valuesSoFar[value] = true;
+    }
+    return false;
 }
 

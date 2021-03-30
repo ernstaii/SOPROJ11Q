@@ -14,13 +14,31 @@ class ConfigController extends Controller
         return view('main_screen', compact(['games']));
     }
 
-    public function gameScreen()
+    public function createGame()
     {
         $game = new Game();
-        $game->name = "test";
         $game->save();
-        $keys = InviteKey::all()->where('game_id', '=', strval($game->id)); //TODO: get new game id, see if game exists etc.
-        return view('config.main', compact(['keys']));
+        $gameId = Game::all()->last()->id;
+        return redirect()->route('GameScreen', ['id' => $gameId]);
+    }
+
+    public function gameScreen($id)
+    {
+        $keys = InviteKey::all()->where('game_id', '=', strval($id)); //TODO: get new game id, see if game exists etc.
+        if (Game::find($id) != null) {
+            return view('config.main', compact(['keys', 'id']));
+        }
+        return redirect()->route('index');
+    }
+
+    public function removeGame($id)
+    {
+        $keys = InviteKey::all()->where('game_id', '=', $id);
+        foreach ($keys as $key) {
+            $key->delete();
+        }
+        Game::destroy($id);
+        return redirect()->route('index');
     }
 
     /**
@@ -31,7 +49,7 @@ class ConfigController extends Controller
         foreach ($request->keys as $key) {
             $inviteKey = new InviteKey();
             $inviteKey->value = $key;
-            $inviteKey->game_id = 1;
+            $inviteKey->game_id = $request->id;
             $inviteKey->save();
         }
     }
