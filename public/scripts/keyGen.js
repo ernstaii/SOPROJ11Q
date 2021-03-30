@@ -16,7 +16,7 @@ function generateKey(id) {
         formBox.removeChild(errorMsg)
     }
 
-    if (input === undefined || input < 1 || input > 50 || !Number.isInteger(input)) {
+    if (!input || input < 1 || input > 50) {
         let errorMsgElem = document.createElement('p');
         errorMsgElem.id = 'validation_msg';
         errorMsgElem.style.color = 'red';

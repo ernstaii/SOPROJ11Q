@@ -33,10 +33,7 @@ class ConfigController extends Controller
 
     public function removeGame($id)
     {
-        $keys = InviteKey::all()->where('game_id', '=', $id);
-        foreach ($keys as $key) {
-            $key->delete();
-        }
+        InviteKey::where('game_id', $id)->delete();
         Game::destroy($id);
         return redirect()->route('index');
     }
@@ -47,10 +44,10 @@ class ConfigController extends Controller
      */
     public function storeKeys(Request $request) {
         foreach ($request->keys as $key) {
-            $inviteKey = new InviteKey();
-            $inviteKey->value = $key;
-            $inviteKey->game_id = $request->id;
-            $inviteKey->save();
+            InviteKey::create([
+                'value' =>$key,
+                'game_id' =>$request->id,
+            ])->save();
         }
     }
 }

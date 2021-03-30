@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers\ConfigController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'App\Http\Controllers\ConfigController@index')->name('index');
-Route::post('/createGame', 'App\Http\Controllers\ConfigController@createGame')->name('GoToGame');
-Route::get('/removeGame/{id}', 'App\Http\Controllers\ConfigController@removeGame')->name('RemoveGame');
-Route::get('/game/{id}', 'App\Http\Controllers\ConfigController@gameScreen')->name('GameScreen');
-Route::post('/storeKeys', 'App\Http\Controllers\ConfigController@storeKeys');
+Route::get('/', [ConfigController::class, 'index'])->name('index');
+Route::post('/createGame', [ConfigController::class, 'createGame'])->name('GoToGame');
+Route::get('/removeGame/{id}', [ConfigController::class, 'removeGame'])->name('RemoveGame');
+Route::get('/game/{id}', [ConfigController::class, 'gameScreen'])->name('GameScreen');
+Route::post('/storeKeys', [ConfigController::class, 'storeKeys']);
