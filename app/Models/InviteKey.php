@@ -14,6 +14,8 @@ class InviteKey extends Model
      */
     protected $fillable = [
         'value',
-        'game_id'
+        'game_id',
+        'created_at',
+        'updated_at'
     ];
 }
