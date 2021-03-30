@@ -1,9 +1,12 @@
 const ALPHANUMERIC_CAPITALS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 let keysBox = document.querySelector('#keys_box');
 let formBox = document.querySelector('#form_box');
+let code_input = document.querySelector('#code_input');
+let code_button = document.querySelector('#code_button');
 
 if (keysBox.childElementCount > 0) {
-    formBox.innerHTML = '';
+    formBox.children[0].children[1].removeChild(code_input);
+    formBox.children[0].children[1].removeChild(code_button);
 }
 
 function generateKey(id) {
@@ -28,10 +31,13 @@ function generateKey(id) {
             for(j = 0; j < 4; j++) {
                 key += ALPHANUMERIC_CAPITALS[Math.floor(Math.random() * 36)];
             }
+            let div = document.createElement('div');
+            div.className = "key-item";
             let item = document.createElement('p');
             item.id='key-'+(i+1).toString();
             item.textContent = key;
-            keysBox.appendChild(item);
+            div.appendChild(item);
+            keysBox.appendChild(div);
             keys[i] = key;
         }
         if (hasDuplicates(keys)) {
@@ -53,7 +59,8 @@ async function submitKeys(keys, id) {
         type: 'POST',
         data: { keys: keys, id: id },
         success:function() {
-            formBox.innerHTML = '';
+            formBox.children[0].children[1].removeChild(code_input);
+            formBox.children[0].children[1].removeChild(code_button);
         },
         error: function () {
             console.log('An unknown error occurred.');
@@ -62,9 +69,9 @@ async function submitKeys(keys, id) {
 }
 
 function hasDuplicates(array) {
-    var valuesSoFar = Object.create(null);
-    for (var i = 0; i < array.length; i++) {
-        var value = array[i];
+    let valuesSoFar = Object.create(null);
+    for (let i = 0; i < array.length; i++) {
+        let value = array[i];
         if (value in valuesSoFar) {
             return true;
         }
