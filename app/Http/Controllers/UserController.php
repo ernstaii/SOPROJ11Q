@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Roles;
 use App\Models\InviteKey;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,7 +20,6 @@ class UserController extends Controller
             'username'   => 'required|min:3|max:255',
             'location'   => 'nullable|regex:/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i',
             'invite_key' => 'required|exists:invite_keys,value',
-            'role'       => 'nullable',
         ]);
 
         $inviteKeyId = $request->get('invite_key');
@@ -29,12 +29,16 @@ class UserController extends Controller
             return null;
         }
 
-        return User::create([
+        $user = User::create([
             'username'   => $request->get('username'),
             'location'   => $request->get('location'),
             'invite_key' => $inviteKeyId,
-            'role'       => $request->get('role'),
-        ])->save();
+            'role'       => $request->get('role') || Roles::None,
+        ]);
+
+        $user->save();
+
+        return $user;
     }
 
     public function update(Request $request, User $user)

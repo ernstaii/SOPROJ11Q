@@ -23,7 +23,7 @@ class UserTest extends TestCase
             'invite_key' => $user->getAttribute('invite_key'),
         ]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(201);
 
         $this->assertDatabaseHas('users', [
             'username'   => $user->getAttribute('username'),
