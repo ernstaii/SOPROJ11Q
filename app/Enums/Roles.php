@@ -11,8 +11,8 @@ use BenSampo\Enum\Enum;
  */
 final class Roles extends Enum
 {
-    const None = 0;
-    const Thief = 1;
-    const UndercoverThief = 2;
-    const Police = 3;
+    const None = "0";
+    const Thief = "1";
+    const UndercoverThief = "2";
+    const Police = "3";
 }
