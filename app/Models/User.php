@@ -22,6 +22,6 @@ class User extends Authenticatable
 
     public function inviteKey(): BelongsTo
     {
-        return $this->belongsTo(InviteKey::class, "invite_key");
+        return $this->belongsTo(InviteKey::class, "invite_key", "value");
     }
 }
