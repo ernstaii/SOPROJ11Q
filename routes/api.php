@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('users/{user}', [UserController::class, 'get'])->name('users.get');
 Route::apiResource('users', UserController::class)->only(['store', 'update']);
+
+Route::group(['middleware' => ['api']], function (Router $router) {
+    $router->get('/invite-key/{inviteKeyId}', [UserController::class, 'getInviteKey']);
+    $router->post('/users', [UserController::class, 'store']);
+});
