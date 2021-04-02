@@ -17,7 +17,7 @@ class UpdateUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('location', 255)->nullable()->change();
             $table->string('invite_key')->nullable();
-            $table->char('role', 1)->default(Roles::None);
+            $table->string('role', 20)->default(Roles::None);
 
             $table->foreign('invite_key')->references('value')->on('invite_keys');
         });

@@ -33,7 +33,7 @@ class UserController extends Controller
             'username'   => $request->get('username'),
             'location'   => $request->get('location'),
             'invite_key' => $inviteKeyId,
-            'role'       => $request->get('role') || Roles::None,
+            'role'       => $request->get('role'),
         ]);
 
         $user->save();
