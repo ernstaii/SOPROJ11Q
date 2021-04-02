@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\InviteKey;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
@@ -65,6 +66,27 @@ class UserTest extends TestCase
             'updated_at' => $user->updated_at,
             'invite_key' => $user->invite_key,
             'role'       => $user->role,
+        ]);
+    }
+
+    /** @test */
+    public function get_users()
+    {
+        $user = User::factory()->create();
+        $inviteKey = InviteKey::query()->where('value', $user->invite_key)->first();
+
+        $response = $this->call('GET', "/api/game/$inviteKey->game_id/users");
+
+        $response->assertStatus(Response::HTTP_OK)->assertExactJson([
+            [
+                'id'         => $user->getKey(),
+                'username'   => $user->username,
+                'location'   => $user->location,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+                'invite_key' => $user->invite_key,
+                'role'       => $user->role,
+            ]
         ]);
     }
 }
