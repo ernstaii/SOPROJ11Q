@@ -28,12 +28,13 @@ class UserController extends Controller
         if (User::query()->where('invite_key', $inviteKeyId)->count() > 0) {
             return null;
         }
+        $role = $request->get('role');
 
         $user = User::create([
             'username'   => $request->get('username'),
             'location'   => $request->get('location'),
             'invite_key' => $inviteKeyId,
-            'role'       => $request->get('role'),
+            'role'       => isset($role) ? $role : Roles::Thief,
         ]);
 
         $user->save();
