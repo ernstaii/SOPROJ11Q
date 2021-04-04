@@ -4,9 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Game;
 use App\Models\InviteKey;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class InviteKeyFactory extends Factory
 {
@@ -24,8 +22,10 @@ class InviteKeyFactory extends Factory
      */
     public function definition()
     {
+        $possibleValues = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
         return [
-            'value'   => Str::random(4),
+            'value'   => substr(str_shuffle(str_repeat($possibleValues, 5)), 0, 4),
             'game_id' => Game::factory()->create()->getKey(),
         ];
     }
