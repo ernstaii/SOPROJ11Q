@@ -47,6 +47,7 @@ class UserController extends Controller
         $request->validate([
             'location' => 'nullable|regex:/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i',
         ]);
+
         $user->location = $request->get('location');
         $user->save();
     }
@@ -57,14 +58,19 @@ class UserController extends Controller
     {
         $inviteKey = InviteKey::query()->where('value', $inviteKeyId)->first();
 
-        if (! isset($inviteKey)) {
-            return null;
+        if (isset($inviteKey)) {
+            $totalInUse = User::query()->where('invite_key', $inviteKey->value)->count();
+
+            // TODO: Player could have an InviteCode with the same value, but then InviteCode can't have same TeamId
+
+            // Check if InviteKey not yet in use
+            if ($totalInUse == 0) {
+                return $inviteKey;
+            }
+
+            return response()->json(['error' => 'De code is al in gebruik'],403);
         }
 
-        // TODO: Player could have an InviteCode with the same value, but then InviteCode can't have same TeamId
-        $totalInUse = User::query()->where('invite_key', $inviteKey->value)->count();
-
-        // Check if InviteKey not yet in use
-        return $totalInUse == 0 ? $inviteKey : null;
+        return response()->json(['error' => 'De code is onjuist'],404);
     }
 }
