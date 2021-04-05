@@ -14,6 +14,6 @@ class GameController extends Controller
     }
 
     public function getLootInGame($gameId) {
-        return Game::query()->where('id', $gameId)->first()->loot()->get();
+        return Game::all()->where('id', '=', $gameId)->first()->loots;
     }
 }

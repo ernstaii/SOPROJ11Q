@@ -15,13 +15,10 @@ class CreateLootsTable extends Migration
     public function up()
     {
         Schema::create('loot', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->autoIncrement();
-            $table->unsignedBigInteger('game_id');
-            $table->foreign('game_id')->references('id')->on('games');
+            $table->id();
             $table->string('name', 255);
             $table->string('location', 255);
             $table->timestamps();
-            $table->primary(['id', 'game_id']);
         });
     }
 

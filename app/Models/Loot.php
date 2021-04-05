@@ -17,5 +17,8 @@ class Loot extends Model
         'location'
     ];
 
-
+    public function games()
+    {
+        return $this->belongsToMany(Game::class);
+    }
 }

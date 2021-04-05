@@ -27,4 +27,9 @@ class Game extends Model
     public function users() {
         return $this->hasMany(User::class);
     }
+
+    public function loots()
+    {
+        return $this->belongsToMany(Loot::class);
+    }
 }
