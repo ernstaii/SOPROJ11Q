@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Loot::factory(10)->create();
+
+        $this->call(LootsTableSeeder::class);
     }
 }

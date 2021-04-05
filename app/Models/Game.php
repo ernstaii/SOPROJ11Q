@@ -20,16 +20,12 @@ class Game extends Model
         'updated_at'
     ];
 
-    public function loot() {
-        return $this->hasMany(Loot::class);
-    }
-
     public function users() {
         return $this->hasMany(User::class);
     }
 
     public function loots()
     {
-        return $this->belongsToMany(Loot::class);
+        return $this->belongsToMany(Loot::class, 'game_loot');
     }
 }

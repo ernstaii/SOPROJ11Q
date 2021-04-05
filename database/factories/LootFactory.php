@@ -25,7 +25,6 @@ class LootFactory extends Factory
         $longitude = "5." . strval(rand(491387, 553818));
 
         return [
-            'game_id' => rand(1, 2),
             'name' => $this->faker->company(),
             'location' => $latitude . "," . $longitude
         ];
