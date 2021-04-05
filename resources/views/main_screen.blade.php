@@ -1,8 +1,8 @@
 @extends('layout')
 
 @section('head')
-    <link rel="stylesheet" href="{{asset('stylesheets/configStyle.css')}}">
-    <link rel="stylesheet" href="{{asset('stylesheets/mainScreenStyle.css')}}">
+    <link rel="stylesheet" href="{{secure_asset('stylesheets/configStyle.css')}}">
+    <link rel="stylesheet" href="{{secure_asset('stylesheets/mainScreenStyle.css')}}">
 @endsection
 
 
