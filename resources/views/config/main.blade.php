@@ -61,6 +61,10 @@
                     @endforeach
                 </div>
             </div>
+            <div id="keys_button_box">
+                <button class="keys-share-button" id="copy_button" onclick="performCopyAction()">Kopieer codes</button>
+                <button class="keys-share-button" id="print_button" onclick="printKeys()">Print codes</button>
+            </div>
         </div>
     </div>
 @endsection

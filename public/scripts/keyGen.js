@@ -79,3 +79,48 @@ function hasDuplicates(array) {
     }
     return false;
 }
+
+function performCopyAction() {
+    if (keysBox.childElementCount < 1) {
+        alert('Er zijn geen toegangscodes om te kopiëren!');
+        return;
+    }
+    let text = '';
+    for(let i = 0; i < keysBox.childElementCount; i++) {
+        text += keysBox.children[i].children[0].textContent;
+        if ((i + 1) < keysBox.childElementCount) {
+            text += '\r\n';
+        }
+    }
+    copyTextToClipboard(text);
+}
+
+function copyTextToClipboard(text) {
+    if (!navigator.clipboard) {
+        return;
+    }
+    navigator.clipboard.writeText(text);
+}
+
+function printKeys()
+{
+    if (keysBox.childElementCount < 1) {
+        alert('Er zijn geen toegangscodes om te printen!');
+        return;
+    }
+    let myWindow = window.open('', 'PRINT', 'height=400,width=600');
+
+    myWindow.document.write('<html lang="en"><head><title>' + document.title  + '</title>');
+    myWindow.document.write('</head><body >');
+    myWindow.document.write('<h1>Toegangscodes</h1>');
+    myWindow.document.write('<div style="display: flex; flex-direction: column; flex-wrap: wrap; max-height: 900px">' + keysBox.innerHTML + '</div>');
+    myWindow.document.write('</body></html>');
+
+    myWindow.document.close();
+    myWindow.focus();
+
+    myWindow.print();
+    myWindow.close();
+
+    return true;
+}
