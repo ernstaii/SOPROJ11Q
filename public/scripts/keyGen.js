@@ -121,7 +121,6 @@ function printKeys()
     myWindow.focus();
 
     myWindow.print();
-    myWindow.close();
 
     return true;
 }
