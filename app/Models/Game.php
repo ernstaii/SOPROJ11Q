@@ -19,4 +19,13 @@ class Game extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function users() {
+        return $this->hasMany(User::class);
+    }
+
+    public function loots()
+    {
+        return $this->belongsToMany(Loot::class, 'game_loot');
+    }
 }

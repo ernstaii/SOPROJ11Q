@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Loot;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,5 +19,9 @@ class DatabaseSeeder extends Seeder
             InviteKeysTableSeeder::class,
             UsersTableSeeder::class,
         ]);
+
+        Loot::factory(10)->create();
+
+        $this->call(LootsTableSeeder::class);
     }
 }
