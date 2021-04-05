@@ -21,10 +21,7 @@ class CreateLootsTable extends Migration
             $table->string('name', 255);
             $table->string('location', 255);
             $table->timestamps();
-        });
-
-        Schema::table('loot', function (Blueprint $table) {
-            DB::statement('ALTER TABLE loot DROP PRIMARY KEY, ADD PRIMARY KEY(id, game_id);');
+            $table->primary(['id', 'game_id']);
         });
     }
 
