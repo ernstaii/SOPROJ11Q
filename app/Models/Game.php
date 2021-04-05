@@ -19,4 +19,12 @@ class Game extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function loot() {
+        return $this->hasMany(Loot::class);
+    }
+
+    public function users() {
+        return $this->hasMany(User::class);
+    }
 }
