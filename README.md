@@ -19,6 +19,14 @@
   - `php artisan migrate:fresh` | Migrate the database
   - `php artisan db:seed` | Seed the database with test data
 
+In order to run the api locally
+  - `php artisan serve`
+
+In order to run the api locally but allow access from emulators
+  - `ipconfig`
+  - Copy your ipv4 address
+  - `php artisan serve --host <IPV4 ADDRESS>`
+
 
 ## Links
 - [Wiki](https://github.com/lderkzen/SOPROJ11Q/wiki)
