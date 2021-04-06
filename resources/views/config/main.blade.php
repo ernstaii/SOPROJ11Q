@@ -6,6 +6,7 @@
     <script src="{{asset('scripts/keyGen.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Configuratie Game {{$id}}</title>
 @endsection
 
 @section('content')
@@ -64,6 +65,26 @@
             <div id="keys_button_box">
                 <button class="keys-share-button" id="copy_button" onclick="performCopyAction()">Kopieer codes</button>
                 <button class="keys-share-button" id="print_button" onclick="printKeys()">Print codes</button>
+            </div>
+        </div>
+        <div class="box shadow">
+            <div class="item-header">
+                <h2>CONTROLS</h2>
+            </div>
+            <div class="item-box">
+                <div class="form-box-0" id="form_box-1">
+                    <div class="config-form">
+                        <div class="form-col-1">
+                            <form action="/game/{{$id}}" method="post">
+                                <div class="form-item">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="input" class="keys-share-button" type="submit">Start spel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

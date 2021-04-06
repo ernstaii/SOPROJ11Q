@@ -16,12 +16,21 @@ class Game extends Model
      */
     protected $fillable = [
         'id',
+        'status',
         'created_at',
         'updated_at'
     ];
 
     public function users() {
         return $this->hasMany(User::class);
+    }
+
+    public function keys() {
+        return $this->hasMany(InviteKey::class);
+    }
+
+    public function hasKeys(): bool {
+        return $this->hasMany(InviteKey::class)->exists();
     }
 
     public function loots()
