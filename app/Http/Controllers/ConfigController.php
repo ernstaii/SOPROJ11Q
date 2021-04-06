@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Statuses;
 use App\Models\Game;
 use App\Models\InviteKey;
 use Illuminate\Http\Request;
+use League\Flysystem\Config;
 
 class ConfigController extends Controller
 {
@@ -27,8 +29,14 @@ class ConfigController extends Controller
     public function gameScreen($id)
     {
         $keys = InviteKey::all()->where('game_id', '=', strval($id));
-        if (Game::find($id) != null) {
-            return view('config.main', compact(['keys', 'id']));
+        $game = Game::find($id);
+        if ($game != null) {
+            switch ($game->status) {
+                case Statuses::Ongoing:
+                    return view('game.main', compact(['keys', 'id']));
+                default:
+                    return view('config.main', compact(['keys', 'id']));
+            }
         }
 
         return redirect()->route('index');
@@ -40,6 +48,17 @@ class ConfigController extends Controller
         Game::destroy($id);
 
         return redirect()->route('index');
+    }
+
+    public function startGame($id)
+    {
+        $game = Game::find($id);
+        if ($game != null) {
+            $game->status = Statuses::Ongoing;
+            $game->save();
+        }
+
+        return redirect()->route('GameScreen', ['id' => $id]);
     }
 
     /**

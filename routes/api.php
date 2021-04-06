@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\UserController;
 use Illuminate\Routing\Router;
@@ -24,4 +25,5 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/invite-key/{inviteKeyId}', [UserController::class, 'getInviteKey']);
     $router->get('/game/{gameId}/users', [GameController::class, 'getUsersInGame']);
     $router->get('/game/{gameId}/loot', [GameController::class, 'getLootInGame']);
+    $router->put('/game/{id}', [ConfigController::class, 'startGame']);
 });
