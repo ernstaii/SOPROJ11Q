@@ -28,4 +28,8 @@ class Game extends Model
     {
         return $this->belongsToMany(Loot::class, 'game_loot');
     }
+
+    public function invite_keys() {
+        return $this->hasMany(InviteKey::class);
+    }
 }
