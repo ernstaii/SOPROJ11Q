@@ -20,6 +20,7 @@ class InviteKey extends Model
         'game_id',
         'created_at',
         'updated_at',
+        'role',
     ];
 
     public function game(): BelongsTo

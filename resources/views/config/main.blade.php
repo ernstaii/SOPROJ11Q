@@ -44,6 +44,19 @@
                             <div class="form-item" id="code_button">
                                 <button class="submit-button-0" id="send_number" onclick="generateKey({{$id}})">Genereer codes</button>
                             </div>
+                            <div class="form-item" id="ratio_slider">
+                                <label class="form-label-0" for="ratio-slider">Ratio Agenten : Boeven</label>
+                                <input name="ratio-slider" type="range" min="25" max="75" value="50" class="slider" id="ratio_range">
+                                <div class="slider-labels">
+                                    <p>25%</p>
+                                    <p>50%</p>
+                                    <p>75%</p>
+                                </div>
+                                <div class="slider-labels">
+                                    <p>Minder agenten</p>
+                                    <p>Meer agenten</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -55,15 +68,31 @@
             </div>
             <div class="item-box">
                 <div id="keys_box" class="keys-box">
-                    @foreach($keys as $key)
-                        <div class="key-item">
-                            <p id="somekey">{{ $key->value }}</p>
-                        </div>
-                    @endforeach
+                    <div class="key-item">
+                        <h3><b>Politie</b></h3>
+                    </div>
+                    <div class="key-item">
+                        <h3><b>Boeven</b></h3>
+                    </div>
+                    <div id="police_keys_box" class="vert-keys-box">
+                        @foreach($agent_keys as $key)
+                            <div class="key-item">
+                                <p id="somekey">{{ $key->value }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div id="thieves_keys_box" class="vert-keys-box">
+                        @foreach($thief_keys as $key)
+                            <div class="key-item">
+                                <p id="somekey">{{ $key->value }}</p>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
             <div id="keys_button_box">
-                <button class="keys-share-button" id="copy_button" onclick="performCopyAction()">Kopieer codes</button>
+                <button class="keys-share-button" id="copy_button_agents" onclick="performCopyAction('agent')">Kopieer politie codes</button>
+                <button class="keys-share-button" id="copy_button_thiefs" onclick="performCopyAction('thief')">Kopieer boeven codes</button>
                 <button class="keys-share-button" id="print_button" onclick="printKeys()">Print codes</button>
             </div>
         </div>
