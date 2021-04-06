@@ -43,6 +43,10 @@
                             <div class="form-item" id="code_button">
                                 <button class="submit-button-0" id="send_number" onclick="generateKey({{$id}})">Genereer codes</button>
                             </div>
+                            <div class="form-item" id="ratio_slider">
+                                <label class="form-label-0" for="ratio-slider">Ratio Agenten : Boeven</label>
+                                <input name="ratio-slider" type="range" min="25" max="75" value="50" class="slider" id="ratio_range">
+                            </div>
                         </div>
                     </div>
                 </div>
