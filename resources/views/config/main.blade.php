@@ -75,8 +75,9 @@
                 <div class="form-box-0" id="form_box-1">
                     <div class="config-form">
                         <div class="form-col-1">
-                            <form action="/api/game/{{$id}}" method="post">
+                            <form action="/game/{{$id}}" method="post">
                                 <div class="form-item">
+                                    @csrf
                                     @method('PUT')
                                     <button type="input" class="keys-share-button" type="submit">Start spel</button>
                                 </div>

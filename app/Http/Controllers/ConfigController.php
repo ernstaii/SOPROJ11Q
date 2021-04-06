@@ -6,7 +6,7 @@ use App\Enums\Statuses;
 use App\Models\Game;
 use App\Models\InviteKey;
 use Illuminate\Http\Request;
-use League\Flysystem\Config;
+use Illuminate\Support\Facades\Session;
 
 class ConfigController extends Controller
 {
@@ -53,9 +53,13 @@ class ConfigController extends Controller
     public function startGame($id)
     {
         $game = Game::find($id);
-        if ($game != null) {
+        $hasKeys = $game->hasKeys();
+
+        if ($game != null && $hasKeys) {
             $game->status = Statuses::Ongoing;
             $game->save();
+        } else {
+            return redirect()->route('GameScreen', ['id' => $id])->with('errors', ['Er moeten invite codes bestaan voordat het spel gestart kan worden.']);
         }
 
         return redirect()->route('GameScreen', ['id' => $id]);

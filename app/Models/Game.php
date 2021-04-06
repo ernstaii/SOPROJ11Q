@@ -25,6 +25,14 @@ class Game extends Model
         return $this->hasMany(User::class);
     }
 
+    public function keys() {
+        return $this->hasMany(InviteKey::class);
+    }
+
+    public function hasKeys(): bool {
+        return $this->hasMany(InviteKey::class)->exists();
+    }
+
     public function loots()
     {
         return $this->belongsToMany(Loot::class, 'game_loot');
