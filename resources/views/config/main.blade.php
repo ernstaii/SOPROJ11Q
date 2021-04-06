@@ -67,18 +67,18 @@
                 <button class="keys-share-button" id="print_button" onclick="printKeys()">Print codes</button>
             </div>
         </div>
-        <div class="box-shadow">
+        <div class="box shadow">
             <div class="item-header">
                 <h2>CONTROLS</h2>
             </div>
             <div class="item-box">
-                <div class="form-box-0" id="form_box">
+                <div class="form-box-0" id="form_box-1">
                     <div class="config-form">
                         <div class="form-col-1">
                             <form action="/api/game/{{$id}}" method="post">
                                 <div class="form-item">
                                     @method('PUT')
-                                    <input class="keys-share-button" type="submit" value="Start spel" />
+                                    <button type="input" class="keys-share-button" type="submit">Start spel</button>
                                 </div>
                             </form>
                         </div>
