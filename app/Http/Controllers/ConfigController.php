@@ -34,10 +34,6 @@ class ConfigController extends Controller
         $thief_keys = InviteKey::all()->where('game_id', '=', strval($id))->where('role', '=', Roles::Thief);
         $game = Game::find($id);
 
-        print("start game!!!");
-
-        event(new StartGameEvent());
-
         if ($game != null) {
             switch ($game->status) {
                 case Statuses::Ongoing:
@@ -65,6 +61,8 @@ class ConfigController extends Controller
         if ($game != null && $hasKeys) {
             $game->status = Statuses::Ongoing;
             $game->save();
+
+            event(new StartGameEvent($id));
         } else {
             return redirect()->route('GameScreen', ['id' => $id])->with('errors', ['Er moeten invite codes bestaan voordat het spel gestart kan worden.']);
         }

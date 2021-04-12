@@ -7,19 +7,22 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class StartGameEvent {
+class StartGameEvent implements ShouldBroadcastNow {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    private $gameId;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(){
-        //
+    public function __construct(int $gameId){
+        $this->gameId = $gameId;
     }
 
     /**
@@ -28,7 +31,7 @@ class StartGameEvent {
      * @return \Illuminate\Broadcasting\Channel|array
      */
     public function broadcastOn(){
-        return ['main'];
+        return new Channel('game.'.$this->gameId);
     }
 
     public function broadcastAs(){
