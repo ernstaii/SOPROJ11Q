@@ -1,7 +1,6 @@
 @extends('layout')
 
 @section('head')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Overzicht Game {{$id}}</title>
 @endsection
 
