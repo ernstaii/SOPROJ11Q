@@ -27,6 +27,7 @@ class StartGameEvent implements ShouldBroadcastNow {
 
     /**
      * Get the channels the event should broadcast on.
+     * Uses a public channel named "game.$gameId"
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
@@ -34,6 +35,11 @@ class StartGameEvent implements ShouldBroadcastNow {
         return new Channel('game.'.$this->gameId);
     }
 
+    /**
+     * Gets the name of this event on the socket connection
+     *
+     * @return string
+     */
     public function broadcastAs(){
         return 'startGame';
     }
