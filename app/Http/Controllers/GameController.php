@@ -47,6 +47,7 @@ class GameController extends Controller
                 }
                 break;
             case Statuses::Paused:
+                haha pauzeer spel.call();
                 if ($game != null && ($game->status === Statuses::Ongoing)) {
                     $game->status = $validated['state'];
                 } else {
