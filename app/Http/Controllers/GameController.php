@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Statuses;
+use App\Events\StartGameEvent;
 use App\Models\Game;
 use App\Models\User;
 use Carbon\Carbon;
@@ -68,6 +69,7 @@ class GameController extends Controller
                 break;
         }
         $game->save();
+        event(new StartGameEvent($id));
 
         return redirect()->route('GameScreen', ['id' => $id]);
     }
