@@ -112,15 +112,6 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="form-col-2">
-                            <form action="/games/{{$id}}" method="post">
-                                <div class="form-item">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="input" class="keys-share-button" type="submit" name="state" value="{{\App\Enums\Statuses::Finished}}">Beëindig spel</button>
-                                </div>
-                            </form>
-                        </div>
                     </div>
                 </div>
             </div>

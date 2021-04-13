@@ -34,7 +34,7 @@ class ConfigController extends Controller
         $game = Game::find($id);
         if ($game != null) {
             switch ($game->status) {
-                case Statuses::Ongoing:
+                case Statuses::Ongoing || Statuses::Paused || Statuses::Finished:
                     return view('game.main', compact(['agent_keys', 'thief_keys', 'id']));
                 default:
                     return view('config.main', compact(['agent_keys', 'thief_keys', 'id']));
