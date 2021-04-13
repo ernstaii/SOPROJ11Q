@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Roles;
 use App\Enums\Statuses;
+use App\Events\StartGameEvent;
 use App\Models\Game;
 use App\Models\InviteKey;
 use Illuminate\Http\Request;
@@ -32,6 +33,7 @@ class ConfigController extends Controller
         $agent_keys = InviteKey::all()->where('game_id', '=', strval($id))->where('role', '=', Roles::Police);
         $thief_keys = InviteKey::all()->where('game_id', '=', strval($id))->where('role', '=', Roles::Thief);
         $game = Game::find($id);
+
         if ($game != null) {
             switch ($game->status) {
                 case Statuses::Ongoing:
@@ -59,6 +61,8 @@ class ConfigController extends Controller
         if ($game != null && $hasKeys) {
             $game->status = Statuses::Ongoing;
             $game->save();
+
+            event(new StartGameEvent($id));
         } else {
             return redirect()->route('GameScreen', ['id' => $id])->with('errors', ['Er moeten invite codes bestaan voordat het spel gestart kan worden.']);
         }
