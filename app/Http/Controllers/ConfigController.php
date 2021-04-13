@@ -18,8 +18,9 @@ class ConfigController extends Controller
         return view('main_screen', compact(['games']));
     }
 
-    public function createGame()
+    public function createGame(Request $request)
     {
+
         $game = new Game();
         $game->save();
         $gameId = Game::all()->last()->id;
@@ -34,10 +35,10 @@ class ConfigController extends Controller
         $game = Game::find($id);
         if ($game != null) {
             switch ($game->status) {
-                case Statuses::Ongoing || Statuses::Paused || Statuses::Finished:
-                    return view('game.main', compact(['agent_keys', 'thief_keys', 'id']));
-                default:
+                case Statuses::Config:
                     return view('config.main', compact(['agent_keys', 'thief_keys', 'id']));
+                default:
+                    return view('game.main', compact(['agent_keys', 'thief_keys', 'id']));
             }
         }
         return redirect()->route('index');

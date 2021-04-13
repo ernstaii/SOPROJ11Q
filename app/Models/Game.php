@@ -17,6 +17,7 @@ class Game extends Model
     protected $fillable = [
         'id',
         'status',
+        'duration',
         'created_at',
         'updated_at'
     ];

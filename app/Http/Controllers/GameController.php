@@ -26,9 +26,11 @@ class GameController extends Controller
         $hasKeys = $game->hasKeys();
 
         $validated = $request->validate([
-            'state' => ['required', 'string']
+            'state' => ['required', 'string'],
+            'duration' => ['nullable', 'integer', 'between:10,1440']
         ]);
 
+        $game->duration = $validated['duration'];
         switch ($validated['state']) {
             case Statuses::Ongoing:
                 if ($game != null && $hasKeys && ($game->status === Statuses::Config || $game->status === Statuses::Paused)) {
