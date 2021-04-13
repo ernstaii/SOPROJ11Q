@@ -17,6 +17,6 @@ use \App\Http\Controllers\ConfigController;
 Route::get('/', [ConfigController::class, 'index'])->name('index');
 Route::post('/createGame', [ConfigController::class, 'createGame'])->name('GoToGame');
 Route::get('/removeGame/{id}', [ConfigController::class, 'removeGame'])->name('RemoveGame');
-Route::get('/game/{id}', [ConfigController::class, 'gameScreen'])->name('GameScreen');
+Route::get('/games/{id}', [ConfigController::class, 'gameScreen'])->name('GameScreen');
 Route::post('/storeKeys', [ConfigController::class, 'generateKeys']);
-Route::put('/game/{id}', [ConfigController::class, 'startGame']);
+Route::put('/games/{id}', [ConfigController::class, 'updateGameState']);

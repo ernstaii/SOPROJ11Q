@@ -104,11 +104,20 @@
                 <div class="form-box-0" id="form_box-1">
                     <div class="config-form">
                         <div class="form-col-1">
-                            <form action="/game/{{$id}}" method="post">
+                            <form action="/games/{{$id}}" method="post">
                                 <div class="form-item">
                                     @csrf
                                     @method('PUT')
-                                    <button type="input" class="keys-share-button" type="submit">Start spel</button>
+                                    <button type="input" class="keys-share-button" type="submit" name="state" value="in-progress">Start spel</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="form-col-2">
+                            <form action="/games/{{$id}}" method="post">
+                                <div class="form-item">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="input" class="keys-share-button" type="submit" name="state" value="finished">Beëindig spel</button>
                                 </div>
                             </form>
                         </div>

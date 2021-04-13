@@ -7,7 +7,7 @@ use App\Enums\Statuses;
 use App\Models\Game;
 use App\Models\InviteKey;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class ConfigController extends Controller
 {
@@ -51,15 +51,20 @@ class ConfigController extends Controller
         return redirect()->route('index');
     }
 
-    public function startGame($id)
+    public function updateGameState(Request $request, $id)
     {
         $game = Game::find($id);
         $hasKeys = $game->hasKeys();
 
+        $validated = $request->validate([
+            'state' => ['required', 'string']
+        ]);
+
         if ($game != null && $hasKeys) {
-            $game->status = Statuses::Ongoing;
+            $game->status = $validated['state'];
             $game->save();
         } else {
+            // TODO: update error
             return redirect()->route('GameScreen', ['id' => $id])->with('errors', ['Er moeten invite codes bestaan voordat het spel gestart kan worden.']);
         }
 
