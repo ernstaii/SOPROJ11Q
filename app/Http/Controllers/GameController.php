@@ -36,12 +36,12 @@ class GameController extends Controller
         $game->duration = $validated['duration'];
         $game->interval = $validated['interval'];
 
-        if ($game->status === Statuses::Config) {
-            $game->time_left = $validated['duration'] * 60;
-        }
-
         switch ($validated['state']) {
             case Statuses::Ongoing:
+                if ($game->status === Statuses::Config) {
+                    $game->time_left = $validated['duration'] * 60;
+                    event(new StartGameEvent($id));
+                }
                 if ($game != null && $hasKeys && ($game->status === Statuses::Config || $game->status === Statuses::Paused)) {
                     $game->status = $validated['state'];
                 } else {
@@ -69,7 +69,6 @@ class GameController extends Controller
                 break;
         }
         $game->save();
-        event(new StartGameEvent($id));
 
         return redirect()->route('GameScreen', ['id' => $id]);
     }
