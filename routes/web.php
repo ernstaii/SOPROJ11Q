@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GameController;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\ConfigController;
 
@@ -19,4 +20,4 @@ Route::post('/createGame', [ConfigController::class, 'createGame'])->name('GoToG
 Route::get('/removeGame/{id}', [ConfigController::class, 'removeGame'])->name('RemoveGame');
 Route::get('/games/{id}', [ConfigController::class, 'gameScreen'])->name('GameScreen');
 Route::post('/storeKeys', [ConfigController::class, 'generateKeys']);
-Route::put('/games/{id}', [ConfigController::class, 'updateGameState']);
+Route::put('/games/{id}', [GameController::class, 'updateGameState']);
