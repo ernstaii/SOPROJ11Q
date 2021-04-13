@@ -108,7 +108,7 @@
                                 <div class="form-item">
                                     @csrf
                                     @method('PUT')
-                                    <button type="input" class="keys-share-button" type="submit" name="state" value="in-progress">Start spel</button>
+                                    <button type="input" class="keys-share-button" type="submit" name="state" value="{{\App\Enums\Statuses::Ongoing}}">Start spel</button>
                                 </div>
                             </form>
                         </div>
@@ -117,7 +117,7 @@
                                 <div class="form-item">
                                     @csrf
                                     @method('PUT')
-                                    <button type="input" class="keys-share-button" type="submit" name="state" value="finished">Beëindig spel</button>
+                                    <button type="input" class="keys-share-button" type="submit" name="state" value="{{\App\Enums\Statuses::Finished}}">Beëindig spel</button>
                                 </div>
                             </form>
                         </div>

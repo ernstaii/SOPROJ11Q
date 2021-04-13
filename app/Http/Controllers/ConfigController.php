@@ -51,26 +51,6 @@ class ConfigController extends Controller
         return redirect()->route('index');
     }
 
-    public function updateGameState(Request $request, $id)
-    {
-        $game = Game::find($id);
-        $hasKeys = $game->hasKeys();
-
-        $validated = $request->validate([
-            'state' => ['required', 'string']
-        ]);
-
-        if ($game != null && $hasKeys) {
-            $game->status = $validated['state'];
-            $game->save();
-        } else {
-            // TODO: update error
-            return redirect()->route('GameScreen', ['id' => $id])->with('errors', ['Er moeten invite codes bestaan voordat het spel gestart kan worden.']);
-        }
-
-        return redirect()->route('GameScreen', ['id' => $id]);
-    }
-
     /**
      * AJAX function. Not to be called via manual routing.
      *
