@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\Statuses;
 use App\Models\Game;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use function Psy\debug;
 
@@ -27,10 +28,17 @@ class GameController extends Controller
 
         $validated = $request->validate([
             'state' => ['required', 'string'],
-            'duration' => ['nullable', 'integer', 'between:10,1440']
+            'duration' => ['nullable', 'integer', 'between:10,1440'],
+            'interval' => ['nullable', 'integer', 'between:30,300']
         ]);
 
         $game->duration = $validated['duration'];
+        $game->interval = $validated['interval'];
+
+        if ($game->status === Statuses::Config) {
+            $game->time_left = $validated['duration'] * 60;
+        }
+
         switch ($validated['state']) {
             case Statuses::Ongoing:
                 if ($game != null && $hasKeys && ($game->status === Statuses::Config || $game->status === Statuses::Paused)) {
@@ -42,13 +50,14 @@ class GameController extends Controller
             case Statuses::Finished:
                 if ($game != null && ($game->status === Statuses::Ongoing || $game->status === Statuses::Paused)) {
                     $game->status = $validated['state'];
+                    $game->time_left = 0;
                 } else {
                     return redirect()->route('GameScreen', ['id' => $id])->with('errors', ['Het spel moet gaande of gepauzeerd zijn voordat het spel beëindigd kan worden.']);
                 }
                 break;
             case Statuses::Paused:
-                haha pauzeer spel.call();
                 if ($game != null && ($game->status === Statuses::Ongoing)) {
+                    $game->time_left = $game->time_left - Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
                     $game->status = $validated['state'];
                 } else {
                     return redirect()->route('GameScreen', ['id' => $id])->with('errors', ['Het spel moet gaande zijn voordat het spel gepauzeerd kan worden.']);
