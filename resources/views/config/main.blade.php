@@ -6,7 +6,7 @@
     <script src="{{asset('scripts/keyGen.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Configuratie Game {{$id}}</title>
+    <title>Configuratie Spel {{$id}}</title>
 @endsection
 
 @section('content')
@@ -16,12 +16,12 @@
                 <h2>SPEL CONFIGURATIE</h2>
             </div>
             <div class="item-box">
-                <div class="form-box-0" id="form_box">
+                <div id="form_box">
                     <div class="config-form">
                         <div class="form-col-1">
                             <div class="form-item">
-                                <label class="form-label-0" for="amt_time">Tijdslimiet</label>
-                                <input name="amt_time" class="input-numeric-0" id="amt_time" type="text">
+                                <label class="form-label-0" for="duration">Tijdslimiet</label>
+                                <input name="duration" class="input-numeric-0" id="duration" type="text">
                             </div>
                             <div class="form-item">
                                 <label class="form-label-0" for="area">Gebied</label>
@@ -91,9 +91,9 @@
                 </div>
             </div>
             <div id="keys_button_box">
-                <button class="keys-share-button" id="copy_button_agents" onclick="performCopyAction('agent')">Kopieer politie codes</button>
-                <button class="keys-share-button" id="copy_button_thiefs" onclick="performCopyAction('thief')">Kopieer boeven codes</button>
-                <button class="keys-share-button" id="print_button" onclick="printKeys()">Print codes</button>
+                <button class="generic-button" id="copy_button_agents" onclick="performCopyAction('agent')">Kopieer politie codes</button>
+                <button class="generic-button" id="copy_button_thiefs" onclick="performCopyAction('thief')">Kopieer boeven codes</button>
+                <button class="generic-button" id="print_button" onclick="printKeys()">Print codes</button>
             </div>
         </div>
         <div class="box shadow">
@@ -108,7 +108,7 @@
                                 <div class="form-item">
                                     @csrf
                                     @method('PUT')
-                                    <button type="input" class="keys-share-button" type="submit">Start spel</button>
+                                    <button type="input" class="generic-button" type="submit">Start spel</button>
                                 </div>
                             </form>
                         </div>

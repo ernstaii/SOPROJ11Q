@@ -4,17 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InviteKey extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'value',
         'game_id',
@@ -23,7 +17,9 @@ class InviteKey extends Model
         'role',
     ];
 
-    public function game(): BelongsTo
+    public $timestamps = true;
+
+    public function game()
     {
         return $this->belongsTo(Game::class, 'game_id', 'id');
     }

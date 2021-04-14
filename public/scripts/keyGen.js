@@ -24,8 +24,7 @@ function generateKey(id) {
         errorMsgElem.style.color = 'red';
         errorMsgElem.textContent = 'Vul a.u.b. een nummer tussen 1 en 50 in.';
         formBox.appendChild(errorMsgElem);
-    }
-    else {
+    } else {
         getKeys(input, ratio, id);
     }
 }
@@ -39,8 +38,8 @@ async function getKeys(input, ratio, id) {
     await $.ajax({
         url: '/storeKeys',
         type: 'POST',
-        data: { input: input, ratio: ratio, id: id },
-        success:function(data) {
+        data: {input: input, ratio: ratio, id: id},
+        success: function (data) {
             formBox.children[0].children[1].removeChild(code_input);
             formBox.children[0].children[1].removeChild(code_button);
             formBox.children[0].children[1].removeChild(document.querySelector('#ratio_slider'));
@@ -52,7 +51,7 @@ async function getKeys(input, ratio, id) {
                     let div = document.createElement('div');
                     div.className = "key-item";
                     let item = document.createElement('p');
-                    item.id='somekey';
+                    item.id = 'somekey';
                     item.textContent = data[i];
                     div.appendChild(item);
                     if (i < Math.round((data.length * ratio_div))) {
@@ -73,22 +72,21 @@ function performCopyAction(actor) {
     if (actor === 'agent' && police_keys_box.childElementCount < 1) {
         alert('Er zijn geen politie toegangscodes om te kopiëren!');
         return;
-    }
-    else if (actor === 'thief' && thieves_keys_box.childElementCount < 1) {
+    } else if (actor === 'thief' && thieves_keys_box.childElementCount < 1) {
         alert('Er zijn geen boeven toegangscodes om te kopiëren!');
         return;
     }
 
     let text = '';
     if (actor === 'agent') {
-        for(let i = 0; i < police_keys_box.childElementCount; i++) {
+        for (let i = 0; i < police_keys_box.childElementCount; i++) {
             text += police_keys_box.children[i].children[0].textContent;
             if ((i + 1) < police_keys_box.childElementCount) {
                 text += '\r\n';
             }
         }
     } else if (actor === 'thief') {
-        for(let i = 0; i < thieves_keys_box.childElementCount; i++) {
+        for (let i = 0; i < thieves_keys_box.childElementCount; i++) {
             text += thieves_keys_box.children[i].children[0].textContent;
             if ((i + 1) < thieves_keys_box.childElementCount) {
                 text += '\r\n';
@@ -106,15 +104,14 @@ function copyTextToClipboard(text) {
     navigator.clipboard.writeText(text);
 }
 
-function printKeys()
-{
+function printKeys() {
     if (police_keys_box.childElementCount < 1 && thieves_keys_box.childElementCount < 1) {
         alert('Er zijn geen toegangscodes om te printen!');
         return;
     }
     let myWindow = window.open('', 'PRINT', 'height=400,width=600');
 
-    myWindow.document.write('<html lang="en"><head><title>' + document.title  + '</title>');
+    myWindow.document.write('<html lang="en"><head><title>' + document.title + '</title>');
     myWindow.document.write('</head><body >');
     myWindow.document.write('<h1>Toegangscodes</h1>');
     myWindow.document.write('<div style="display: flex; flex-direction: row;"><h2>Politie</h2><h2 style="margin-left: 38%">Boeven</h2></div>');

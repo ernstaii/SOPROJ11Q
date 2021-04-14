@@ -2,18 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\Roles;
 use Illuminate\Database\Eloquent\Model;
 
 class Game extends Model
 {
-    use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'id',
         'status',
@@ -21,15 +14,20 @@ class Game extends Model
         'updated_at'
     ];
 
-    public function users() {
+    public $timestamps = true;
+
+    public function users()
+    {
         return $this->hasMany(User::class);
     }
 
-    public function keys() {
+    public function keys()
+    {
         return $this->hasMany(InviteKey::class);
     }
 
-    public function hasKeys(): bool {
+    public function hasKeys()
+    {
         return $this->hasMany(InviteKey::class)->exists();
     }
 
@@ -38,7 +36,18 @@ class Game extends Model
         return $this->belongsToMany(Loot::class, 'game_loot');
     }
 
-    public function invite_keys() {
+    public function invite_keys()
+    {
         return $this->hasMany(InviteKey::class);
+    }
+
+    public function police_invite_keys()
+    {
+        return $this->hasMany(InviteKey::class)->where('role', '=', Roles::Police);
+    }
+
+    public function thieves_invite_keys()
+    {
+        return $this->hasMany(InviteKey::class)->where('role', '=', Roles::Thief);
     }
 }
