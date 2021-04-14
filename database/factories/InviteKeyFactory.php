@@ -16,7 +16,7 @@ class InviteKeyFactory extends Factory
 
         return [
             'value' => substr(str_shuffle(str_repeat($possibleValues, 5)), 0, 4),
-            'game_id' => Game::factory()->create()->getKey(),
+            'game_id' => Game::create()->id,
         ];
     }
 }
