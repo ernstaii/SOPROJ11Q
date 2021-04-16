@@ -8,6 +8,7 @@ use App\Events\StartGameEvent;
 use App\Models\Game;
 use App\Models\InviteKey;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ConfigController extends Controller
 {
@@ -24,15 +25,16 @@ class ConfigController extends Controller
 
     public function gameScreen($id)
     {
+        $agent_keys = InviteKey::all()->where('game_id', '=', strval($id))->where('role', '=', Roles::Police);
+        $thief_keys = InviteKey::all()->where('game_id', '=', strval($id))->where('role', '=', Roles::Thief);
         $game = Game::find($id);
+
         if (isset($game)) {
             switch ($game->status) {
-                case Statuses::Ongoing:
-                    return view('game.main', ['id' => $id, 'police_keys' => $game->police_invite_keys()->get(),
-                        'thieves_keys' => $game->thieves_invite_keys()->get()]);
+                case Statuses::Config:
+                    return view('config.main', compact(['agent_keys', 'thief_keys', 'id']));
                 default:
-                    return view('config.main', ['id' => $id, 'police_keys' => $game->police_invite_keys()->get(),
-                        'thieves_keys' => $game->thieves_invite_keys()->get()]);
+                    return view('game.main', compact(['agent_keys', 'thief_keys', 'id']));
             }
         }
         return redirect()->route('index');
@@ -43,19 +45,6 @@ class ConfigController extends Controller
         Game::find($id)->invite_keys()->delete();
         Game::destroy($id);
         return redirect()->route('index');
-    }
-
-    public function startGame($id)
-    {
-        $game = Game::find($id);
-        if (isset($game) && $game->hasKeys()) {
-            $game->status = Statuses::Ongoing;
-            $game->save();
-            event(new StartGameEvent($id));
-        } else {
-            return redirect()->route('GameScreen', ['id' => $id])->with('errors', ['Er moeten invite codes bestaan voordat het spel gestart kan worden.']);
-        }
-        return redirect()->route('GameScreen', ['id' => $id]);
     }
 
     /**
