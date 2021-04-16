@@ -24,6 +24,12 @@ function generateKey(id) {
         errorMsgElem.style.color = 'red';
         errorMsgElem.textContent = 'Vul a.u.b. een nummer tussen 1 en 50 in.';
         formBox.appendChild(errorMsgElem);
+        let errorMessage = document.querySelector('#validation_msg');
+        setInterval(function() {
+            if (errorMessage !== null) {
+                formBox.removeChild(errorMessage);
+            }
+        }, 7500);
     } else {
         getKeys(input, ratio, id);
     }
@@ -149,3 +155,10 @@ function fallbackCopyTextToClipboard(text) {
 
     document.body.removeChild(textArea);
 }
+
+setInterval(function() {
+    let error_box_total = document.querySelector('#error-box');
+    if (error_box_total !== null && error_box_total.children[0].childNodes.length > 0) {
+        document.body.removeChild(error_box_total);
+    }
+}, 7500);

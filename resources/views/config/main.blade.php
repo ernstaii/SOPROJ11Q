@@ -75,14 +75,14 @@
                         <h3><b>Boeven</b></h3>
                     </div>
                     <div id="police_keys_box" class="vert-keys-box">
-                        @foreach($agent_keys as $key)
+                        @foreach($police_keys as $key)
                             <div class="key-item">
                                 <p id="somekey">{{ $key->value }}</p>
                             </div>
                         @endforeach
                     </div>
                     <div id="thieves_keys_box" class="vert-keys-box">
-                        @foreach($thief_keys as $key)
+                        @foreach($thieves_keys as $key)
                             <div class="key-item">
                                 <p id="somekey">{{ $key->value }}</p>
                             </div>
