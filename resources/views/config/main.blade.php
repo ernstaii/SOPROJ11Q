@@ -27,7 +27,6 @@
                             </div>
                             <div class="form-item">
                                 <label class="form-label-0" for="area">Gebied</label>
-                                <button name="area" id="area">Gebied instellen</button>
                             </div>
                             <div class="form-item">
                                 <label class="form-label-0" for="interval">Interval locatieupdates</label>
