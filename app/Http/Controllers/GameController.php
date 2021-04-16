@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Enums\Statuses;
 use App\Events\StartGameEvent;
+use App\Http\Requests\UpdateGameStateRequest;
 use App\Models\Game;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use function Psy\debug;
 
 class GameController extends Controller
 {
@@ -22,47 +21,28 @@ class GameController extends Controller
         return Game::all()->where('id', '=', $gameId)->first()->loots;
     }
 
-    public function updateGameState(Request $request, $id)
+    public function updateGameState(UpdateGameStateRequest $request, $id)
     {
         $game = Game::find($id);
-        $hasKeys = $game->hasKeys();
 
-        $validated = $request->validate([
-            'state' => ['required', 'string'],
-            'duration' => ['required', 'integer', 'between:10,1440'],
-            'interval' => ['required', 'integer', 'between:30,300']
-        ]);
+        $game->duration = $request->duration;
+        $game->interval = $request->interval;
 
-        $game->duration = $validated['duration'];
-        $game->interval = $validated['interval'];
-
-        switch ($validated['state']) {
+        switch ($request->state) {
             case Statuses::Ongoing:
                 if ($game->status === Statuses::Config) {
-                    $game->time_left = $validated['duration'] * 60;
+                    $game->time_left = $request->duration * 60;
                     event(new StartGameEvent($id));
                 }
-                if ($game != null && $hasKeys && ($game->status === Statuses::Config || $game->status === Statuses::Paused)) {
-                    $game->status = $validated['state'];
-                } else {
-                    return redirect()->route('GameScreen', ['id' => $id])->with('errors', ['Het spel kan niet op gaande gezet worden omdat de status van het spel niet correct is.']);
-                }
+                $game->status = $request->state;
                 break;
             case Statuses::Finished:
-                if ($game != null && ($game->status === Statuses::Ongoing || $game->status === Statuses::Paused)) {
-                    $game->status = $validated['state'];
-                    $game->time_left = 0;
-                } else {
-                    return redirect()->route('GameScreen', ['id' => $id])->with('errors', ['Het spel moet gaande of gepauzeerd zijn voordat het spel beëindigd kan worden.']);
-                }
+                $game->status = $request->state;
+                $game->time_left = 0;
                 break;
             case Statuses::Paused:
-                if ($game != null && ($game->status === Statuses::Ongoing)) {
-                    $game->time_left = $game->time_left - Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
-                    $game->status = $validated['state'];
-                } else {
-                    return redirect()->route('GameScreen', ['id' => $id])->with('errors', ['Het spel moet gaande zijn voordat het spel gepauzeerd kan worden.']);
-                }
+                $game->time_left = $game->time_left - Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
+                $game->status = $request->state;
                 break;
             default:
                 $game->status = Statuses::Config;
