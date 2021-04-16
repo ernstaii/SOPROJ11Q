@@ -6,8 +6,8 @@ use App\Enums\Statuses;
 use App\Events\StartGameEvent;
 use App\Http\Requests\UpdateGameStateRequest;
 use App\Models\Game;
-use App\Models\User;
 use Carbon\Carbon;
+use OutOfBoundsException;
 
 class GameController extends Controller
 {
@@ -50,9 +50,6 @@ class GameController extends Controller
             case Statuses::Paused:
                 $game->time_left = $game->time_left - Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
                 $game->status = $request->state;
-                break;
-            default:
-                $game->status = Statuses::Config;
                 break;
         }
         $game->save();

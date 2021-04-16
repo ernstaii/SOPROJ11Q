@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Game;
 use App\Models\InviteKey;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,7 +16,7 @@ class UserTest extends TestCase
     {
         $user = User::factory()->make();
 
-        $response = $this->call('POST', '/api/users', [
+        $response = $this->post('/api/users', [
             'username' => $user->getAttribute('username'),
             'location' => $user->getAttribute('location'),
             'role' => $user->getAttribute('role'),
@@ -32,13 +33,27 @@ class UserTest extends TestCase
         ]);
     }
 
+    public function test_cannot_store_user_with_used_key()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/api/users', [
+            'username' => 'test_user_2',
+            'location' => '51.498134,-0.201754',
+            'invite_key' => $user->invite_key
+        ]);
+
+        $response->assertStatus(302)
+            ->assertSessionHasErrors();
+    }
+
     public function test_can_update_location()
     {
         //'51.498134,-0.201755'
         $user = User::factory()->create();
         $userId = $user->getKey();
 
-        $response = $this->call('PUT', "/api/users/$userId", [
+        $response = $this->put("/api/users/$userId", [
             'location' => '51.498134,-0.201754',
         ]);
 
@@ -52,7 +67,7 @@ class UserTest extends TestCase
         $user = User::factory()->create();
         $userId = $user->getKey();
 
-        $response = $this->call('GET', "/api/users/$userId");
+        $response = $this->get("/api/users/$userId");
 
         $response->assertStatus(200)->assertExactJson([
             'id' => $userId,
@@ -65,12 +80,12 @@ class UserTest extends TestCase
         ]);
     }
 
-    public function test_can_get_users()
+    public function test_can_get_users_in_game()
     {
         $user = User::factory()->create();
         $inviteKey = InviteKey::where('value', $user->invite_key)->first();
 
-        $response = $this->call('GET', "/api/game/$inviteKey->game_id/users");
+        $response = $this->get("/api/game/$inviteKey->game_id/users");
 
         $response->assertStatus(200)->assertExactJson([
             [

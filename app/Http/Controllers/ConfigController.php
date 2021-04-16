@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Enums\Roles;
 use App\Enums\Statuses;
-use App\Events\StartGameEvent;
 use App\Models\Game;
 use App\Models\InviteKey;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class ConfigController extends Controller
 {
@@ -25,16 +23,16 @@ class ConfigController extends Controller
 
     public function gameScreen($id)
     {
-        $agent_keys = InviteKey::all()->where('game_id', '=', strval($id))->where('role', '=', Roles::Police);
-        $thief_keys = InviteKey::all()->where('game_id', '=', strval($id))->where('role', '=', Roles::Thief);
+        $police_keys = InviteKey::where('game_id', '=', strval($id))->where('role', '=', Roles::Police)->get();
+        $thief_keys = InviteKey::where('game_id', '=', strval($id))->where('role', '=', Roles::Thief)->get();
         $game = Game::find($id);
 
         if (isset($game)) {
             switch ($game->status) {
                 case Statuses::Config:
-                    return view('config.main', compact(['agent_keys', 'thief_keys', 'id']));
+                    return view('config.main', compact(['police_keys', 'thief_keys', 'id']));
                 default:
-                    return view('game.main', compact(['agent_keys', 'thief_keys', 'id']));
+                    return view('game.main', compact(['police_keys', 'thief_keys', 'id']));
             }
         }
         return redirect()->route('index');

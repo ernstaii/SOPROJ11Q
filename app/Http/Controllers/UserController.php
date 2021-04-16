@@ -7,7 +7,6 @@ use App\Http\Requests\UpdateLocationRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Models\InviteKey;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -20,9 +19,6 @@ class UserController extends Controller
     {
         $inviteKeyId = $request->invite_key;
 
-        if (User::where('invite_key', $inviteKeyId)->exists()) {
-            return null;
-        }
         $role = $request->role;
         return User::create([
             'username' => $request->username,

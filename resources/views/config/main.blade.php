@@ -85,7 +85,7 @@
                         @endforeach
                     </div>
                     <div id="thieves_keys_box" class="vert-keys-box">
-                        @foreach($thieves_keys as $key)
+                        @foreach($thief_keys as $key)
                             <div class="key-item">
                                 <p id="somekey">{{ $key->value }}</p>
                             </div>
