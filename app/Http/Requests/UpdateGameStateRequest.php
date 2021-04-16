@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Enums\Statuses;
 use App\Models\Game;
 use App\Rules\IsInStateRule;
+use Composer\XdebugHandler\Status;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Http\FormRequest;
 use OutOfBoundsException;
@@ -45,10 +46,15 @@ class UpdateGameStateRequest extends FormRequest
                 'hasKeys' => 'Het spel heeft nog geen invite keys.'
             ]);
 
+        if ($game->status === Statuses::Config) {
+            return [
+                'state' => ['required', 'string'],
+                'duration' => ['required', 'integer', 'between:10,1440'],
+                'interval' => ['required', 'integer', 'between:30,300']
+            ];
+        }
         return [
-            'state' => ['required', 'string'],
-            'duration' => ['required', 'integer', 'between:10,1440'],
-            'interval' => ['required', 'integer', 'between:30,300']
+            'state' => ['required', 'string']
         ];
     }
 }

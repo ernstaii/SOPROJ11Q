@@ -11,17 +11,20 @@ use Carbon\Carbon;
 
 class GameController extends Controller
 {
-    public function getUsersInGame($gameId) {
+    public function getUsersInGame($gameId)
+    {
         return User::query()->whereHas('inviteKey', function ($query) use ($gameId) {
             return $query->where('game_id', $gameId);
         })->get();
     }
 
-    public function getLootInGame($gameId) {
+    public function getLootInGame($gameId)
+    {
         return Game::all()->where('id', '=', $gameId)->first()->loots;
     }
 
-    public function getStatusInGame($gameId) {
+    public function getStatusInGame($gameId)
+    {
         return Game::all()->where('id', '=', $gameId)->first()->status;
     }
 
@@ -29,8 +32,10 @@ class GameController extends Controller
     {
         $game = Game::find($id);
 
-        $game->duration = $request->duration;
-        $game->interval = $request->interval;
+        if ($game->status === Statuses::Config) {
+            $game->duration = $request->duration;
+            $game->interval = $request->interval;
+        }
 
         switch ($request->state) {
             case Statuses::Ongoing:
