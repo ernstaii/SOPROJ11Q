@@ -29,8 +29,8 @@ class GameController extends Controller
 
         $validated = $request->validate([
             'state' => ['required', 'string'],
-            'duration' => ['nullable', 'integer', 'between:10,1440'],
-            'interval' => ['nullable', 'integer', 'between:30,300']
+            'duration' => ['required', 'integer', 'between:10,1440'],
+            'interval' => ['required', 'integer', 'between:30,300']
         ]);
 
         $game->duration = $validated['duration'];

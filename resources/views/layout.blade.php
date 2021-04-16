@@ -8,7 +8,7 @@
 @if (session()->has('errors'))
     <div id="error-box">
         <ul>
-            @foreach (session()->get('errors') as $error)
+            @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
