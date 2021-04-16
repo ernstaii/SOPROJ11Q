@@ -12,7 +12,7 @@ class InviteKeyTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_get_invite_unused_key()
+    public function test_get_unused_invite_key()
     {
         $game = Game::create();
         $invite_key = InviteKey::create([
@@ -26,7 +26,7 @@ class InviteKeyTest extends TestCase
         $this->assertCount(1, (array) $response->getContent());
     }
 
-    public function test_get_invite_used_key()
+    public function test_get_used_invite_key()
     {
         $game = Game::create();
         $invite_key = InviteKey::create([
@@ -44,7 +44,7 @@ class InviteKeyTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function test_get_invite_non_existing_key()
+    public function test_get_non_existing_invite_key()
     {
         $response = $this->get('/api/invite-key/AA00');
 
