@@ -8,9 +8,11 @@
 @if (session()->has('errors'))
     <div id="error-box">
         <ul>
-            @foreach (session()->get('errors') as $error)
-                <li>{{ $error }}</li>
-            @endforeach
+            @if($errors->any())
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            @endif
         </ul>
     </div>
 @endif

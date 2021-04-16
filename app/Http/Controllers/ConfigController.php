@@ -8,7 +8,7 @@ use App\Events\StartGameEvent;
 use App\Models\Game;
 use App\Models\InviteKey;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class ConfigController extends Controller
 {
@@ -19,8 +19,9 @@ class ConfigController extends Controller
         return view('main_screen', compact(['games']));
     }
 
-    public function createGame()
+    public function createGame(Request $request)
     {
+
         $game = new Game();
         $game->save();
         $gameId = Game::all()->last()->id;
@@ -36,10 +37,10 @@ class ConfigController extends Controller
 
         if ($game != null) {
             switch ($game->status) {
-                case Statuses::Ongoing:
-                    return view('game.main', compact(['agent_keys', 'thief_keys', 'id']));
-                default:
+                case Statuses::Config:
                     return view('config.main', compact(['agent_keys', 'thief_keys', 'id']));
+                default:
+                    return view('game.main', compact(['agent_keys', 'thief_keys', 'id']));
             }
         }
         return redirect()->route('index');
@@ -51,23 +52,6 @@ class ConfigController extends Controller
         Game::destroy($id);
 
         return redirect()->route('index');
-    }
-
-    public function startGame($id)
-    {
-        $game = Game::find($id);
-        $hasKeys = $game->hasKeys();
-
-        if ($game != null && $hasKeys) {
-            $game->status = Statuses::Ongoing;
-            $game->save();
-
-            event(new StartGameEvent($id));
-        } else {
-            return redirect()->route('GameScreen', ['id' => $id])->with('errors', ['Er moeten invite codes bestaan voordat het spel gestart kan worden.']);
-        }
-
-        return redirect()->route('GameScreen', ['id' => $id]);
     }
 
     /**

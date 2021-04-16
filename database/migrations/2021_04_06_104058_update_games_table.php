@@ -16,6 +16,9 @@ class UpdateGamesTable extends Migration
     {
         Schema::table('games', function (Blueprint $table) {
             $table->string('status', 20)->default(Statuses::Config);
+            $table->integer('duration')->default(120);
+            $table->integer('interval')->default(60);
+            $table->integer('time_left')->default(7200);
         });
     }
 
@@ -28,6 +31,9 @@ class UpdateGamesTable extends Migration
     {
         Schema::table('games', function (Blueprint $table) {
             $table->dropColumn('status');
+            $table->dropColumn('duration');
+            $table->dropColumn('interval');
+            $table->dropColumn('time_left');
         });
     }
 }
