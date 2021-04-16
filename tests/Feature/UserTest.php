@@ -18,18 +18,18 @@ class UserTest extends TestCase
         $user = User::factory()->make();
 
         $response = $this->call('POST', '/api/users', [
-            'username'   => $user->getAttribute('username'),
-            'location'   => $user->getAttribute('location'),
-            'role'       => $user->getAttribute('role'),
+            'username' => $user->getAttribute('username'),
+            'location' => $user->getAttribute('location'),
+            'role' => $user->getAttribute('role'),
             'invite_key' => $user->getAttribute('invite_key'),
         ]);
 
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('users', [
-            'username'   => $user->getAttribute('username'),
-            'location'   => $user->getAttribute('location'),
-            'role'       => $user->getAttribute('role'),
+            'username' => $user->getAttribute('username'),
+            'location' => $user->getAttribute('location'),
+            'role' => $user->getAttribute('role'),
             'invite_key' => $user->getAttribute('invite_key'),
         ]);
     }
@@ -59,13 +59,13 @@ class UserTest extends TestCase
         $response = $this->call('GET', "/api/users/$userId");
 
         $response->assertStatus(Response::HTTP_OK)->assertExactJson([
-            'id'         => $userId,
-            'username'   => $user->username,
-            'location'   => $user->location,
+            'id' => $userId,
+            'username' => $user->username,
+            'location' => $user->location,
             'created_at' => $user->created_at,
             'updated_at' => $user->updated_at,
             'invite_key' => $user->invite_key,
-            'role'       => $user->role,
+            'role' => $user->role,
         ]);
     }
 
@@ -73,19 +73,19 @@ class UserTest extends TestCase
     public function get_users()
     {
         $user = User::factory()->create();
-        $inviteKey = InviteKey::query()->where('value', $user->invite_key)->first();
+        $inviteKey = InviteKey::where('value', $user->invite_key)->first();
 
         $response = $this->call('GET', "/api/game/$inviteKey->game_id/users");
 
         $response->assertStatus(Response::HTTP_OK)->assertExactJson([
             [
-                'id'         => $user->getKey(),
-                'username'   => $user->username,
-                'location'   => $user->location,
+                'id' => $user->getKey(),
+                'username' => $user->username,
+                'location' => $user->location,
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at,
                 'invite_key' => $user->invite_key,
-                'role'       => $user->role,
+                'role' => $user->role,
             ]
         ]);
     }

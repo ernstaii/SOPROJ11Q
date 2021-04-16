@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Roles;
+use App\Http\Requests\UpdateLocationRequest;
+use App\Http\Requests\UserStoreRequest;
 use App\Models\InviteKey;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,34 +16,25 @@ class UserController extends Controller
         return $user;
     }
 
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
-        $request->validate([
-            'username' => 'required|min:3|max:255',
-            'location' => 'nullable|regex:/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i',
-            'invite_key' => 'required|exists:invite_keys,value',
-        ]);
-
-        $inviteKeyId = $request->get('invite_key');
+        $inviteKeyId = $request->invite_key;
 
         if (User::where('invite_key', $inviteKeyId)->exists()) {
             return null;
         }
-        $role = $request->get('role');
+        $role = $request->role;
         return User::create([
-            'username' => $request->get('username'),
-            'location' => $request->get('location'),
+            'username' => $request->username,
+            'location' => $request->location,
             'invite_key' => $inviteKeyId,
             'role' => isset($role) ? $role : Roles::Thief,
         ]);
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateLocationRequest $request, User $user)
     {
-        $request->validate([
-            'location' => 'nullable|regex:/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i',
-        ]);
-        $user->location = $request->get('location');
+        $user->location = $request->location;
         $user->save();
         return $user;
     }
