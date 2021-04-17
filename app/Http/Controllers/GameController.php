@@ -31,6 +31,11 @@ class GameController extends Controller
         return Game::all()->where('id', '=', $gameId)->first()->status;
     }
 
+    public function getIntervalInGame($gameId)
+    {
+        return Game::all()->where('id', '=', $gameId)->first()->interval;
+    }
+
     public function updateGameState(UpdateGameStateRequest $request, $id)
     {
         $game = Game::find($id);
