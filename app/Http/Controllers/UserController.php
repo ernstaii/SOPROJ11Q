@@ -21,7 +21,9 @@ class UserController extends Controller
 
         // Check if user already exists with inviteKey
         if (User::query()->where('invite_key', $inviteKeyId)->count() > 0) {
-            return response()->json(['error' => 'De code is al in gebruik'], 403);
+            return CustomErrorService::failedApiResponse('Geen toestemming', [
+                'value' => ['De code is al in gebruik'],
+            ], 403);
         }
 
         $user = User::create([
@@ -60,12 +62,12 @@ class UserController extends Controller
             }
 
             return CustomErrorService::failedApiResponse('Geen toestemming', [
-                'invite_key' => ['De code is al in gebruik'],
+                'value' => ['De code is al in gebruik'],
             ], 403);
         }
 
         return CustomErrorService::failedApiResponse('Niet gevonden', [
-            'invite_key' => ['De code is onjuist'],
+            'value' => ['De code is onjuist'],
         ], 404);
     }
 }
