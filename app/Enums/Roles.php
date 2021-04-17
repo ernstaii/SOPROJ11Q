@@ -15,4 +15,6 @@ final class Roles extends Enum
     const Thief = "thief";
     const UndercoverThief = "undercover_thief";
     const Police = "police";
+
+    public static $types = [self::Thief, self::UndercoverThief, self::Police];
 }
