@@ -2,9 +2,10 @@
 
 namespace App\Events;
 
-class EndGameEvent extends GameEvent {
-
-    public function broadcastAs(): string {
+class EndGameEvent extends GameEvent
+{
+    public function broadcastAs()
+    {
         return 'game.end';
     }
 }
