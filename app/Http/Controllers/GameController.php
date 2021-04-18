@@ -50,8 +50,7 @@ class GameController extends Controller
                 if ($game->status === Statuses::Config) {
                     $game->time_left = $request->duration * 60;
                     event(new StartGameEvent($id));
-                }
-                else {
+                } else {
                     event(new ResumeGameEvent($id));
                 }
                 $game->status = $request->state;
