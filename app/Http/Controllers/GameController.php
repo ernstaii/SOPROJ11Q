@@ -58,12 +58,12 @@ class GameController extends Controller
             case Statuses::Finished:
                 $game->status = $request->state;
                 $game->time_left = 0;
-                event(new EndGameEvent($id));
+                event(new EndGameEvent($id, $request->reason));
                 break;
             case Statuses::Paused:
                 $game->time_left = $game->time_left - Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
                 $game->status = $request->state;
-                event(new PauseGameEvent($id));
+                event(new PauseGameEvent($id, $request->reason));
                 break;
             default:
                 $game->status = Statuses::Config;
