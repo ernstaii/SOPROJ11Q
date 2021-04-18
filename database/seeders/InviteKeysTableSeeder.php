@@ -64,9 +64,19 @@ class InviteKeysTableSeeder extends Seeder
             'role' => Roles::Police,
         ]);
 
+        // This one is not in use
         InviteKey::create([
             'value' => 'BNJE',
             'game_id' => 2,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'role' => Roles::Thief,
+        ]);
+
+        // This one is not in use
+        InviteKey::create([
+            'value' => 'BNJE',
+            'game_id' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
             'role' => Roles::Thief,
@@ -88,9 +98,19 @@ class InviteKeysTableSeeder extends Seeder
             'role' => Roles::Police,
         ]);
 
+        // This one is in use
         InviteKey::create([
             'value' => 'FF3Q',
             'game_id' => 2,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'role' => Roles::Thief,
+        ]);
+
+        // This one is not in use
+        InviteKey::create([
+            'value' => 'FF3Q',
+            'game_id' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
             'role' => Roles::Thief,
