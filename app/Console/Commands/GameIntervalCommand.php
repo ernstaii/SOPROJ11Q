@@ -45,13 +45,15 @@ class GameIntervalCommand extends Command
     public function handle()
     {
         $seconds = $this->minutes * 60;
+        $gameController = new GameController();
+
         for($i = 0; $i < $seconds; $i += 5) {
             echo "Checking intervals\n";
 
             $now = Carbon::now();
 
             foreach (Game::all() as $game) {
-                if ($game->status == Statuses::Ongoing) {
+                if($game->status == Statuses::Ongoing) {
                     if (!array_key_exists($game->id, $this->lastUpdates)) {
                         $this->lastUpdates[$game->id] = $now;
                     }
@@ -60,7 +62,8 @@ class GameIntervalCommand extends Command
                     echo "Difference: " . $difference . "\n";
 
                     if ($difference >= $game->interval) {
-                        event(new GameIntervalEvent($game->id, new GameController()));
+                        $users = $gameController->getUsersInGame($game->id);
+                        event(new GameIntervalEvent($game->id, $users));
                         $this->lastUpdates[$game->id] = $now;
                         echo "Invoking interval of game " . $game->id . "\n";
                     }
