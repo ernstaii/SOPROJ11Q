@@ -24,11 +24,14 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $inviteKey = InviteKey::factory()->create();
+
         return [
             'username' => 'Random name',
             'location' => '51.498134,-0.201755',
-            'invite_key' => InviteKey::factory()->create()->getAttribute('value'),
+            'invite_key' => $inviteKey->getAttribute('value'),
             'role' => Roles::Thief,
+            'game_id' => $inviteKey->getAttribute('game_id'),
         ];
     }
 }

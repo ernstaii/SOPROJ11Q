@@ -21,6 +21,7 @@ class UsersTableSeeder extends Seeder
             'username' => 'Willem',
             'location' => '51.498134,-0.201755',
             'invite_key' => 'A0B3',
+            'game_id' => 1,
             'role' => Roles::Thief,
         ]);
 
@@ -28,6 +29,7 @@ class UsersTableSeeder extends Seeder
             'username' => 'Rik',
             'location' => '51.498134,-0.201755',
             'invite_key' => 'FF3Q',
+            'game_id' => 2,
             'role' => Roles::Thief,
         ]);
 
@@ -36,6 +38,7 @@ class UsersTableSeeder extends Seeder
             'username' => 'Bart',
             'location' => '51.498134,-0.201755',
             'invite_key' => 'LKJ3',
+            'game_id' => 1,
             'role' => Roles::Police,
         ]);
 
@@ -43,6 +46,7 @@ class UsersTableSeeder extends Seeder
             'username' => 'Johan',
             'location' => '51.498134,-0.201755',
             'invite_key' => 'BF3V',
+            'game_id' => 2,
             'role' => Roles::Police,
         ]);
     }
