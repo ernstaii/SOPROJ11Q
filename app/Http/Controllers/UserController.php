@@ -18,13 +18,21 @@ class UserController extends Controller
 
     public function store(UserStoreRequest $request)
     {
-        $inviteKeyId = $request->invite_key;
+        $inviteKeyValue = $request->invite_key;
+        $gameId = $request->game_id;
+
+        if (User::query()->where('invite_key', $inviteKeyValue)->when('game_id', $gameId)->count() > 0) {
+            return CustomErrorService::failedApiResponse('Geen toestemming', [
+                'value' => ['De code is al in gebruik'],
+            ], 403);
+        }
 
         return User::create([
             'username' => $request->username,
             'location' => $request->location,
-            'invite_key' => $inviteKeyId,
-            'role' => $request->role
+            'invite_key' => $inviteKeyValue,
+            'game_id' =>$gameId,
+            'role' => $request->role,
         ]);
     }
 
@@ -37,17 +45,15 @@ class UserController extends Controller
 
     public function getInviteKeys($inviteKeyId)
     {
-        $inviteKey = InviteKey::where('value', $inviteKeyId)->first();
-        if (isset($inviteKey)) {
-            $totalInUse = User::where('invite_key', $inviteKey->value)->count();
+        $inviteKeys = InviteKey::query()->where('value', $inviteKeyId)->whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('users')
+                ->whereRaw('users.invite_key = invite_keys.value && users.game_id = invite_keys.game_id');
+        })->get();
 
-            if ($totalInUse == 0) {
-                return $inviteKey;
-            }
-
-            return CustomErrorService::failedApiResponse('Geen toestemming', [
-                'value' => ['De code is al in gebruik'],
-            ], 403);
+        // Check if there are any invite-keys
+        if ($inviteKeys->count() > 0) {
+            return $inviteKeys;
         }
 
         return CustomErrorService::failedApiResponse('Niet gevonden', [

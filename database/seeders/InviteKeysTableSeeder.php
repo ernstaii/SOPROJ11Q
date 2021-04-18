@@ -57,8 +57,6 @@ class InviteKeysTableSeeder extends Seeder
         InviteKey::create([
             'value' => 'BNJE',
             'game_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             'role' => Roles::Thief,
         ]);
 
@@ -85,8 +83,6 @@ class InviteKeysTableSeeder extends Seeder
         InviteKey::create([
             'value' => 'FF3Q',
             'game_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             'role' => Roles::Thief,
         ]);
     }
