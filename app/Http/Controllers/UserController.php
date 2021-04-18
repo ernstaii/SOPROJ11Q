@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Roles;
 use App\Http\Requests\UpdateLocationRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Services\CustomErrorService;
