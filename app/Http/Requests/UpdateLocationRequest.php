@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Roles;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class StoreUserRequest extends FormRequest
+class UpdateLocationRequest extends FormRequest
 {
     public function authorize()
     {
@@ -16,10 +14,7 @@ class StoreUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required|string|min:3|max:50',
             'location' => 'nullable|regex:/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i',
-            'invite_key' => 'required|exists:invite_keys,value',
-            'role' => Rule::in(Roles::$types),
         ];
     }
 }
