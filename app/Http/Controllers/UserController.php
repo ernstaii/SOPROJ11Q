@@ -7,7 +7,6 @@ use App\Http\Requests\UserStoreRequest;
 use App\Http\Services\CustomErrorService;
 use App\Models\InviteKey;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -28,11 +27,11 @@ class UserController extends Controller
         }
 
         return User::create([
-            'username' => $request->username,
-            'location' => $request->location,
+            'username'   => $request->username,
+            'location'   => $request->location,
             'invite_key' => $inviteKeyValue,
-            'game_id' =>$gameId,
-            'role' => $request->role,
+            'game_id'    => $gameId,
+            'role'       => $request->role,
         ]);
     }
 
@@ -40,13 +39,14 @@ class UserController extends Controller
     {
         $user->location = $request->location;
         $user->save();
+
         return $user;
     }
 
-    public function getInviteKeys($inviteKeyId)
+    public function getInviteKeys($inviteKeyValue)
     {
-        $inviteKeys = InviteKey::query()->where('value', $inviteKeyId)->whereNotExists(function ($query) {
-            $query->select(DB::raw(1))
+        $inviteKeys = InviteKey::where('value', $inviteKeyValue)->whereNotExists(function ($query) {
+            $query->select("invite_key")
                 ->from('users')
                 ->whereRaw('users.invite_key = invite_keys.value && users.game_id = invite_keys.game_id');
         })->get();
