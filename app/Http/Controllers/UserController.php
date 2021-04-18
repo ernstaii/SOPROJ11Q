@@ -2,39 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Roles;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Services\CustomErrorService;
 use App\Models\InviteKey;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function get(User $user): User
+    public function get(User $user)
     {
         return $user;
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $request->validate([
-            'username'   => 'required|min:3|max:255',
-            'location'   => 'nullable|regex:/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i',
-            'invite_key' => 'required|exists:invite_keys,value',
-        ]);
-
         $inviteKeyId = $request->get('invite_key');
 
-        // Check if user already exists with inviteKey
         if (User::query()->where('invite_key', $inviteKeyId)->count() > 0) {
-            return null;
+            return CustomErrorService::failedApiResponse('Geen toestemming', [
+                'value' => ['De code is al in gebruik'],
+            ], 403);
         }
-        $role = $request->get('role');
 
         $user = User::create([
-            'username'   => $request->get('username'),
-            'location'   => $request->get('location'),
+            'username' => $request->get('username'),
+            'location' => $request->get('location'),
             'invite_key' => $inviteKeyId,
-            'role'       => isset($role) ? $role : Roles::Thief,
+            'role' => $request->get('role'),
         ]);
 
         $user->save();
@@ -52,8 +47,6 @@ class UserController extends Controller
         $user->save();
     }
 
-    // Return InviteKey based on value
-    // Key could be null, if InviteKey doesn't exists anymore
     public function getInviteKey($inviteKeyId)
     {
         $inviteKey = InviteKey::query()->where('value', $inviteKeyId)->first();
@@ -61,16 +54,17 @@ class UserController extends Controller
         if (isset($inviteKey)) {
             $totalInUse = User::query()->where('invite_key', $inviteKey->value)->count();
 
-            // TODO: Player could have an InviteCode with the same value, but then InviteCode can't have same TeamId
-
-            // Check if InviteKey not yet in use
             if ($totalInUse == 0) {
                 return $inviteKey;
             }
 
-            return response()->json(['error' => 'De code is al in gebruik'],403);
+            return CustomErrorService::failedApiResponse('Geen toestemming', [
+                'value' => ['De code is al in gebruik'],
+            ], 403);
         }
 
-        return response()->json(['error' => 'De code is onjuist'],404);
+        return CustomErrorService::failedApiResponse('Niet gevonden', [
+            'value' => ['De code is onjuist'],
+        ], 404);
     }
 }
