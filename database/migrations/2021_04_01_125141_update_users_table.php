@@ -18,6 +18,8 @@ class UpdateUsersTable extends Migration
             $table->string('location', 255)->nullable()->change();
             $table->string('invite_key')->nullable();
             $table->string('role', 20)->default(Roles::None);
+            $table->unsignedBigInteger('game_id');
+            $table->foreign('game_id')->references('id')->on('games');
 
             $table->foreign('invite_key')->references('value')->on('invite_keys');
         });
@@ -35,6 +37,8 @@ class UpdateUsersTable extends Migration
             $table->dropForeign('invite_key');
             $table->dropColumn('invite_key');
             $table->dropColumn('role');
+            $table->dropForeign('game_id');
+            $table->dropColumn('game_id');
         });
     }
 }
