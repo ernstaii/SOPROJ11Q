@@ -38,6 +38,7 @@ class User extends Authenticatable
         'username',
         'location',
         'invite_key',
+        'game_id',
         'role',
     ];
 

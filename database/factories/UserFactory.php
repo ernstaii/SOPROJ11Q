@@ -13,10 +13,13 @@ class UserFactory extends Factory
 
     public function definition()
     {
+        $inviteKey = InviteKey::factory()->create();
+
         return [
             'username' => $this->faker->userName,
             'location' => '51.498134,-0.201755',
-            'invite_key' => InviteKey::factory()->create()->getAttribute('value'),
+            'invite_key' => $inviteKey->getAttribute('value'),
+            'game_id' => $inviteKey->getAttribute('game_id'),
             'role' => Roles::Thief,
         ];
     }

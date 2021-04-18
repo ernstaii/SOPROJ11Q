@@ -9,14 +9,14 @@ use App\Events\ResumeGameEvent;
 use App\Events\StartGameEvent;
 use App\Http\Requests\UpdateGameStateRequest;
 use App\Models\Game;
+use App\Models\User;
 use Carbon\Carbon;
-use OutOfBoundsException;
 
 class GameController extends Controller
 {
     public function getUsersInGame($gameId)
     {
-        return Game::find($gameId)->users();
+        return User::where('game_id', $gameId)->get();
     }
 
     public function getLootInGame($gameId)
