@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Enums\Roles;
 use App\Enums\Statuses;
-use App\Events\StartGameEvent;
 use App\Models\Game;
 use App\Models\InviteKey;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class ConfigController extends Controller
 {
