@@ -22,7 +22,7 @@ class UserController extends Controller
         $gameId = $request->get('game_id');
 
         // Check if user already exists with inviteKey
-        if (User::query()->where('invite_key', $inviteKeyValue)->when('game_id', $gameId)->count() > 0) {
+        if (User::query()->where('invite_key', $inviteKeyValue)->where('game_id', $gameId)->count() > 0) {
             return CustomErrorService::failedApiResponse('Geen toestemming', [
                 'value' => ['De code is al in gebruik'],
             ], 403);
