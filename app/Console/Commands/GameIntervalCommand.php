@@ -25,6 +25,7 @@ class GameIntervalCommand extends Command
      */
     protected $description = 'Takes care of pushing game interval events';
     protected $lastUpdates = [];
+    protected $minutes = 6 * 60;
 
     /**
      * Create a new command instance.
@@ -43,7 +44,8 @@ class GameIntervalCommand extends Command
      */
     public function handle()
     {
-        for($i = 0; $i < 60; $i += 5) {
+        $seconds = $this->minutes * 60;
+        for($i = 0; $i < $seconds; $i += 5) {
             echo "Checking intervals\n";
 
             $now = Carbon::now();
@@ -65,7 +67,7 @@ class GameIntervalCommand extends Command
                 }
             }
 
-            if($i < 55) {
+            if($i < $seconds - 5) {
                 sleep(5);
             }
         }
