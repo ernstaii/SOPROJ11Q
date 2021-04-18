@@ -7,6 +7,7 @@ use App\Http\Services\CustomErrorService;
 use App\Models\InviteKey;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -17,10 +18,11 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request)
     {
-        $inviteKeyId = $request->get('invite_key');
+        $inviteKeyValue = $request->get('invite_key');
+        $gameId = $request->get('game_id');
 
         // Check if user already exists with inviteKey
-        if (User::query()->where('invite_key', $inviteKeyId)->count() > 0) {
+        if (User::query()->where('invite_key', $inviteKeyValue)->when('game_id', $gameId)->count() > 0) {
             return CustomErrorService::failedApiResponse('Geen toestemming', [
                 'value' => ['De code is al in gebruik'],
             ], 403);
@@ -29,7 +31,8 @@ class UserController extends Controller
         $user = User::create([
             'username'   => $request->get('username'),
             'location'   => $request->get('location'),
-            'invite_key' => $inviteKeyId,
+            'invite_key' => $inviteKeyValue,
+            'game_id'    => $gameId,
             'role'       => $request->get('role'),
         ]);
 
@@ -49,25 +52,21 @@ class UserController extends Controller
     }
 
     // Return InviteKey based on value
-    public function getInviteKey($inviteKeyId)
+    public function getInviteKeys($inviteKeyId)
     {
-        $inviteKey = InviteKey::query()->where('value', $inviteKeyId)->first();
+        $inviteKeys = InviteKey::query()->where('value', $inviteKeyId)->whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('users')
+                ->whereRaw('users.invite_key = invite_keys.value && users.game_id = invite_keys.game_id');
+        })->get();
 
-        if (isset($inviteKey)) {
-            $totalInUse = User::query()->where('invite_key', $inviteKey->value)->count();
-
-            // Check if InviteKey not yet in use
-            if ($totalInUse == 0) {
-                return $inviteKey;
-            }
-
-            return CustomErrorService::failedApiResponse('Geen toestemming', [
-                'value' => ['De code is al in gebruik'],
-            ], 403);
+        // Check if there are any invite-keys
+        if ($inviteKeys->count() > 0) {
+            return $inviteKeys;
         }
 
         return CustomErrorService::failedApiResponse('Niet gevonden', [
-            'value' => ['De code is onjuist'],
+            'value' => ['De code is onjuist of al in gebruik'],
         ], 404);
     }
 }
