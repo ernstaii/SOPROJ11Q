@@ -36,12 +36,13 @@ class InviteKeyTest extends TestCase
         $user = User::create([
             'username' => 'test_user',
             'location' => '51.498134,-0.201754',
-            'invite_key' => 'AA00'
+            'invite_key' => 'AA00',
+            'game_id' => $game->id,
         ]);
 
         $response = $this->get('/api/invite-key/' . $invite_key->value);
 
-        $response->assertStatus(403);
+        $response->assertStatus(404);
     }
 
     public function test_get_non_existing_invite_key()

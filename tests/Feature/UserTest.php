@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Game;
 use App\Models\InviteKey;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,9 +16,9 @@ class UserTest extends TestCase
         $user = User::factory()->make();
 
         $response = $this->post('/api/users', [
-            'username' => $user->getAttribute('username'),
-            'location' => $user->getAttribute('location'),
-            'role' => $user->getAttribute('role'),
+            'username'   => $user->getAttribute('username'),
+            'location'   => $user->getAttribute('location'),
+            'role'       => $user->getAttribute('role'),
             'invite_key' => $user->getAttribute('invite_key'),
             'game_id'    => $user->getAttribute('game_id'),
         ]);
@@ -27,9 +26,9 @@ class UserTest extends TestCase
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('users', [
-            'username' => $user->getAttribute('username'),
-            'location' => $user->getAttribute('location'),
-            'role' => $user->getAttribute('role'),
+            'username'   => $user->getAttribute('username'),
+            'location'   => $user->getAttribute('location'),
+            'role'       => $user->getAttribute('role'),
             'invite_key' => $user->getAttribute('invite_key'),
             'game_id'    => $user->getAttribute('game_id'),
         ]);
@@ -40,9 +39,9 @@ class UserTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->post('/api/users', [
-            'username' => 'test_user_2',
-            'location' => '51.498134,-0.201754',
-            'invite_key' => $user->invite_key
+            'username'   => 'test_user_2',
+            'location'   => '51.498134,-0.201754',
+            'invite_key' => $user->invite_key,
         ]);
 
         $response->assertStatus(302)
@@ -72,13 +71,14 @@ class UserTest extends TestCase
         $response = $this->get("/api/users/$userId");
 
         $response->assertStatus(200)->assertExactJson([
-            'id' => $userId,
-            'username' => $user->username,
-            'location' => $user->location,
+            'game_id'    => $user->game_id,
+            'id'         => $userId,
+            'username'   => $user->username,
+            'location'   => $user->location,
             'created_at' => $user->created_at,
             'updated_at' => $user->updated_at,
             'invite_key' => $user->invite_key,
-            'role' => $user->role,
+            'role'       => $user->role,
         ]);
     }
 
@@ -91,15 +91,15 @@ class UserTest extends TestCase
 
         $response->assertStatus(200)->assertExactJson([
             [
-                'id' => $user->getKey(),
-                'username' => $user->username,
-                'location' => $user->location,
+                'id'         => $user->getKey(),
+                'username'   => $user->username,
+                'location'   => $user->location,
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at,
                 'invite_key' => $user->invite_key,
-                'role' => $user->role,
-                'game_id'    => $user->game_id
-            ]
+                'role'       => $user->role,
+                'game_id'    => $user->game_id,
+            ],
         ]);
     }
 }

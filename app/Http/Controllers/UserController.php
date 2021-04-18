@@ -20,7 +20,7 @@ class UserController extends Controller
         $inviteKeyValue = $request->invite_key;
         $gameId = $request->game_id;
 
-        if (User::query()->where('invite_key', $inviteKeyValue)->when('game_id', $gameId)->count() > 0) {
+        if (User::where('invite_key', $inviteKeyValue)->where('game_id', $gameId)->count() > 0) {
             return CustomErrorService::failedApiResponse('Geen toestemming', [
                 'value' => ['De code is al in gebruik'],
             ], 403);
