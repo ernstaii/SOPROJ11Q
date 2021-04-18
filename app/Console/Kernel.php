@@ -24,13 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('game:interval')
-            ->everyMinute()
-            ->withoutOverlapping()
-            ->runInBackground();
-
-        // If you want debug output in a text file, add this
-            //->sendOutputTo(getcwd() . "\\IntervalOut.txt", true);
+        // $schedule->command('inspire')->hourly();
     }
 
     /**
