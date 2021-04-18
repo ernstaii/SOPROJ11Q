@@ -16,7 +16,7 @@ class GameController extends Controller
 {
     public function getUsersInGame($gameId)
     {
-        return User::where('game_id', $gameId)->get();
+        return Game::find($gameId)->users();
     }
 
     public function getLootInGame($gameId)
