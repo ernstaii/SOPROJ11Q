@@ -8,6 +8,7 @@ use App\Models\Game;
 use App\Models\InviteKey;
 use Illuminate\Http\Request;
 
+
 class ConfigController extends Controller
 {
     public function index()
