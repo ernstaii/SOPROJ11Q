@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\Roles;
 use App\Http\Requests\UpdateLocationRequest;
 use App\Http\Requests\UserStoreRequest;
+use App\Http\Services\CustomErrorService;
 use App\Models\InviteKey;
 use App\Models\User;
 
@@ -19,12 +20,11 @@ class UserController extends Controller
     {
         $inviteKeyId = $request->invite_key;
 
-        $role = $request->role;
         return User::create([
             'username' => $request->username,
             'location' => $request->location,
             'invite_key' => $inviteKeyId,
-            'role' => isset($role) ? $role : Roles::Thief,
+            'role' => $request->role
         ]);
     }
 
@@ -39,12 +39,19 @@ class UserController extends Controller
     {
         $inviteKey = InviteKey::where('value', $inviteKeyId)->first();
         if (isset($inviteKey)) {
-            // TODO: Player could have an InviteCode with the same value, but then InviteCode can't have same TeamId
-            if (User::where('invite_key', $inviteKey->value)->count() == 0) {
+            $totalInUse = User::query()->where('invite_key', $inviteKey->value)->count();
+
+            if ($totalInUse == 0) {
                 return $inviteKey;
             }
-            return response()->json(['error' => 'De code is al in gebruik'], 403);
+
+            return CustomErrorService::failedApiResponse('Geen toestemming', [
+                'value' => ['De code is al in gebruik'],
+            ], 403);
         }
-        return response()->json(['error' => 'De code is onjuist'], 404);
+
+        return CustomErrorService::failedApiResponse('Niet gevonden', [
+            'value' => ['De code is onjuist'],
+        ], 404);
     }
 }
