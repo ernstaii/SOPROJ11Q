@@ -82,7 +82,7 @@ class UserTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK)->assertExactJson([
             [
-                'game_id'    => $user->game_id,
+                'game_id'    => (int) $user->game_id,
                 'id'         => $user->getKey(),
                 'username'   => $user->username,
                 'location'   => $user->location,
