@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    public function get(User $user): User
+    public function get(User $user)
     {
         return $user;
     }
@@ -51,7 +51,6 @@ class UserController extends Controller
         $user->save();
     }
 
-    // Return InviteKey based on value
     public function getInviteKeys($inviteKeyId)
     {
         $inviteKeys = InviteKey::query()->where('value', $inviteKeyId)->whereNotExists(function ($query) {

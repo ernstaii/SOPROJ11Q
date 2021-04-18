@@ -2,10 +2,10 @@
 
 namespace App\Events;
 
-class StartGameEvent extends GameEvent
+class GameIntervalEvent extends GameEvent
 {
     public function broadcastAs()
     {
-        return 'game.start';
+        return 'game.interval';
     }
 }

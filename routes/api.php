@@ -26,4 +26,5 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/game/{gameId}/users', [GameController::class, 'getUsersInGame']);
     $router->get('/game/{gameId}/loot', [GameController::class, 'getLootInGame']);
     $router->get('/game/{gameId}/status', [GameController::class, 'getStatusInGame']);
+    $router->get('/game/{gameId}/interval', [GameController::class, 'getIntervalInGame']);
 });
