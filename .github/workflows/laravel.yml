@@ -1,6 +1,5 @@
 name: Laravel
 
-
 on:
   push:
     paths-ignore:
@@ -15,7 +14,6 @@ on:
 
 jobs:
   laravel-tests:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -33,10 +31,10 @@ jobs:
       run: chmod -R 777 storage bootstrap/cache
     # Server is now set up for running tests, linters or other actions.
     - name: Create Database
-        - uses: shogo82148/actions-setup-mysql@v1
-        with:
-           mysql-version: '8.0'
-          - run: mysql -uroot -h127.0.0.1 -e 'SELECT version()'
+    - uses: shogo82148/actions-setup-mysql@v1
+      with:
+        mysql-version: '8.0'
+    - run: mysql -uroot -h127.0.0.1 -e 'SELECT version()'
     - name: Migrate Database
       run: php artisan migrate:fresh
     - name: Seed Database
