@@ -1,11 +1,11 @@
 @extends('layout')
 
 @section('head')
-    <title>Overzicht Game {{$id}}</title>
+    <title>Overzicht Spel {{$id}}</title>
 @endsection
 
 @section('content')
-    <h1>Game Screen</h1>
+    <h1>Spel Scherm</h1>
     <div class="button-1">
         <form action="/games/{{$id}}" method="post">
             <div class="form-item">

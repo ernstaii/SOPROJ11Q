@@ -3,20 +3,13 @@
 namespace Database\Seeders;
 
 use App\Enums\Roles;
-use App\Models\InviteKey;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
-        // Game 1
         User::query()->create([
             'username' => 'Willem',
             'location' => '51.498134,-0.201755',
@@ -33,7 +26,6 @@ class UsersTableSeeder extends Seeder
             'role' => Roles::Thief,
         ]);
 
-        // Game 2
         User::query()->create([
             'username' => 'Bart',
             'location' => '51.498134,-0.201755',
