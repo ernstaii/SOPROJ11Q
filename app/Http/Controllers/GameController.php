@@ -23,12 +23,17 @@ class GameController extends Controller
 
     public function getLootInGame($gameId)
     {
-        return Game::all()->where('id', '=', $gameId)->first()->loots;
+        return Game::find($gameId)->loots;
     }
 
     public function getStatusInGame($gameId)
     {
-        return Game::all()->where('id', '=', $gameId)->first()->status;
+        return Game::find($gameId)->status;
+    }
+
+    public function getIntervalInGame($gameId)
+    {
+        return Game::find($gameId)->interval;
     }
 
     public function updateGameState(UpdateGameStateRequest $request, $id)
