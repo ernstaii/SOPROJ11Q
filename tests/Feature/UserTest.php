@@ -22,6 +22,7 @@ class UserTest extends TestCase
             'location'   => $user->getAttribute('location'),
             'role'       => $user->getAttribute('role'),
             'invite_key' => $user->getAttribute('invite_key'),
+            'game_id'    => $user->getAttribute('game_id'),
         ]);
 
         $response->assertStatus(201);
@@ -31,6 +32,7 @@ class UserTest extends TestCase
             'location'   => $user->getAttribute('location'),
             'role'       => $user->getAttribute('role'),
             'invite_key' => $user->getAttribute('invite_key'),
+            'game_id'    => $user->getAttribute('game_id'),
         ]);
     }
 
@@ -59,6 +61,7 @@ class UserTest extends TestCase
         $response = $this->call('GET', "/api/users/$userId");
 
         $response->assertStatus(Response::HTTP_OK)->assertExactJson([
+            'game_id'    => $user->game_id,
             'id'         => $userId,
             'username'   => $user->username,
             'location'   => $user->location,
@@ -79,6 +82,7 @@ class UserTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK)->assertExactJson([
             [
+                'game_id'    => $user->game_id,
                 'id'         => $user->getKey(),
                 'username'   => $user->username,
                 'location'   => $user->location,
@@ -86,7 +90,7 @@ class UserTest extends TestCase
                 'updated_at' => $user->updated_at,
                 'invite_key' => $user->invite_key,
                 'role'       => $user->role,
-            ]
+            ],
         ]);
     }
 }

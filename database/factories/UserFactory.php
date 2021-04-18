@@ -30,8 +30,8 @@ class UserFactory extends Factory
             'username' => 'Random name',
             'location' => '51.498134,-0.201755',
             'invite_key' => $inviteKey->getAttribute('value'),
-            'role' => Roles::Thief,
             'game_id' => $inviteKey->getAttribute('game_id'),
+            'role' => Roles::Thief,
         ];
     }
 }
