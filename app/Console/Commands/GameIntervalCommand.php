@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Enums\Statuses;
 use App\Events\GameIntervalEvent;
+use App\Http\Controllers\GameController;
 use App\Models\Game;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -57,7 +58,7 @@ class GameIntervalCommand extends Command
                     echo "Difference: " . $difference . "\n";
 
                     if ($difference >= $game->interval) {
-                        event(new GameIntervalEvent($game->id));
+                        event(new GameIntervalEvent($game->id, new GameController()));
                         $this->lastUpdates[$game->id] = $now;
                         echo "Invoking interval of game " . $game->id . "\n";
                     }

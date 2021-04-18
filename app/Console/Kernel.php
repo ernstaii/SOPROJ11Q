@@ -26,8 +26,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('game:interval')
             ->everyMinute()
-            ->withoutOverlapping()
-            ->runInBackground();
+            ->withoutOverlapping();
 
         // If you want debug output in a text file, add this
             //->sendOutputTo(getcwd() . "\\IntervalOut.txt", true);
