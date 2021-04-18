@@ -2,46 +2,58 @@
 
 namespace Tests\Feature;
 
+use App\Models\Game;
 use App\Models\InviteKey;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class UserTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function create_user()
+    public function test_can_store_user()
     {
         $user = User::factory()->make();
 
-        $response = $this->call('POST', '/api/users', [
-            'username'   => $user->getAttribute('username'),
-            'location'   => $user->getAttribute('location'),
-            'role'       => $user->getAttribute('role'),
+        $response = $this->post('/api/users', [
+            'username' => $user->getAttribute('username'),
+            'location' => $user->getAttribute('location'),
+            'role' => $user->getAttribute('role'),
             'invite_key' => $user->getAttribute('invite_key'),
         ]);
 
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('users', [
-            'username'   => $user->getAttribute('username'),
-            'location'   => $user->getAttribute('location'),
-            'role'       => $user->getAttribute('role'),
+            'username' => $user->getAttribute('username'),
+            'location' => $user->getAttribute('location'),
+            'role' => $user->getAttribute('role'),
             'invite_key' => $user->getAttribute('invite_key'),
         ]);
     }
 
-    /** @test */
-    public function update_location()
+    public function test_cannot_store_user_with_used_key()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/api/users', [
+            'username' => 'test_user_2',
+            'location' => '51.498134,-0.201754',
+            'invite_key' => $user->invite_key
+        ]);
+
+        $response->assertStatus(302)
+            ->assertSessionHasErrors();
+    }
+
+    public function test_can_update_location()
     {
         //'51.498134,-0.201755'
         $user = User::factory()->create();
         $userId = $user->getKey();
 
-        $response = $this->call('PUT', "/api/users/$userId", [
+        $response = $this->put("/api/users/$userId", [
             'location' => '51.498134,-0.201754',
         ]);
 
@@ -50,42 +62,40 @@ class UserTest extends TestCase
         $this->assertEquals("51.498134,-0.201754", User::find($userId)->location);
     }
 
-    /** @test */
-    public function get_user()
+    public function test_can_get_user()
     {
         $user = User::factory()->create();
         $userId = $user->getKey();
 
-        $response = $this->call('GET', "/api/users/$userId");
+        $response = $this->get("/api/users/$userId");
 
-        $response->assertStatus(Response::HTTP_OK)->assertExactJson([
-            'id'         => $userId,
-            'username'   => $user->username,
-            'location'   => $user->location,
+        $response->assertStatus(200)->assertExactJson([
+            'id' => $userId,
+            'username' => $user->username,
+            'location' => $user->location,
             'created_at' => $user->created_at,
             'updated_at' => $user->updated_at,
             'invite_key' => $user->invite_key,
-            'role'       => $user->role,
+            'role' => $user->role,
         ]);
     }
 
-    /** @test */
-    public function get_users()
+    public function test_can_get_users_in_game()
     {
         $user = User::factory()->create();
-        $inviteKey = InviteKey::query()->where('value', $user->invite_key)->first();
+        $inviteKey = InviteKey::where('value', $user->invite_key)->first();
 
-        $response = $this->call('GET', "/api/game/$inviteKey->game_id/users");
+        $response = $this->get("/api/game/$inviteKey->game_id/users");
 
-        $response->assertStatus(Response::HTTP_OK)->assertExactJson([
+        $response->assertStatus(200)->assertExactJson([
             [
-                'id'         => $user->getKey(),
-                'username'   => $user->username,
-                'location'   => $user->location,
+                'id' => $user->getKey(),
+                'username' => $user->username,
+                'location' => $user->location,
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at,
                 'invite_key' => $user->invite_key,
-                'role'       => $user->role,
+                'role' => $user->role,
             ]
         ]);
     }

@@ -8,38 +8,31 @@ use App\Models\Game;
 use App\Models\InviteKey;
 use Illuminate\Http\Request;
 
-
 class ConfigController extends Controller
 {
     public function index()
     {
-        $games = Game::all();
-
-        return view('main_screen', compact(['games']));
+        return view('main_screen', ['games' => Game::all()]);
     }
 
-    public function createGame(Request $request)
+    public function storeGame()
     {
-
-        $game = new Game();
-        $game->save();
-        $gameId = Game::all()->last()->id;
-
-        return redirect()->route('GameScreen', ['id' => $gameId]);
+        $game = Game::create();
+        return redirect()->route('GameScreen', ['id' => $game->id]);
     }
 
     public function gameScreen($id)
     {
-        $agent_keys = InviteKey::all()->where('game_id', '=', strval($id))->where('role', '=', Roles::Police);
-        $thief_keys = InviteKey::all()->where('game_id', '=', strval($id))->where('role', '=', Roles::Thief);
+        $police_keys = InviteKey::where('game_id', '=', strval($id))->where('role', '=', Roles::Police)->get();
+        $thief_keys = InviteKey::where('game_id', '=', strval($id))->where('role', '=', Roles::Thief)->get();
         $game = Game::find($id);
 
-        if ($game != null) {
+        if (isset($game)) {
             switch ($game->status) {
                 case Statuses::Config:
-                    return view('config.main', compact(['agent_keys', 'thief_keys', 'id']));
+                    return view('config.main', compact(['police_keys', 'thief_keys', 'id']));
                 default:
-                    return view('game.main', compact(['agent_keys', 'thief_keys', 'id']));
+                    return view('game.main', compact(['police_keys', 'thief_keys', 'id']));
             }
         }
         return redirect()->route('index');
@@ -47,9 +40,8 @@ class ConfigController extends Controller
 
     public function removeGame($id)
     {
-        InviteKey::where('game_id', $id)->delete();
+        Game::find($id)->invite_keys()->delete();
         Game::destroy($id);
-
         return redirect()->route('index');
     }
 
@@ -63,25 +55,24 @@ class ConfigController extends Controller
     {
         if (count(Game::find($request->id)->invite_keys) == 0) {
             $total = $request->input;
-            $ratio = ($request->ratio / 100);
             $keys = null;
-            while ($keys == null) {
+            while (!isset($keys)) {
                 $keys = $this->createKeyStrings($total);
             }
-            $totalAgents = round(($total * $ratio), 0, PHP_ROUND_HALF_UP);
+            $totalAgents = round(($total * ($request->ratio / 100)), 0, PHP_ROUND_HALF_UP);
             for ($i = 0; $i < $total; $i++) {
                 if ($i < $totalAgents) {
                     InviteKey::create([
                         'value' => $keys[$i],
                         'game_id' => $request->id,
                         'role' => Roles::Police,
-                    ])->save();
+                    ]);
                 } else {
                     InviteKey::create([
                         'value' => $keys[$i],
                         'game_id' => $request->id,
                         'role' => Roles::Thief,
-                    ])->save();
+                    ]);
                 }
             }
             return $keys;
@@ -89,9 +80,10 @@ class ConfigController extends Controller
         return null;
     }
 
-    private function createKeyStrings($amount) {
+    private function createKeyStrings($amount)
+    {
         $ALPHANUMERIC_CAPITALS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-        $keys = [];
+        $keys = array();
         for ($i = 0; $i < $amount; $i++) {
             $key = "";
             for ($j = 0; $j < 4; $j++) {
@@ -99,8 +91,7 @@ class ConfigController extends Controller
             }
             array_push($keys, $key);
         }
-        if(count(array_unique($keys)) < count($keys))
-        {
+        if (count(array_unique($keys)) < count($keys)) {
             return null;
         }
         return $keys;
