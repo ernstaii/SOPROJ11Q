@@ -18,6 +18,8 @@ class CreateUsersTable extends Migration
             $table->string('username', 255);
             $table->string('location', 255);
             $table->timestamps();
+            $table->unsignedBigInteger('game_id');
+            $table->foreign('game_id')->references('id')->on('games');
         });
     }
 

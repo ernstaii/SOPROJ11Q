@@ -46,10 +46,18 @@ class InviteKeysTableSeeder extends Seeder
             'role' => Roles::Police
         ]);
 
+        // This one is not in use
         InviteKey::create([
             'value' => 'BNJE',
             'game_id' => 2,
             'role' => Roles::Thief
+        ]);
+
+        // This one is not in use
+        InviteKey::create([
+            'value' => 'BNJE',
+            'game_id' => 1,
+            'role' => Roles::Thief,
         ]);
 
         InviteKey::create([
@@ -64,10 +72,18 @@ class InviteKeysTableSeeder extends Seeder
             'role' => Roles::Police
         ]);
 
+        // This one is in use
         InviteKey::create([
             'value' => 'FF3Q',
             'game_id' => 2,
             'role' => Roles::Thief
+        ]);
+
+        // This one is not in use
+        InviteKey::create([
+            'value' => 'FF3Q',
+            'game_id' => 1,
+            'role' => Roles::Thief,
         ]);
     }
 }
