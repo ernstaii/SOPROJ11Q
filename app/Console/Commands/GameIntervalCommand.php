@@ -65,7 +65,9 @@ class GameIntervalCommand extends Command
                 }
             }
 
-            sleep(5);
+            if($i < 55) {
+                sleep(5);
+            }
         }
         return 0;
     }
