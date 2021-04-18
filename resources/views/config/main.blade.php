@@ -6,7 +6,7 @@
     <script src="{{asset('scripts/keyGen.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Configuratie Game {{$id}}</title>
+    <title>Configuratie Spel {{$id}}</title>
 @endsection
 
 @section('content')
@@ -16,7 +16,7 @@
                 <h2>SPEL CONFIGURATIE</h2>
             </div>
             <div class="item-box">
-                <div class="form-box-0" id="form_box">
+                <div id="form_box">
                     <div class="config-form">
                         <form class="form-col-1" action="/games/{{$id}}" method="post">
                             @csrf
@@ -26,15 +26,8 @@
                                 <input name="duration" class="input-numeric-0" id="duration" type="text">
                             </div>
                             <div class="form-item">
-                                <label class="form-label-0" for="area">Gebied</label>
-                            </div>
-                            <div class="form-item">
                                 <label class="form-label-0" for="interval">Interval locatieupdates</label>
                                 <input name="interval" class="input-numeric-0" id="interval" type="text">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label-0" for="colours">Kleurenthema</label>
-                                <input name="colours" class="input-numeric-0" id="colours" type="text">
                             </div>
                             <div class="form-item">
                                 <button type="input" class="keys-share-button" type="submit" name="state"
@@ -85,7 +78,7 @@
                         <h3><b>Boeven</b></h3>
                     </div>
                     <div id="police_keys_box" class="vert-keys-box">
-                        @foreach($agent_keys as $key)
+                        @foreach($police_keys as $key)
                             <div class="key-item">
                                 <p id="somekey">{{ $key->value }}</p>
                             </div>
@@ -101,13 +94,9 @@
                 </div>
             </div>
             <div id="keys_button_box">
-                <button class="keys-share-button" id="copy_button_agents" onclick="performCopyAction('agent')">Kopieer
-                    politie codes
-                </button>
-                <button class="keys-share-button" id="copy_button_thiefs" onclick="performCopyAction('thief')">Kopieer
-                    boeven codes
-                </button>
-                <button class="keys-share-button" id="print_button" onclick="printKeys()">Print codes</button>
+                <button class="generic-button" id="copy_button_agents" onclick="performCopyAction('agent')">Kopieer politie codes</button>
+                <button class="generic-button" id="copy_button_thiefs" onclick="performCopyAction('thief')">Kopieer boeven codes</button>
+                <button class="generic-button" id="print_button" onclick="printKeys()">Print codes</button>
             </div>
         </div>
     </div>

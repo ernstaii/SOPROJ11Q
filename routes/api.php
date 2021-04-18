@@ -1,11 +1,9 @@
 <?php
 
-use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\UserController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +20,7 @@ Route::get('users/{user}', [UserController::class, 'get'])->name('users.get');
 Route::apiResource('users', UserController::class)->only(['store', 'update']);
 
 Route::group(['middleware' => ['api']], function (Router $router) {
-    $router->get('/invite-key/{inviteKeyId}', [UserController::class, 'getInviteKey']);
+    $router->get('/invite-key/{inviteKeyValue}', [UserController::class, 'getInviteKeys']);
     $router->get('/game/{gameId}/users', [GameController::class, 'getUsersInGame']);
     $router->get('/game/{gameId}/loot', [GameController::class, 'getLootInGame']);
     $router->get('/game/{gameId}/status', [GameController::class, 'getStatusInGame']);
