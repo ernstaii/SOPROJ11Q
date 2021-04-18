@@ -2,75 +2,62 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Roles;
+use App\Http\Requests\UpdateLocationRequest;
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Services\CustomErrorService;
 use App\Models\InviteKey;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function get(User $user): User
+    public function get(User $user)
     {
         return $user;
     }
 
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
-        $request->validate([
-            'username'   => 'required|min:3|max:255',
-            'location'   => 'nullable|regex:/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i',
-            'invite_key' => 'required|exists:invite_keys,value',
-        ]);
+        $inviteKeyValue = $request->invite_key;
+        $gameId = $request->game_id;
 
-        $inviteKeyId = $request->get('invite_key');
-
-        // Check if user already exists with inviteKey
-        if (User::query()->where('invite_key', $inviteKeyId)->count() > 0) {
-            return null;
+        if (User::where('invite_key', $inviteKeyValue)->where('game_id', $gameId)->count() > 0) {
+            return CustomErrorService::failedApiResponse('Geen toestemming', [
+                'value' => ['De code is al in gebruik'],
+            ], 403);
         }
-        $role = $request->get('role');
 
-        $user = User::create([
-            'username'   => $request->get('username'),
-            'location'   => $request->get('location'),
-            'invite_key' => $inviteKeyId,
-            'role'       => isset($role) ? $role : Roles::Thief,
+        return User::create([
+            'username'   => $request->username,
+            'location'   => $request->location,
+            'invite_key' => $inviteKeyValue,
+            'game_id'    => $gameId,
+            'role'       => $request->role,
         ]);
+    }
 
+    public function update(UpdateLocationRequest $request, User $user)
+    {
+        $user->location = $request->location;
         $user->save();
 
         return $user;
     }
 
-    public function update(Request $request, User $user)
+    public function getInviteKeys($inviteKeyValue)
     {
-        $request->validate([
-            'location' => 'nullable|regex:/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i',
-        ]);
+        $inviteKeys = InviteKey::where('value', $inviteKeyValue)->whereNotExists(function ($query) {
+            $query->select("invite_key")
+                ->from('users')
+                ->whereRaw('users.invite_key = invite_keys.value && users.game_id = invite_keys.game_id');
+        })->get();
 
-        $user->location = $request->get('location');
-        $user->save();
-    }
-
-    // Return InviteKey based on value
-    // Key could be null, if InviteKey doesn't exists anymore
-    public function getInviteKey($inviteKeyId)
-    {
-        $inviteKey = InviteKey::query()->where('value', $inviteKeyId)->first();
-
-        if (isset($inviteKey)) {
-            $totalInUse = User::query()->where('invite_key', $inviteKey->value)->count();
-
-            // TODO: Player could have an InviteCode with the same value, but then InviteCode can't have same TeamId
-
-            // Check if InviteKey not yet in use
-            if ($totalInUse == 0) {
-                return $inviteKey;
-            }
-
-            return response()->json(['error' => 'De code is al in gebruik'],403);
+        // Check if there are any invite-keys
+        if ($inviteKeys->count() > 0) {
+            return $inviteKeys;
         }
 
-        return response()->json(['error' => 'De code is onjuist'],404);
+        return CustomErrorService::failedApiResponse('Niet gevonden', [
+            'value' => ['De code is onjuist of al in gebruik'],
+        ], 404);
     }
 }

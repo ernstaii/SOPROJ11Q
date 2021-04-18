@@ -79,6 +79,17 @@ h2 {
     border-width: 1px;
 }
 
+.vert-keys-box {
+    width: 49.4%;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+}
+
+.vert-keys-box .key-item {
+    width: 99%;
+}
+
 .key-item p {
     margin-left: 1vw;
     color: black;
@@ -86,15 +97,29 @@ h2 {
 }
 
 #keys_button_box {
-    padding: 1vw;
+    padding: 0.5vh 0 0.5vh 0;
     border-style: solid;
     border-color: black;
     border-width: 1px;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.generic-button {
+    padding: 0.5vw;
+    margin: 0.5vw;
+}
+
+.slider-labels {
+    display: flex;
+    flex-direction: row;
     justify-content: space-between;
 }
 
-.keys-share-button {
-    padding: 0.8vw;
+.slider-labels p {
+    text-align: center;
+    font-size: 1vh;
+    margin: 0;
 }

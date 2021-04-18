@@ -1,15 +1,17 @@
-const ALPHANUMERIC_CAPITALS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-let keysBox = document.querySelector('#keys_box');
+let police_keys_box = document.querySelector('#police_keys_box');
+let thieves_keys_box = document.querySelector('#thieves_keys_box');
 let formBox = document.querySelector('#form_box');
 let code_input = document.querySelector('#code_input');
 let code_button = document.querySelector('#code_button');
 
-if (keysBox.childElementCount > 0) {
+if (police_keys_box.childElementCount > 0 || thieves_keys_box.childElementCount > 0) {
     formBox.children[0].children[1].removeChild(code_input);
     formBox.children[0].children[1].removeChild(code_button);
+    formBox.children[0].children[1].removeChild(document.querySelector('#ratio_slider'));
 }
 
 function generateKey(id) {
+    let ratio = parseInt(document.querySelector('#ratio_range').value);
     let input = parseInt(document.querySelector('#participants_number').value);
     let errorMsg = document.querySelector('#validation_msg');
     if (errorMsg !== null) {
@@ -22,33 +24,18 @@ function generateKey(id) {
         errorMsgElem.style.color = 'red';
         errorMsgElem.textContent = 'Vul a.u.b. een nummer tussen 1 en 50 in.';
         formBox.appendChild(errorMsgElem);
-    }
-    else {
-        keysBox.innerHTML = '';
-        let keys = [];
-        for (i = 0; i < input; i++) {
-            let key = '';
-            for(j = 0; j < 4; j++) {
-                key += ALPHANUMERIC_CAPITALS[Math.floor(Math.random() * ALPHANUMERIC_CAPITALS.length)];
+        let errorMessage = document.querySelector('#validation_msg');
+        setInterval(function() {
+            if (errorMessage !== null) {
+                formBox.removeChild(errorMessage);
             }
-            let div = document.createElement('div');
-            div.className = "key-item";
-            let item = document.createElement('p');
-            item.id='key-'+(i+1).toString();
-            item.textContent = key;
-            div.appendChild(item);
-            keysBox.appendChild(div);
-            keys[i] = key;
-        }
-        if (hasDuplicates(keys)) {
-            generateKey(id);
-            return;
-        }
-        submitKeys(keys, id);
+        }, 7500);
+    } else {
+        getKeys(input, ratio, id);
     }
 }
 
-async function submitKeys(keys, id) {
+async function getKeys(input, ratio, id) {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -57,10 +44,29 @@ async function submitKeys(keys, id) {
     await $.ajax({
         url: '/storeKeys',
         type: 'POST',
-        data: { keys: keys, id: id },
-        success:function() {
+        data: {input: input, ratio: ratio, id: id},
+        success: function (data) {
             formBox.children[0].children[1].removeChild(code_input);
             formBox.children[0].children[1].removeChild(code_button);
+            formBox.children[0].children[1].removeChild(document.querySelector('#ratio_slider'));
+            let ratio_div = (ratio / 100);
+            if (data !== null) {
+                police_keys_box.innerHTML = '';
+                thieves_keys_box.innerHTML = '';
+                for (let i = 0; i < data.length; i++) {
+                    let div = document.createElement('div');
+                    div.className = "key-item";
+                    let item = document.createElement('p');
+                    item.id = 'somekey';
+                    item.textContent = data[i];
+                    div.appendChild(item);
+                    if (i < Math.round((data.length * ratio_div))) {
+                        police_keys_box.appendChild(div);
+                    } else {
+                        thieves_keys_box.appendChild(div);
+                    }
+                }
+            }
         },
         error: function () {
             console.log('An unknown error occurred.');
@@ -68,28 +74,29 @@ async function submitKeys(keys, id) {
     });
 }
 
-function hasDuplicates(array) {
-    let valuesSoFar = Object.create(null);
-    for (let i = 0; i < array.length; i++) {
-        let value = array[i];
-        if (value in valuesSoFar) {
-            return true;
-        }
-        valuesSoFar[value] = true;
-    }
-    return false;
-}
-
-function performCopyAction() {
-    if (keysBox.childElementCount < 1) {
-        alert('Er zijn geen toegangscodes om te kopiëren!');
+function performCopyAction(actor) {
+    if (actor === 'agent' && police_keys_box.childElementCount < 1) {
+        alert('Er zijn geen politie toegangscodes om te kopiëren!');
+        return;
+    } else if (actor === 'thief' && thieves_keys_box.childElementCount < 1) {
+        alert('Er zijn geen boeven toegangscodes om te kopiëren!');
         return;
     }
+
     let text = '';
-    for(let i = 0; i < keysBox.childElementCount; i++) {
-        text += keysBox.children[i].children[0].textContent;
-        if ((i + 1) < keysBox.childElementCount) {
-            text += '\r\n';
+    if (actor === 'agent') {
+        for (let i = 0; i < police_keys_box.childElementCount; i++) {
+            text += police_keys_box.children[i].children[0].textContent;
+            if ((i + 1) < police_keys_box.childElementCount) {
+                text += '\r\n';
+            }
+        }
+    } else if (actor === 'thief') {
+        for (let i = 0; i < thieves_keys_box.childElementCount; i++) {
+            text += thieves_keys_box.children[i].children[0].textContent;
+            if ((i + 1) < thieves_keys_box.childElementCount) {
+                text += '\r\n';
+            }
         }
     }
     copyTextToClipboard(text);
@@ -103,18 +110,21 @@ function copyTextToClipboard(text) {
     navigator.clipboard.writeText(text);
 }
 
-function printKeys()
-{
-    if (keysBox.childElementCount < 1) {
+function printKeys() {
+    if (police_keys_box.childElementCount < 1 && thieves_keys_box.childElementCount < 1) {
         alert('Er zijn geen toegangscodes om te printen!');
         return;
     }
     let myWindow = window.open('', 'PRINT', 'height=400,width=600');
 
-    myWindow.document.write('<html lang="en"><head><title>' + document.title  + '</title>');
+    myWindow.document.write('<html lang="en"><head><title>' + document.title + '</title>');
     myWindow.document.write('</head><body >');
     myWindow.document.write('<h1>Toegangscodes</h1>');
-    myWindow.document.write('<div style="display: flex; flex-direction: column; flex-wrap: wrap; max-height: 900px">' + keysBox.innerHTML + '</div>');
+    myWindow.document.write('<div style="display: flex; flex-direction: row;"><h2>Politie</h2><h2 style="margin-left: 38%">Boeven</h2></div>');
+    myWindow.document.write('<div style="display: flex; flex-direction: row; flex-wrap: wrap; max-height: 850px">');
+    myWindow.document.write('<div style="display: flex; flex-direction: column; border-right-style: dashed; border-width: 1px; flex-wrap: wrap; width: 45%; max-height: 850px">' + police_keys_box.innerHTML + '</div>');
+    myWindow.document.write('<div style="display: flex; flex-direction: column; margin-left: 3%; flex-wrap: wrap; width: 45%; max-height: 850px">' + thieves_keys_box.innerHTML + '</div>');
+    myWindow.document.write('</div>');
     myWindow.document.write('</body></html>');
 
     myWindow.document.close();
@@ -145,3 +155,10 @@ function fallbackCopyTextToClipboard(text) {
 
     document.body.removeChild(textArea);
 }
+
+setInterval(function() {
+    let error_box_total = document.querySelector('#error-box');
+    if (error_box_total !== null && error_box_total.children[0].childNodes.length > 0) {
+        document.body.removeChild(error_box_total);
+    }
+}, 7500);

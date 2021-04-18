@@ -8,11 +8,6 @@ use Illuminate\Database\Seeder;
 
 class LootsTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
         $games = Game::all();
