@@ -1,5 +1,6 @@
 name: Laravel
 
+
 on:
   push:
     paths-ignore:
@@ -14,6 +15,7 @@ on:
 
 jobs:
   laravel-tests:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -21,8 +23,7 @@ jobs:
       with:
         php-version: '8.0'
     - uses: actions/checkout@v2
-    - name: Create Database
-      uses: shogo82148/actions-setup-mysql@v1
+    - uses: shogo82148/actions-setup-mysql@v1
       with:
         mysql-version: '8.0'
     - run: mysql -uroot -h127.0.0.1 -e 'SELECT version()'
