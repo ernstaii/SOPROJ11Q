@@ -13,9 +13,7 @@ class DatabaseSeeder extends Seeder
             GamesTableSeeder::class,
             InviteKeysTableSeeder::class,
             UsersTableSeeder::class,
+            LootsTableSeeder::class
         ]);
-
-        Loot::factory(10)->create();
-        $this->call(LootsTableSeeder::class);
     }
 }
