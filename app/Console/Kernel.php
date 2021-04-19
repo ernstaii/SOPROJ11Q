@@ -25,12 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('game:interval')
-            ->everySixHours()
-            ->run(new Container());
-
-        // If you want debug output in a text file, add this
-            //->sendOutputTo(getcwd() . "\\IntervalOut.txt", false);
+        //
     }
 
     /**

@@ -16,7 +16,7 @@ class GameIntervalCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'game:interval';
+    protected $signature = 'game:intervals {--log}';
 
     /**
      * The console command description.
@@ -25,7 +25,6 @@ class GameIntervalCommand extends Command
      */
     protected $description = 'Takes care of pushing game interval events';
     protected $lastUpdates = [];
-    protected $minutes = 6 * 60;
 
     /**
      * Create a new command instance.
@@ -44,36 +43,40 @@ class GameIntervalCommand extends Command
      */
     public function handle()
     {
-        $seconds = $this->minutes * 60;
         $gameController = new GameController();
 
-        for($i = 0; $i < $seconds; $i += 5) {
-            echo "Checking intervals\n";
+        while(1<2){
+            $this->log("Checking intervals");
 
             $now = Carbon::now();
 
             foreach (Game::all() as $game) {
-                if($game->status == Statuses::Ongoing) {
+                $gameTimeExpired = $now->diffInHours($game->updated_at) > $game->duration / 60 || $game->time_left <= 0;
+                if($game->status == Statuses::Ongoing && !$gameTimeExpired) {
                     if (!array_key_exists($game->id, $this->lastUpdates)) {
                         $this->lastUpdates[$game->id] = $now;
                     }
 
                     $difference = $now->diffInSeconds($this->lastUpdates[$game->id]);
-                    echo "Difference: " . $difference . "\n";
+                    $this->log("  Game " . $game->id . " time difference: " . $difference . "/" . $game->interval);
 
                     if ($difference >= $game->interval) {
                         $users = $gameController->getUsersInGame($game->id);
                         event(new GameIntervalEvent($game->id, $users));
                         $this->lastUpdates[$game->id] = $now;
-                        echo "Invoking interval of game " . $game->id . "\n";
+                        $this->log("    Invoking interval of game " . $game->id);
                     }
                 }
             }
 
-            if($i < $seconds - 5) {
-                sleep(5);
-            }
+            sleep(5);
         }
         return 0;
+    }
+
+    private function log($message){
+        if($this->option('log')){
+            echo $message . "\n";
+        }
     }
 }
