@@ -72,7 +72,7 @@ class GameIntervalCommand extends Command
                 }
             }
             catch(Exception $exception) {
-                $this->log("An error ocurred: " . $exception);
+                echo "An error occurred: \n\r" . $exception->getTraceAsString() . "\n\r";
             }
 
             sleep(5);
