@@ -15,7 +15,7 @@ class LootsTableSeeder extends Seeder
 
         foreach ($loots as $loot) {
             $loot->games()->attach(
-                $games->find(rand(1, 2))
+                $games->find(rand($games->first()->id, $games->last()->id))
             );
         }
     }
