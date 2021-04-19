@@ -56,12 +56,20 @@ class GameController extends Controller
             case Statuses::Finished:
                 $game->status = $request->state;
                 $game->time_left = 0;
-                event(new EndGameEvent($id, $request->reason));
+                $message = $request->reason;
+                if(is_null($message)) {
+                    $message = "Het spel is beëindigd!";
+                }
+                event(new EndGameEvent($id, $message));
                 break;
             case Statuses::Paused:
                 $game->time_left = $game->time_left - Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
                 $game->status = $request->state;
-                event(new PauseGameEvent($id, $request->reason));
+                $message = $request->reason;
+                if(is_null($message)) {
+                    $message = "Het spel is gepauzeerd!";
+                }
+                event(new PauseGameEvent($id, $message));
                 break;
         }
         $game->save();
