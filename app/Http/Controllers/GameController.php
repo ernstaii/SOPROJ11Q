@@ -9,14 +9,14 @@ use App\Events\ResumeGameEvent;
 use App\Events\StartGameEvent;
 use App\Http\Requests\UpdateGameStateRequest;
 use App\Models\Game;
-use App\Models\User;
 use Carbon\Carbon;
+use OutOfBoundsException;
 
 class GameController extends Controller
 {
     public function getUsersInGame($gameId)
     {
-        return User::where('game_id', $gameId)->get();
+        return Game::find($gameId)->users();
     }
 
     public function getLootInGame($gameId)
@@ -56,12 +56,20 @@ class GameController extends Controller
             case Statuses::Finished:
                 $game->status = $request->state;
                 $game->time_left = 0;
-                event(new EndGameEvent($id));
+                $message = $request->reason;
+                if(is_null($message)) {
+                    $message = "Het spel is beëindigd!";
+                }
+                event(new EndGameEvent($id, $message));
                 break;
             case Statuses::Paused:
                 $game->time_left = $game->time_left - Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
                 $game->status = $request->state;
-                event(new PauseGameEvent($id));
+                $message = $request->reason;
+                if(is_null($message)) {
+                    $message = "Het spel is gepauzeerd!";
+                }
+                event(new PauseGameEvent($id, $message));
                 break;
         }
         $game->save();
