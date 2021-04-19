@@ -16,10 +16,12 @@ class LootsTableSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             $latitude = "51.7" . strval(rand(43866, 79043));
             $longitude = "5." . strval(rand(491387, 553818));
-            Game::find((rand(0, 1) == 0) ? $games->first()->id : $games->last()->id)->loots()->attach([
+            $loot = Loot::create([
                 'name' => $name[$i],
                 'location' => $latitude . "," . $longitude
             ]);
+
+            Game::find((rand(0, 1) == 0) ? $games->first()->id : $games->last()->id)->loots()->attach($loot);
         }
     }
 }
