@@ -7,6 +7,7 @@ use App\Events\GameIntervalEvent;
 use App\Http\Controllers\GameController;
 use App\Models\Game;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Console\Command;
 
 class GameIntervalCommand extends Command
@@ -50,23 +51,28 @@ class GameIntervalCommand extends Command
 
             $now = Carbon::now();
 
-            foreach (Game::all() as $game) {
-                $gameTimeExpired = $now->diffInHours($game->updated_at) > $game->duration / 60 || $game->time_left <= 0;
-                if($game->status == Statuses::Ongoing && !$gameTimeExpired) {
-                    if (!array_key_exists($game->id, $this->lastUpdates)) {
-                        $this->lastUpdates[$game->id] = $now;
-                    }
+            try {
+                foreach (Game::all() as $game) {
+                    $gameTimeExpired = $now->diffInHours($game->updated_at) > $game->duration / 60 || $game->time_left <= 0;
+                    if ($game->status == Statuses::Ongoing && !$gameTimeExpired) {
+                        if (!array_key_exists($game->id, $this->lastUpdates)) {
+                            $this->lastUpdates[$game->id] = $now;
+                        }
 
-                    $difference = $now->diffInSeconds($this->lastUpdates[$game->id]);
-                    $this->log("  Game " . $game->id . " time difference: " . $difference . "/" . $game->interval);
+                        $difference = $now->diffInSeconds($this->lastUpdates[$game->id]);
+                        $this->log("  Game " . $game->id . " time difference: " . $difference . "/" . $game->interval);
 
-                    if ($difference >= $game->interval) {
-                        $users = $gameController->getUsersInGame($game->id);
-                        event(new GameIntervalEvent($game->id, $users));
-                        $this->lastUpdates[$game->id] = $now;
-                        $this->log("    Invoking interval of game " . $game->id);
+                        if ($difference >= $game->interval) {
+                            $users = $gameController->getUsersInGame($game->id);
+                            event(new GameIntervalEvent($game->id, $users));
+                            $this->lastUpdates[$game->id] = $now;
+                            $this->log("    Invoking interval of game " . $game->id);
+                        }
                     }
                 }
+            }
+            catch(Exception $exception) {
+                $this->log("An error ocurred: " . $exception);
             }
 
             sleep(5);
