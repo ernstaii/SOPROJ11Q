@@ -19,7 +19,11 @@
                     <div class="mini-box shadow">
                         <div class="text-box">
                             <a href="{{route('games.show', [$game])}}"><h3>Ga naar spel {{ $game->id }}</h3></a>
-                            <a href="{{route('games.destroy', [$game])}}"><h5>Verwijder spel {{ $game->id }}</h5></a>
+                            <form action="{{route('games.destroy', [$game])}}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button class="config-delete-button" type="submit"><b>Verwijder spel {{ $game->id }}</b></button>
+                            </form>
                         </div>
                     </div>
                 @endforeach

@@ -114,6 +114,12 @@ class GameController extends Controller
             $user->delete();
         }
 
+        $old_loot = $game->loot()->get();
+        $game->loot()->detach();
+        foreach ($old_loot as $loot_item) {
+            $loot_item->delete();
+        }
+
         $game->delete();
 
         return redirect()->route('games.index');

@@ -8,6 +8,7 @@ use App\Events\PauseGameEvent;
 use App\Events\ResumeGameEvent;
 use App\Models\Game;
 use App\Models\InviteKey;
+use App\Models\Loot;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
@@ -180,13 +181,16 @@ class WebGameTest extends TestCase
             'game_id' => $game->id,
             'user_id' => $user->id
         ])->create();
+        $loot = Loot::factory()->create();
+        $game->loot()->attach($loot->id);
 
         $this->delete('/games/' . $game->id)
             ->assertStatus(302)
             ->assertRedirect('/games');
 
+        $this->assertDatabaseCount('games', 0);
         $this->assertDatabaseCount('users', 0);
         $this->assertDatabaseCount('invite_keys', 0);
-        $this->assertDatabaseCount('games', 0);
+        $this->assertDatabaseCount('loot', 0);
     }
 }

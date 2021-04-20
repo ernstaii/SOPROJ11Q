@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\InviteKeyController;
-use App\Models\InviteKey;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
