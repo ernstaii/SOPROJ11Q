@@ -14,7 +14,7 @@ class UpdateLocationRequest extends FormRequest
     public function rules()
     {
         return [
-            'location' => 'nullable|regex:/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i'
+            'location' => ['required', 'string', 'regex:/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i']
         ];
     }
 }

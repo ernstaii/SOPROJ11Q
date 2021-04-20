@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\InviteKeyController;
 use App\Http\Controllers\UserController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
@@ -16,13 +17,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('users/{user}', [UserController::class, 'get'])->name('users.get');
 Route::apiResource('users', UserController::class)->only(['store', 'update']);
+Route::get('/users/{user}', [UserController::class, 'get']);
 
 Route::group(['middleware' => ['api']], function (Router $router) {
-    $router->get('/invite-key/{inviteKeyValue}', [UserController::class, 'getInviteKeys']);
-    $router->get('/game/{gameId}/users', [GameController::class, 'getUsersInGame']);
-    $router->get('/game/{gameId}/loot', [GameController::class, 'getLootInGame']);
-    $router->get('/game/{gameId}/status', [GameController::class, 'getStatusInGame']);
-    $router->get('/game/{gameId}/interval', [GameController::class, 'getIntervalInGame']);
+    $router->get('/invite-keys/{value}', [InviteKeyController::class, 'get']);
+    $router->get('/games/{game}', [GameController::class, 'get']);
+    $router->get('/games/{game}/users', [GameController::class, 'getUsers']);
+    $router->get('/games/{game}/loot', [GameController::class, 'getLoot']);
 });

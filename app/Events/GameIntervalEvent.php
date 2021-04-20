@@ -2,8 +2,6 @@
 
 namespace App\Events;
 
-use App\Http\Controllers\GameController;
-
 class GameIntervalEvent extends GameEvent
 {
     public $users;
@@ -13,7 +11,6 @@ class GameIntervalEvent extends GameEvent
         parent::__construct($gameId);
         $this->users = $users;
     }
-
 
     public function broadcastAs()
     {
