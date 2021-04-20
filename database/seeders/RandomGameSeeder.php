@@ -54,7 +54,7 @@ class RandomGameSeeder extends Seeder
             ]);
 
             foreach ($loot as $loot_item) {
-                $game->loots()->attach($loot_item->id);
+                $game->loot()->attach($loot_item->id);
             }
 
             $keys = array();

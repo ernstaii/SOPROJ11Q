@@ -37,7 +37,7 @@ class ConstantGameSeeder extends Seeder
         $game = Game::create();
 
         foreach ($loot as $loot_item) {
-            $game->loots()->attach($loot_item->id);
+            $game->loot()->attach($loot_item->id);
         }
 
         // Used keys
@@ -107,7 +107,7 @@ class ConstantGameSeeder extends Seeder
         $game = Game::create();
 
         foreach ($loot as $loot_item) {
-            $game->loots()->attach($loot_item->id);
+            $game->loot()->attach($loot_item->id);
         }
 
         // Used keys
