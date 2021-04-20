@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Roles;
+use App\Http\Requests\GenerateKeysRequest;
 use App\Models\Game;
 use App\Models\InviteKey;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class InviteKeyController extends Controller
@@ -24,10 +24,10 @@ class InviteKeyController extends Controller
     /**
      * AJAX function. Not to be called via manual routing.
      *
-     * @param Request $request
+     * @param GenerateKeysRequest $request
      * @return array
      */
-    public function generateKeys(Request $request, Game $game)
+    public function generateKeys(GenerateKeysRequest $request, Game $game)
     {
         if (count($game->invite_keys) == 0) {
             $total = $request->input;

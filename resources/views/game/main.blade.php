@@ -7,7 +7,7 @@
 @section('content')
     <h1>Spel Scherm</h1>
     <div class="button-1">
-        <form action="{{route('games.update', [$id])}}" method="post">
+        <form action="{{route('games.update', ['game' => $id])}}" method="post">
             <div class="form-item">
                 @csrf
                 @method('PUT')
@@ -18,7 +18,7 @@
         </form>
     </div>
     <div class="button-2">
-        <form action="{{route('games.update', [$id])}}" method="post">
+        <form action="{{route('games.update', ['game' => $id])}}" method="post">
             <div class="form-item">
                 @csrf
                 @method('PUT')
@@ -29,7 +29,7 @@
         </form>
     </div>
     <div class="button-3">
-        <form action="{{route('games.update', [$id])}}" method="post">
+        <form action="{{route('games.update', ['game' => $id])}}" method="post">
             <div class="form-item">
                 @csrf
                 @method('PUT')

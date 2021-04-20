@@ -18,7 +18,7 @@
             <div class="item-box">
                 <div id="form_box">
                     <div class="config-form">
-                        <form class="form-col-1" action="{{route('games.update', [$id])}}}" method="post">
+                        <form class="form-col-1" action="{{route('games.update', ['game' => $id])}}}" method="post">
                             @csrf
                             @method('PUT')
                             <div class="form-item">

@@ -42,6 +42,32 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\InviteKey
+ *
+ * @property string $value
+ * @property int $game_id
+ * @property int|null $user_id
+ * @property string $role
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Game $game
+ * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\InviteKeyFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|InviteKey newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InviteKey newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InviteKey query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InviteKey whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InviteKey whereGameId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InviteKey whereRole($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InviteKey whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InviteKey whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InviteKey whereValue($value)
+ */
+	class InviteKey extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Loot
  *
  * @property int $id

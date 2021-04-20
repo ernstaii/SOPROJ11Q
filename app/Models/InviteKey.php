@@ -10,6 +10,7 @@ class InviteKey extends Model
     use HasFactory;
 
     protected $primaryKey = 'value';
+    protected $keyType = 'string';
     public $incrementing = false;
 
     protected $fillable = [
