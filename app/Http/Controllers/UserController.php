@@ -5,12 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateLocationRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UserController extends Controller
 {
-    use HasFactory;
-
     public function get(User $user)
     {
         return $user;

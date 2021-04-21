@@ -7,11 +7,6 @@ use Illuminate\Contracts\Validation\Rule;
 
 class InviteKeyIsAvailable implements Rule
 {
-    public function __construct()
-    {
-        //
-    }
-
     public function passes($attribute, $value)
     {
         if (InviteKey::whereValue($value)->first()->user == null)

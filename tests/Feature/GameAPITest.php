@@ -61,6 +61,21 @@ class GameAPITest extends TestCase
             ->assertJsonCount(1);
     }
 
+    public function test_cannot_get_used_key()
+    {
+        $game = Game::factory()->create();
+        $user = User::factory()->create();
+        $key = InviteKey::factory()->state([
+            'game_id' => $game->id,
+            'user_id' => $user->id
+        ])->create();
+        $key->refresh();
+
+        $this->get('/api/invite-keys/' . $key->value)
+            ->assertStatus(302)
+            ->isInvalid();
+    }
+
     public function test_can_request_new_keys_for_game()
     {
         $game = Game::factory()->create();
