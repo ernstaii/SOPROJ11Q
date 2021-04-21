@@ -26,6 +26,7 @@ class InviteKeyController extends Controller
      *
      * @param GenerateKeysRequest $request
      * @return array
+     * @throws ValidationException
      */
     public function generateKeys(GenerateKeysRequest $request, Game $game)
     {
