@@ -26,11 +26,10 @@ class RandomGameSeeder extends Seeder
         if ($amount_of_loot_per_game > 20)
             $amount_of_loot_per_game = 20;
 
+        $first_available_id = Game::all()->last()->id + 1;
+
         for ($i = 0; $i < $amount_of_games; $i++) {
-            $id = 0;
-            while ($id == 0 || Game::find($id) != null) {
-                $id = rand(1000, 9999);
-            }
+            $id = $first_available_id + $i;
 
             $keys = array();
             for ($x = 0; $x < $amount_of_users_per_game; $x++) {
