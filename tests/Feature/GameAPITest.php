@@ -31,9 +31,10 @@ class GameAPITest extends TestCase
         ])->create();
         $key->refresh();
 
-        $this->get('/api/invite-keys/' . $key->value)
-            ->assertStatus(200)
-            ->assertExactJson($key->toArray());
+        $res = $this->get('/api/invite-keys/' . $key->value)
+            ->assertStatus(200);
+
+        $this->assertEquals($key->value, $res->getContent());
     }
 
     public function test_can_get_users_attached_to_game()
@@ -45,9 +46,18 @@ class GameAPITest extends TestCase
             'user_id' => $user->id
         ])->create();
 
+        // ==================== Without Role ====================
         $this->get('/api/games/' . $game->id . '/users')
             ->assertStatus(200)
             ->assertJsonCount(1);
+
+        // ==================== Without Role ====================
+        $res = $this->get('/api/games/' . $game->id . '/users-with-role')
+            ->assertStatus(200)
+            ->assertJsonCount(1);
+
+        $content_array = (array) json_decode($res->getContent());
+        $this->assertObjectHasAttribute('role', $content_array[0]);
     }
 
     public function test_can_get_loot_attached_to_game()

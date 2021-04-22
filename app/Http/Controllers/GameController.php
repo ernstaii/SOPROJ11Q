@@ -30,6 +30,11 @@ class GameController extends Controller
         return $game->get_users();
     }
 
+    public function getUsersWithRole(Game $game)
+    {
+        return $game->get_users_with_role();
+    }
+
     public function getLoot(Game $game)
     {
         return $game->loot()->get();

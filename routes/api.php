@@ -24,5 +24,6 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/invite-keys/{key}', [InviteKeyController::class, 'get']);
     $router->get('/games/{game}', [GameController::class, 'get']);
     $router->get('/games/{game}/users', [GameController::class, 'getUsers']);
+    $router->get('/games/{game}/users-with-role', [GameController::class, 'getUsersWithRole']);
     $router->get('/games/{game}/loot', [GameController::class, 'getLoot']);
 });

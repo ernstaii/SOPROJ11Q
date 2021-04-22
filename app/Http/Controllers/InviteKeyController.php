@@ -18,7 +18,7 @@ class InviteKeyController extends Controller
             ]);
         }
 
-        return $key;
+        return $key->value;
     }
 
     /**

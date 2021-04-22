@@ -49,6 +49,21 @@ class Game extends Model
         return $users;
     }
 
+    public function get_users_with_role()
+    {
+
+        $keys = $this->invite_keys()->get();
+
+        $users = new Collection();
+        foreach ($keys as $key) {
+            $user = $key->user()->get();
+            $user->put('role', $key->role);
+            $users = $users->push($user);
+        }
+
+        return $users;
+    }
+
     public function get_keys_for_role(string $role)
     {
         return $this->hasMany(InviteKey::class)->where('role', '=', $role)->get();
