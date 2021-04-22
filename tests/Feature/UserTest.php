@@ -66,7 +66,7 @@ class UserTest extends TestCase
             'username' => 'user',
             'location' => '51.763010,5.426781',
             'invite_key' => $invite_key->value
-        ])->assertStatus(302)
+        ])->assertStatus(422)
             ->isInvalid();
 
         $this->assertDatabaseCount('users', 1);

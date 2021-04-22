@@ -2,10 +2,16 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateLocationRequest extends FormRequest
 {
+    protected function failedValidation(Validator $validator)
+    {
+        response()->json($validator->errors(), 422)->throwResponse();
+    }
+
     public function authorize()
     {
         return true;

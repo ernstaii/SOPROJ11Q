@@ -8,7 +8,6 @@ use App\Models\User;
 use App\Models\InviteKey;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Throwable;
 
 class GameAPITest extends TestCase
 {
@@ -80,8 +79,8 @@ class GameAPITest extends TestCase
         ])->create();
         $key->refresh();
 
-        $this->get('/api/invite-keys/' . $key->value)
-            ->assertStatus(302)
+        $res = $this->get('/api/invite-keys/' . $key->value)
+            ->assertStatus(422)
             ->isInvalid();
     }
 
@@ -108,29 +107,28 @@ class GameAPITest extends TestCase
         $this->post('/games/' . $game->id . '/invite-keys', [
             'input' => 10,
             'ratio' => 25
-        ])->assertStatus(302)
+        ])->assertStatus(422)
             ->isInvalid();
 
         $this->assertDatabaseCount('invite_keys', 1);
+    }
+
+    public function test_requesting_keys_with_invalid_request_will_not_redirect()
+    {
+        $game = Game::factory()->create();
+        InviteKey::factory()->state([
+            'game_id' => $game->id
+        ])->create();
+
+        $this->post('/games/' . $game->id . '/invite-keys', [
+            'input' => 10
+        ])->assertStatus(422)
+            ->isInvalid();
     }
 
     public function test_requesting_unknown_key_gives_404()
     {
         $this->get('/api/invite-keys/AAAA')
             ->assertStatus(404);
-    }
-
-    public function test_cannot_get_key_used_key()
-    {
-        $game = Game::factory()->create();
-        $user = User::factory()->create();
-        $key = InviteKey::factory()->state([
-            'game_id' => $game->id,
-            'user_id' => $user->id
-        ])->create();
-
-        $this->get('/api/invite-keys/' . $key->value)
-            ->assertStatus(302)
-            ->isInvalid();
     }
 }

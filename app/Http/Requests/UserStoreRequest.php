@@ -3,10 +3,16 @@
 namespace App\Http\Requests;
 
 use App\Rules\InviteKeyIsAvailable;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserStoreRequest extends FormRequest
 {
+    protected function failedValidation(Validator $validator)
+    {
+        response()->json($validator->errors(), 422)->throwResponse();
+    }
+
     public function authorize()
     {
         return true;

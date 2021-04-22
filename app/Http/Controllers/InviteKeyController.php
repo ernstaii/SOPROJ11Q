@@ -6,16 +6,16 @@ use App\Enums\Roles;
 use App\Http\Requests\GenerateKeysRequest;
 use App\Models\Game;
 use App\Models\InviteKey;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Response;
 
 class InviteKeyController extends Controller
 {
     public function get(InviteKey $key)
     {
         if ($key->user()->count() > 0) {
-            throw ValidationException::withMessages([
-                'value' => 'De code \'' . $key->value . '\' is al in gebruik.',
-            ]);
+            response()->json([
+                'error' => 'De code \'' . $key->value . '\' is al in gebruik.'
+            ], 422)->throwResponse();
         }
 
         return $key;
@@ -26,7 +26,7 @@ class InviteKeyController extends Controller
      *
      * @param GenerateKeysRequest $request
      * @return array
-     * @throws ValidationException
+     * @throws Response
      */
     public function generateKeys(GenerateKeysRequest $request, Game $game)
     {
@@ -54,9 +54,9 @@ class InviteKeyController extends Controller
             }
             return $keys;
         }
-        throw ValidationException::withMessages([
-            'already_exist' => 'Er bestaan al keys voor deze game.'
-        ]);
+        response()->json([
+            'error' => 'Er bestaan al keys voor deze game.'
+        ], 422)->throwResponse();
     }
 
     private function createKeyStrings($amount)
