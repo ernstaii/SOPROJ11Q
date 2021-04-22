@@ -14,11 +14,11 @@ class InviteKeyController extends Controller
     {
         if ($key->user()->count() > 0) {
             throw ValidationException::withMessages([
-                'value' => 'De code \'' . $key . '\' is al in gebruik.',
+                'value' => 'De code \'' . $key->value . '\' is al in gebruik.',
             ]);
         }
 
-        return $key->value;
+        return $key;
     }
 
     /**

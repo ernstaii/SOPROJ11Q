@@ -31,10 +31,9 @@ class GameAPITest extends TestCase
         ])->create();
         $key->refresh();
 
-        $res = $this->get('/api/invite-keys/' . $key->value)
-            ->assertStatus(200);
-
-        $this->assertEquals($key->value, $res->getContent());
+        $this->get('/api/invite-keys/' . $key->value)
+            ->assertStatus(200)
+            ->assertExactJson($key->toArray());
     }
 
     public function test_can_get_users_attached_to_game()
