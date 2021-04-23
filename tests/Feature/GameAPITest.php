@@ -99,7 +99,7 @@ class GameAPITest extends TestCase
         ])->create();
         $key->refresh();
 
-        $res = $this->get('/api/invite-keys/' . $key->value)
+        $this->get('/api/invite-keys/' . $key->value)
             ->assertStatus(422)
             ->isInvalid();
     }
