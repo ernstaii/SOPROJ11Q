@@ -17,11 +17,10 @@ class InviteKeyController extends Controller
             response()->json([
                 'error' => 'De code \'' . $key->value . '\' is al in gebruik.'
             ], 422)->throwResponse();
-        } else if( $key->game()->first()->getAttribute('status') === Statuses::Finished) {
+        } else if( $key->game->status === Statuses::Finished) {
             response()->json([
-                'value' => 'De code \'' . $key->value . '\' is verlopen, omdat het spel is afgelopen.'
+                'error' => 'De code \'' . $key->value . '\' is verlopen, omdat het spel is afgelopen.'
             ], 422)->throwResponse();
-            return null;
         }
 
         return $key;
