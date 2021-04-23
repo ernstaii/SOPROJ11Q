@@ -49,7 +49,7 @@ class Game extends Model
 
     public $timestamps = true;
 
-    public function hasKeys()
+    public function has_keys()
     {
         return $this->hasMany(InviteKey::class)->exists();
     }
