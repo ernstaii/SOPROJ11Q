@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Roles;
+use App\Enums\Statuses;
 use App\Http\Requests\GenerateKeysRequest;
 use App\Models\Game;
 use App\Models\InviteKey;
@@ -16,6 +17,11 @@ class InviteKeyController extends Controller
             response()->json([
                 'error' => 'De code \'' . $key->value . '\' is al in gebruik.'
             ], 422)->throwResponse();
+        } else if( $key->game()->first()->getAttribute('status') === Statuses::Finished) {
+            response()->json([
+                'value' => 'De code \'' . $key->value . '\' is verlopen, omdat het spel is afgelopen.'
+            ], 422)->throwResponse();
+            return null;
         }
 
         return $key;
