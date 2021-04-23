@@ -49,7 +49,27 @@ class GameAPITest extends TestCase
             ->assertStatus(200)
             ->assertJsonCount(1);
 
-        // ==================== Without Role ====================
+        // ==================== With Role ====================
+        $res = $this->get('/api/games/' . $game->id . '/users-with-role')
+            ->assertStatus(200)
+            ->assertJsonCount(1);
+
+        $content_array = (array) json_decode($res->getContent());
+        $this->assertObjectHasAttribute('role', $content_array[0]);
+    }
+
+    public function test_users_with_role_only_returns_keys_with_user()
+    {
+        $game = Game::factory()->create();
+        $user = User::factory()->create();
+        InviteKey::factory()->state([
+            'game_id' => $game->id,
+            'user_id' => $user->id
+        ])->create();
+        InviteKey::factory(4)->state([
+            'game_id' => $game->id
+        ])->create();
+
         $res = $this->get('/api/games/' . $game->id . '/users-with-role')
             ->assertStatus(200)
             ->assertJsonCount(1);

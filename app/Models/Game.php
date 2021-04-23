@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use function PHPUnit\Framework\isEmpty;
 
 /**
  * App\Models\Game
@@ -83,10 +84,11 @@ class Game extends Model
 
         $users = new Collection();
         foreach ($keys as $key) {
-            $user = $key->user()->get();
-            if ($user != null)
-                $user->put('role', $key->role);
-            $users = $users->push($user);
+            $user = $key->user;
+            if ($user != null) {
+                $user->role = $key->role;
+                $users = $users->push($user);
+            }
         }
 
         return $users;
