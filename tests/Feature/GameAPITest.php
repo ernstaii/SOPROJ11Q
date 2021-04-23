@@ -35,6 +35,19 @@ class GameAPITest extends TestCase
             ->assertExactJson($key->toArray());
     }
 
+    public function test_cannot_get_key_if_game_is_finished()
+    {
+        $game = Game::factory()->finished()->create();
+        $key = InviteKey::factory()->state([
+            'game_id' => $game->id
+        ])->create();
+        $key->refresh();
+
+        $this->get('/api/invite-keys/' . $key->value)
+            ->assertStatus(422)
+            ->isInvalid();
+    }
+
     public function test_can_get_users_attached_to_game()
     {
         $game = Game::factory()->create();

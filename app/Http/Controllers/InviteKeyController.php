@@ -7,7 +7,6 @@ use App\Enums\Statuses;
 use App\Http\Requests\GenerateKeysRequest;
 use App\Models\Game;
 use App\Models\InviteKey;
-use Illuminate\Http\Response;
 
 class InviteKeyController extends Controller
 {
@@ -17,21 +16,21 @@ class InviteKeyController extends Controller
             response()->json([
                 'error' => 'De code \'' . $key->value . '\' is al in gebruik.'
             ], 422)->throwResponse();
-        } else if( $key->game->status === Statuses::Finished) {
+        } else if ($key->game->status === Statuses::Finished) {
             response()->json([
                 'error' => 'De code \'' . $key->value . '\' is verlopen, omdat het spel is afgelopen.'
             ], 422)->throwResponse();
         }
 
-        return $key;
+        return $key->getOriginal();
     }
 
     /**
      * AJAX function. Not to be called via manual routing.
      *
      * @param GenerateKeysRequest $request
+     * @param Game $game
      * @return array
-     * @throws Response
      */
     public function generateKeys(GenerateKeysRequest $request, Game $game)
     {
