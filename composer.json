@@ -60,8 +60,7 @@
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "@php artisan ide-helper:generate",
-            "@php artisan ide-helper:meta",
-            "@php artisan ide-helper:models"
+            "@php artisan ide-helper:meta"
         ],
         "pre-autoload-dump": [
             "@php artisan cache:clear"
@@ -69,7 +68,6 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
-            "@php artisan ide-helper:models",
             "@php artisan optimize"
         ],
         "post-root-package-install": [
