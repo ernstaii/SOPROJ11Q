@@ -37,7 +37,7 @@ class UpdateGameStateRequest extends FormRequest
                 'status' => 'Het spel mag niet omgezet worden naar ' . $this->state . ' vanuit ' . $this->game->status . '.'
             ]);
 
-        if (!$this->game->hasKeys())
+        if (!$this->game->has_keys())
             throw ValidationException::withMessages([
                 'hasKeys' => 'Het spel heeft nog geen invite keys.'
             ]);
