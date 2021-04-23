@@ -84,7 +84,8 @@ class Game extends Model
         $users = new Collection();
         foreach ($keys as $key) {
             $user = $key->user()->get();
-            $user->put('role', $key->role);
+            if ($user != null)
+                $user->put('role', $key->role);
             $users = $users->push($user);
         }
 
