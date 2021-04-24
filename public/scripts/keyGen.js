@@ -115,10 +115,11 @@ function printKeys() {
         alert('Er zijn geen toegangscodes om te printen!');
         return;
     }
-    let myWindow = window.open('', 'PRINT', 'height=700,width=800');
+    let myWindow = window.open('', 'PRINT', 'rel="noopener",height=900,width=800');
     myWindow.document.write('<html lang="en"><head><title>' + document.title + '</title>');
     myWindow.document.write('</head><body >');
     myWindow.document.write('<h1>Toegangscodes</h1>');
+    myWindow.document.write('<button onclick="print()">Print toegangscodes</button>');
     myWindow.document.write('<div style="background:white; display: flex; flex-direction: row;"><h2>Politie</h2><h2 style="margin-left: 38%">Boeven</h2></div>');
     myWindow.document.write('<div style="background:white; display: flex; flex-direction: row; flex-wrap: wrap; max-height: 850px">');
     myWindow.document.write('<div style="background:white; display: flex; flex-direction: column; border-right-style: dashed; border-width: 1px; flex-wrap: wrap; width: 45%; max-height: 850px">' + police_keys_box.innerHTML + '</div>');
@@ -127,9 +128,6 @@ function printKeys() {
     myWindow.document.write('</body></html>');
     myWindow.document.close();
     myWindow.focus();
-
-    setTimeout(function () { myWindow.print(); }, 200);
-    myWindow.onfocus = function () { setTimeout(function () { myWindow.close(); }, 1000); };
 
     return true;
 }
