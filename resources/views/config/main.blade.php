@@ -3,8 +3,18 @@
 @section('head')
     <link rel="stylesheet" href="{{asset('stylesheets/configStyle.css')}}">
     <link rel="stylesheet" href="{{asset('stylesheets/mainGameScreenStyle.css')}}">
+    <link rel="stylesheet" href="{{asset('stylesheets/mapStyle.css')}}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
     <script src="{{asset('scripts/keyGen.js')}}" defer></script>
+    <script src="{{asset('scripts/mapScript.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Configuratie Spel {{$id}}</title>
 @endsection
@@ -98,6 +108,9 @@
                 <button class="generic-button" id="copy_button_thiefs" onclick="performCopyAction('thief')">Kopieer boeven codes</button>
                 <button class="generic-button" id="print_button" onclick="printKeys()">Print codes</button>
             </div>
+        </div>
+        <div class="box shadow">
+            <div id="map"></div>
         </div>
     </div>
 @endsection

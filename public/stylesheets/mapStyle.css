@@ -1,0 +1,34 @@
+#mapButton button{
+    background: #DEDEDE;
+}
+
+#map {
+    width: 30vw;
+    height: 40vh;
+    display: block;
+    animation: rollout 1s ease;
+    box-shadow: rgba(128, 128, 128, 0.56) 0px 3px 2px;
+    text-align: left;
+}
+
+.leaflet-control a {
+    background-color: white;
+    border: none;
+    border-radius: 0;
+    text-decoration: none;
+    font-size: 11px;
+    color: dodgerblue;
+    cursor: auto;
+    width: 0;
+    margin-left: 0;
+    margin-bottom: 0;
+}
+
+@keyframes rollout {
+0%{
+    width: 55vw;
+}
+100%{
+    width: 65vw;
+}
+}
