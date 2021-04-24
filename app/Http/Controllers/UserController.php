@@ -21,7 +21,7 @@ class UserController extends Controller
             'location' => $request->location,
         ]);
 
-        $inviteKey = InviteKey::where('value', '=', $request->invite_key);
+        $inviteKey = InviteKey::where('value', '=', $request->invite_key)->first();
         $inviteKey->user_id = $user->id;
         $inviteKey->save();
 
