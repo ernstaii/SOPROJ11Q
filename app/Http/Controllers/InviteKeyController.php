@@ -14,11 +14,11 @@ class InviteKeyController extends Controller
     {
         if ($key->user()->count() > 0) {
             response()->json([
-                'error' => 'De code \'' . $key->value . '\' is al in gebruik.'
+                'value' => 'De code \'' . $key->value . '\' is al in gebruik.'
             ], 422)->throwResponse();
         } else if ($key->game->status === Statuses::Finished) {
             response()->json([
-                'error' => 'De code \'' . $key->value . '\' is verlopen, omdat het spel is afgelopen.'
+                'value' => 'De code \'' . $key->value . '\' is verlopen, omdat het spel is afgelopen.'
             ], 422)->throwResponse();
         }
 
