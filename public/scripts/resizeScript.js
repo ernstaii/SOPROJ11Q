@@ -1,6 +1,6 @@
 const itemBox = document.querySelector("#keys_item_box");
 const keysBox = document.querySelector("#keys_box");
-const buttonBox = document.querySelector("#keys_button_box");
+const mouse_hover_event = document.querySelector(".mouse-hover-event");
 let m_pos;
 
 function resize(e){
@@ -10,10 +10,14 @@ function resize(e){
     keysBox.style.height = (parseInt(getComputedStyle(itemBox, '').height) - dy) + "px";
 }
 
-itemBox.addEventListener("mousedown", function(e){
-    if (e.offsetY <= buttonBox.getBoundingClientRect().top) {
-        m_pos = e.y;
-        document.addEventListener("mousemove", resize, false);
+mouse_hover_event.addEventListener("mousedown", function(e){
+    if ("buttons" in e) {
+        if (e.buttons === 1) {
+            if (e.pageY >= mouse_hover_event.getBoundingClientRect().top && e.pageY <= mouse_hover_event.getBoundingClientRect().bottom) {
+                m_pos = e.y;
+                document.addEventListener("mousemove", resize, false);
+            }
+        }
     }
 }, false);
 

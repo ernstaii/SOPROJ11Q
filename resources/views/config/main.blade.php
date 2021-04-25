@@ -103,6 +103,7 @@
                         @endforeach
                     </div>
                 </div>
+                <div class="mouse-hover-event"></div>
             </div>
             <div id="keys_button_box">
                 <button class="generic-button" id="copy_button_agents" onclick="performCopyAction('agent')">Kopieer politie codes</button>

@@ -94,6 +94,20 @@ h2 {
     border-width: 1px;
 }
 
+.key-item p {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.mouse-hover-event {
+    background: gray;
+    height: 5px;
+    position: relative;
+    cursor: row-resize;
+}
+
 .vert-keys-box {
     width: 49.4%;
     border-style: solid;
@@ -120,6 +134,10 @@ h2 {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+}
+
+#keys_button_box button {
+    user-select: none;
 }
 
 .generic-button {
