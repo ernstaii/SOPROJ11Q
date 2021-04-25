@@ -137,6 +137,9 @@ h2 {
 }
 
 #keys_button_box button {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
 }
 
