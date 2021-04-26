@@ -17,6 +17,16 @@ button {
     margin-right: 1vw;
 }
 
+.mapbox {
+    min-width: 375px;
+    width: 30vw;
+    background: #fff;
+    text-align: center;
+    border-radius: 1vw;
+    margin-right: 1vw;
+    max-height: 40vh;
+}
+
 .background-box {
     display: flex;
     flex-direction: row;
@@ -62,6 +72,11 @@ h2 {
     margin-right: 1vw;
 }
 
+.item-box {
+    max-height: 401px;
+    min-height: 200px;
+}
+
 .keys-box {
     display: flex;
     flex-direction: row;
@@ -69,7 +84,7 @@ h2 {
     justify-content: stretch;
     text-align: left;
     overflow-y: auto;
-    max-height: 170px;
+    height: 200px;
 }
 
 .key-item {
@@ -77,6 +92,20 @@ h2 {
     border-style: solid;
     border-color: black;
     border-width: 1px;
+}
+
+.key-item p {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.mouse-hover-event {
+    background: gray;
+    height: 5px;
+    position: relative;
+    cursor: row-resize;
 }
 
 .vert-keys-box {
@@ -105,6 +134,13 @@ h2 {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+}
+
+#keys_button_box button {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .generic-button {

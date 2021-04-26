@@ -3,8 +3,19 @@
 @section('head')
     <link rel="stylesheet" href="{{asset('stylesheets/configStyle.css')}}">
     <link rel="stylesheet" href="{{asset('stylesheets/mainGameScreenStyle.css')}}">
+    <link rel="stylesheet" href="{{asset('stylesheets/mapStyle.css')}}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
     <script src="{{asset('scripts/keyGen.js')}}" defer></script>
+    <script src="{{asset('scripts/resizeScript.js')}}" defer></script>
+    <script src="{{asset('scripts/mapScript.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Configuratie Spel {{$id}}</title>
 @endsection
@@ -48,12 +59,12 @@
                             </div>
                             <div class="form-item" id="ratio_slider">
                                 <label class="form-label-0" for="ratio-slider">Ratio Agenten : Boeven</label>
-                                <input name="ratio-slider" type="range" min="25" max="75" value="50" class="slider"
+                                <input name="ratio-slider" type="range" min="0" max="100" value="50" class="slider"
                                        id="ratio_range">
                                 <div class="slider-labels">
-                                    <p>25%</p>
+                                    <p>0%</p>
                                     <p>50%</p>
-                                    <p>75%</p>
+                                    <p>100%</p>
                                 </div>
                                 <div class="slider-labels">
                                     <p>Minder agenten</p>
@@ -69,7 +80,7 @@
             <div class="item-header">
                 <h2>CODES</h2>
             </div>
-            <div class="item-box">
+            <div class="item-box" id="keys_item_box">
                 <div id="keys_box" class="keys-box">
                     <div class="key-item">
                         <h3><b>Politie</b></h3>
@@ -92,12 +103,16 @@
                         @endforeach
                     </div>
                 </div>
+                <div class="mouse-hover-event"></div>
             </div>
             <div id="keys_button_box">
                 <button class="generic-button" id="copy_button_agents" onclick="performCopyAction('agent')">Kopieer politie codes</button>
                 <button class="generic-button" id="copy_button_thiefs" onclick="performCopyAction('thief')">Kopieer boeven codes</button>
                 <button class="generic-button" id="print_button" onclick="printKeys()">Print codes</button>
             </div>
+        </div>
+        <div class="mapbox shadow">
+            <div id="map"></div>
         </div>
     </div>
 @endsection

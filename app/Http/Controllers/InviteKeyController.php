@@ -72,6 +72,9 @@ class InviteKeyController extends Controller
             for ($j = 0; $j < 4; $j++) {
                 $key .= $ALPHANUMERIC_CAPITALS[rand(0, (count($ALPHANUMERIC_CAPITALS) - 1))];
             }
+            if (InviteKey::where('value', '=', $key)->exists()) {
+                return null;
+            }
             array_push($keys, $key);
         }
         if (count(array_unique($keys)) < count($keys)) {
