@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use \Illuminate\Contracts\Validation\Validator;
 
-class UpdateLocationRequest extends FormRequest
+class GenerateKeysRequest extends FormRequest
 {
     protected function failedValidation(Validator $validator)
     {
@@ -20,7 +20,8 @@ class UpdateLocationRequest extends FormRequest
     public function rules()
     {
         return [
-            'location' => ['required', 'string', 'regex:/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i']
+            'input' => ['required', 'integer', 'between:1,50'],
+            'ratio' => ['required', 'integer', 'between:0,100'],
         ];
     }
 }

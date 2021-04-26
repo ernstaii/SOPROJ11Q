@@ -16,10 +16,8 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('username', 255);
-            $table->string('location', 255);
+            $table->string('location', 255)->nullable();
             $table->timestamps();
-            $table->unsignedBigInteger('game_id');
-            $table->foreign('game_id')->references('id')->on('games');
         });
     }
 

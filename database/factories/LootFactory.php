@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\Loot;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class UserFactory extends Factory
+class LootFactory extends Factory
 {
-    protected $model = User::class;
+    protected $model = Loot::class;
 
     public function definition()
     {
@@ -15,7 +15,7 @@ class UserFactory extends Factory
         $longitude = "5." . strval(rand(491387, 553818));
 
         return [
-            'username' => 'User ' . rand(0, 99999),
+            'name' => 'Loot Item ' . rand(0, 99999),
             'location' => $latitude . ',' . $longitude
         ];
     }

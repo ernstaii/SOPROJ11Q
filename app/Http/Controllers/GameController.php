@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Roles;
 use App\Enums\Statuses;
 use App\Events\EndGameEvent;
 use App\Events\PauseGameEvent;
@@ -10,34 +11,60 @@ use App\Events\StartGameEvent;
 use App\Http\Requests\UpdateGameStateRequest;
 use App\Models\Game;
 use Carbon\Carbon;
-use OutOfBoundsException;
+use Illuminate\Support\Collection;
 
 class GameController extends Controller
 {
-    public function getUsersInGame($gameId)
+    public function index()
     {
-        return Game::find($gameId)->users();
+        return view('game.index', ['games' => Game::all()]);
     }
 
-    public function getLootInGame($gameId)
+    public function get(Game $game)
     {
-        return Game::find($gameId)->loots;
+        return $game;
     }
 
-    public function getStatusInGame($gameId)
+    public function getUsers(Game $game)
     {
-        return Game::find($gameId)->status;
+        return $game->get_users();
     }
 
-    public function getIntervalInGame($gameId)
+    public function getUsersWithRole(Game $game)
     {
-        return Game::find($gameId)->interval;
+        return $game->get_users_with_role();
     }
 
-    public function updateGameState(UpdateGameStateRequest $request, $id)
+    public function getLoot(Game $game)
     {
-        $game = Game::find($id);
+        return $game->loot()->get();
+    }
 
+    public function show(Game $game)
+    {
+        switch ($game->status) {
+            case Statuses::Config:
+                return view('config.main', [
+                    'police_keys' => $game->get_keys_for_role(Roles::Police),
+                    'thief_keys' => $game->get_keys_for_role(Roles::Thief),
+                    'id' => $game->id
+                ]);
+            default:
+                return view('game.main', [
+                    'id' => $game->id,
+                    'users' => $game->get_users()
+                ]);
+        }
+    }
+
+    public function store()
+    {
+        $game = Game::create();
+        return redirect()->route('games.show', [$game]);
+    }
+
+    public function update(UpdateGameStateRequest $request, Game $game)
+    {
         if ($game->status === Statuses::Config) {
             $game->duration = $request->duration;
             $game->interval = $request->interval;
@@ -47,9 +74,9 @@ class GameController extends Controller
             case Statuses::Ongoing:
                 if ($game->status === Statuses::Config) {
                     $game->time_left = $request->duration * 60;
-                    event(new StartGameEvent($id));
+                    event(new StartGameEvent($game->id));
                 } else {
-                    event(new ResumeGameEvent($id));
+                    event(new ResumeGameEvent($game->id));
                 }
                 $game->status = $request->state;
                 break;
@@ -57,23 +84,49 @@ class GameController extends Controller
                 $game->status = $request->state;
                 $game->time_left = 0;
                 $message = $request->reason;
-                if(is_null($message)) {
+                if (is_null($message)) {
                     $message = "Het spel is beëindigd!";
                 }
-                event(new EndGameEvent($id, $message));
+                event(new EndGameEvent($game->id, $message));
                 break;
             case Statuses::Paused:
                 $game->time_left = $game->time_left - Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
                 $game->status = $request->state;
                 $message = $request->reason;
-                if(is_null($message)) {
+                if (is_null($message)) {
                     $message = "Het spel is gepauzeerd!";
                 }
-                event(new PauseGameEvent($id, $message));
+                event(new PauseGameEvent($game->id, $message));
                 break;
         }
         $game->save();
 
-        return redirect()->route('GameScreen', ['id' => $id]);
+        return redirect()->route('games.show', [$game]);
+    }
+
+    public function destroy(Game $game)
+    {
+        $invite_keys = $game->invite_keys();
+
+        $users = new Collection();
+        foreach ($invite_keys->get() as $key) {
+            $users->push($key->user());
+        }
+
+        $invite_keys->delete();
+
+        foreach ($users as $user) {
+            $user->delete();
+        }
+
+        $old_loot = $game->loot()->get();
+        $game->loot()->detach();
+        foreach ($old_loot as $loot_item) {
+            $loot_item->delete();
+        }
+
+        $game->delete();
+
+        return redirect()->route('games.index');
     }
 }

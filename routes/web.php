@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\InviteKeyController;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\ConfigController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +14,13 @@ use \App\Http\Controllers\ConfigController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/', function () {
+    return redirect('/games');
+})->name('index');
 
-Route::get('/', [ConfigController::class, 'index'])->name('index');
-Route::post('/storeGame', [ConfigController::class, 'storeGame'])->name('GoToGame');
-Route::post('/storeKeys', [ConfigController::class, 'generateKeys']);
-Route::get('/games/{id}', [ConfigController::class, 'gameScreen'])->name('GameScreen');
-Route::put('/games/{id}', [GameController::class, 'updateGameState']);
-Route::delete('/games/{id}', [ConfigController::class, 'removeGame'])->name('RemoveGame');
+Route::get('/games', [GameController::class, 'index'])->name('games.index');
+Route::post('/games', [GameController::class, 'store'])->name('games.store');
+Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
+Route::put('/games/{game}', [GameController::class, 'update'])->name('games.update');
+Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy');
+Route::post('/games/{game}/invite-keys', [InviteKeyController::class, 'generateKeys'])->name('games.invite-keys.store');

@@ -10,7 +10,7 @@
 @section('content')
     <div class="main-screen">
         <div class="box shadow">
-            <form method="post" action="{{route('GoToGame')}}">
+            <form method="post" action="{{route('games.store')}}">
                 @csrf
                 <button class="start-button">Creëer spel</button>
             </form>
@@ -18,8 +18,12 @@
                 @foreach($games as $game)
                     <div class="mini-box shadow">
                         <div class="text-box">
-                            <a href="{{route('GameScreen', $game->id)}}"><h3>Ga naar spel {{ $game->id }}</h3></a>
-                            <a href="{{route('RemoveGame', $game->id)}}"><h5>Verwijder spel {{ $game->id }}</h5></a>
+                            <a href="{{route('games.show', [$game])}}"><h3>Ga naar spel {{ $game->id }}</h3></a>
+                            <form action="{{route('games.destroy', [$game])}}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button class="config-delete-button" type="submit"><b>Verwijder spel {{ $game->id }}</b></button>
+                            </form>
                         </div>
                     </div>
                 @endforeach

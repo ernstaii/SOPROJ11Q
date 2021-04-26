@@ -3,12 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Enums\Statuses;
-use App\Models\Game;
-use App\Rules\IsInStateRule;
-use Composer\XdebugHandler\Status;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Http\FormRequest;
-use OutOfBoundsException;
 
 class UpdateGameStateRequest extends FormRequest
 {
@@ -19,8 +15,6 @@ class UpdateGameStateRequest extends FormRequest
 
     public function rules()
     {
-        $game = Game::find($this->id);
-
         $accepted_states = array();
         switch ($this->state) {
             case Statuses::Ongoing:
@@ -33,20 +27,22 @@ class UpdateGameStateRequest extends FormRequest
                 $accepted_states = [Statuses::Ongoing, Statuses::Paused];
                 break;
             default:
-                throw new OutOfBoundsException('De opgegeven status is niet bekend.');
+                throw ValidationException::withMessages([
+                    'status' => 'De opgegeven status is niet geldig.'
+                ]);
         }
 
-        if (!in_array($game->status, $accepted_states))
+        if (!in_array($this->game->status, $accepted_states))
             throw ValidationException::withMessages([
-                'status' => 'Het spel mag niet omgezet worden naar ' . $this->state . ' vanuit ' . $game->status . '.'
+                'status' => 'Het spel mag niet omgezet worden naar ' . $this->state . ' vanuit ' . $this->game->status . '.'
             ]);
 
-        if (!$game->hasKeys())
+        if (!$this->game->has_keys())
             throw ValidationException::withMessages([
                 'hasKeys' => 'Het spel heeft nog geen invite keys.'
             ]);
 
-        if ($game->status === Statuses::Config) {
+        if ($this->game->status === Statuses::Config) {
             return [
                 'state' => ['required', 'string'],
                 'duration' => ['required', 'integer', 'between:10,1440'],

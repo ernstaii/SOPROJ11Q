@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property string $value
  * @property int $game_id
+ * @property int|null $user_id
+ * @property string $role
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string $role
  * @property-read \App\Models\Game $game
+ * @property-read \App\Models\User|null $user
  * @method static \Database\Factories\InviteKeyFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|InviteKey newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|InviteKey newQuery()
@@ -22,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|InviteKey whereGameId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InviteKey whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InviteKey whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InviteKey whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InviteKey whereValue($value)
  * @mixin \Eloquent
  */
@@ -29,12 +32,17 @@ class InviteKey extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'value';
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $fillable = [
         'value',
         'game_id',
-        'created_at',
-        'updated_at',
+        'user_id',
         'role',
+        'created_at',
+        'updated_at'
     ];
 
     public $timestamps = true;
@@ -46,6 +54,6 @@ class InviteKey extends Model
 
     public function user()
     {
-        return $this->hasOne(User::class, 'invite_key', 'value');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

@@ -42,9 +42,9 @@ async function getKeys(input, ratio, id) {
         }
     });
     await $.ajax({
-        url: '/storeKeys',
+        url: '/games/' + id + '/invite-keys',
         type: 'POST',
-        data: {input: input, ratio: ratio, id: id},
+        data: {input: input, ratio: ratio},
         success: function (data) {
             formBox.children[0].children[1].removeChild(code_input);
             formBox.children[0].children[1].removeChild(code_button);

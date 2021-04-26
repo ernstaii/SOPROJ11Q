@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Game;
 use App\Models\InviteKey;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,95 +12,63 @@ class UserTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_can_store_user()
-    {
-        $user = User::factory()->make();
-
-        $response = $this->post('/api/users', [
-            'username'   => $user->getAttribute('username'),
-            'location'   => $user->getAttribute('location'),
-            'role'       => $user->getAttribute('role'),
-            'invite_key' => $user->getAttribute('invite_key'),
-            'game_id'    => $user->getAttribute('game_id'),
-        ]);
-
-        $response->assertStatus(201);
-
-        $this->assertDatabaseHas('users', [
-            'username'   => $user->getAttribute('username'),
-            'location'   => $user->getAttribute('location'),
-            'role'       => $user->getAttribute('role'),
-            'invite_key' => $user->getAttribute('invite_key'),
-            'game_id'    => $user->getAttribute('game_id'),
-        ]);
-    }
-
-    public function test_cannot_store_user_with_used_key()
-    {
-        $user = User::factory()->create();
-
-        $response = $this->post('/api/users', [
-            'username'   => 'test_user_2',
-            'location'   => '51.498134,-0.201754',
-            'invite_key' => $user->invite_key,
-        ]);
-
-        $response->assertStatus(302)
-            ->assertSessionHasErrors();
-    }
-
-    public function test_can_update_location()
-    {
-        //'51.498134,-0.201755'
-        $user = User::factory()->create();
-        $userId = $user->getKey();
-
-        $response = $this->put("/api/users/$userId", [
-            'location' => '51.498134,-0.201754',
-        ]);
-
-        $response->assertStatus(200);
-
-        $this->assertEquals("51.498134,-0.201754", User::find($userId)->location);
-    }
-
     public function test_can_get_user()
     {
         $user = User::factory()->create();
-        $userId = $user->getKey();
 
-        $response = $this->get("/api/users/$userId");
-
-        $response->assertStatus(200)->assertExactJson([
-            'game_id'    => $user->game_id,
-            'id'         => $userId,
-            'username'   => $user->username,
-            'location'   => $user->location,
-            'created_at' => $user->created_at,
-            'updated_at' => $user->updated_at,
-            'invite_key' => $user->invite_key,
-            'role'       => $user->role,
-        ]);
+        $this->get('api/users/' . $user->id)
+            ->assertStatus(200)
+            ->assertExactJson($user->toArray());
     }
 
-    public function test_can_get_users_in_game()
+    public function test_can_store_user()
     {
+        $game = Game::factory()->create();
+        $invite_key = InviteKey::factory()->state([
+            'game_id' => $game->id
+        ])->create();
+
+        $this->post('api/users/', [
+            'username' => 'user',
+            'location' => '51.763010,5.426781',
+            'invite_key' => $invite_key->value
+        ])->assertStatus(201);
+
+        $this->assertDatabaseCount('users', 1);
+    }
+
+    public function test_can_update_user_location()
+    {
+        $game = Game::factory()->create();
         $user = User::factory()->create();
-        $inviteKey = InviteKey::where('value', $user->invite_key)->first();
+        InviteKey::factory()->state([
+            'game_id' => $game->id,
+            'user_id' => $user->id
+        ])->create();
 
-        $response = $this->get("/api/game/$inviteKey->game_id/users");
+        $response = $this->put('api/users/' . $user->id, [
+            'location' => '51.763010,5.426781'
+        ])->assertStatus(200);
 
-        $response->assertStatus(200)->assertExactJson([
-            [
-                'id'         => $user->getKey(),
-                'username'   => $user->username,
-                'location'   => $user->location,
-                'created_at' => $user->created_at,
-                'updated_at' => $user->updated_at,
-                'invite_key' => $user->invite_key,
-                'role'       => $user->role,
-                'game_id'    => $user->game_id,
-            ],
-        ]);
+        $this->assertDatabaseHas('users', $response->getVary());
+    }
+
+    public function test_cannot_store_user_with_duplicate_key()
+    {
+        $game = Game::factory()->create();
+        $user = User::factory()->create();
+        $invite_key = InviteKey::factory()->state([
+            'game_id' => $game->id,
+            'user_id' => $user->id
+        ])->create();
+
+        $this->post('api/users/', [
+            'username' => 'user',
+            'location' => '51.763010,5.426781',
+            'invite_key' => $invite_key->value
+        ])->assertStatus(422)
+            ->isInvalid();
+
+        $this->assertDatabaseCount('users', 1);
     }
 }

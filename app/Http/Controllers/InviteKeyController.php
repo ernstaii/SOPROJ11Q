@@ -4,56 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Enums\Roles;
 use App\Enums\Statuses;
+use App\Http\Requests\GenerateKeysRequest;
 use App\Models\Game;
 use App\Models\InviteKey;
-use Illuminate\Http\Request;
 
-class ConfigController extends Controller
+class InviteKeyController extends Controller
 {
-    public function index()
+    public function get(InviteKey $key)
     {
-        return view('main_screen', ['games' => Game::all()]);
-    }
-
-    public function storeGame()
-    {
-        $game = Game::create();
-        return redirect()->route('GameScreen', ['id' => $game->id]);
-    }
-
-    public function gameScreen($id)
-    {
-        $police_keys = InviteKey::where('game_id', '=', strval($id))->where('role', '=', Roles::Police)->get();
-        $thief_keys = InviteKey::where('game_id', '=', strval($id))->where('role', '=', Roles::Thief)->get();
-        $game = Game::find($id);
-
-        if (isset($game)) {
-            switch ($game->status) {
-                case Statuses::Config:
-                    return view('config.main', compact(['police_keys', 'thief_keys', 'id']));
-                default:
-                    return view('game.main', compact(['police_keys', 'thief_keys', 'id']));
-            }
+        if ($key->user()->count() > 0) {
+            response()->json([
+                'value' => 'De code \'' . $key->value . '\' is al in gebruik.'
+            ], 422)->throwResponse();
+        } else if ($key->game->status === Statuses::Finished) {
+            response()->json([
+                'value' => 'De code \'' . $key->value . '\' is verlopen, omdat het spel is afgelopen.'
+            ], 422)->throwResponse();
         }
-        return redirect()->route('index');
-    }
 
-    public function removeGame($id)
-    {
-        Game::find($id)->invite_keys()->delete();
-        Game::destroy($id);
-        return redirect()->route('index');
+        return $key->getOriginal();
     }
 
     /**
      * AJAX function. Not to be called via manual routing.
      *
-     * @param Request $request
+     * @param GenerateKeysRequest $request
+     * @param Game $game
      * @return array
      */
-    public function generateKeys(Request $request)
+    public function generateKeys(GenerateKeysRequest $request, Game $game)
     {
-        if (count(Game::find($request->id)->invite_keys) == 0) {
+        if (count($game->invite_keys) == 0) {
             $total = $request->input;
             $keys = null;
             while (!isset($keys)) {
@@ -64,20 +45,22 @@ class ConfigController extends Controller
                 if ($i < $totalAgents) {
                     InviteKey::create([
                         'value' => $keys[$i],
-                        'game_id' => $request->id,
+                        'game_id' => $game->id,
                         'role' => Roles::Police,
                     ]);
                 } else {
                     InviteKey::create([
                         'value' => $keys[$i],
-                        'game_id' => $request->id,
+                        'game_id' => $game->id,
                         'role' => Roles::Thief,
                     ]);
                 }
             }
             return $keys;
         }
-        return null;
+        response()->json([
+            'error' => 'Er bestaan al keys voor deze game.'
+        ], 422)->throwResponse();
     }
 
     private function createKeyStrings($amount)
