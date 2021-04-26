@@ -25,7 +25,6 @@ class GameIntervalCommand extends Command
      * @var string
      */
     protected $description = 'Takes care of pushing game interval events';
-    protected $lastUpdates = [];
 
     /**
      * Create a new command instance.
@@ -45,6 +44,7 @@ class GameIntervalCommand extends Command
     public function handle()
     {
         $gameController = new GameController();
+        $lastUpdates = [];
 
         while(1<2){
             $this->log("Checking intervals");
@@ -54,20 +54,25 @@ class GameIntervalCommand extends Command
             try {
                 foreach (Game::all() as $game) {
                     $gameTimeExpired = $now->diffInHours($game->updated_at) > $game->duration / 60 || $game->time_left <= 0;
+
                     if ($game->status == Statuses::Ongoing && !$gameTimeExpired) {
-                        if (!array_key_exists($game->id, $this->lastUpdates)) {
-                            $this->lastUpdates[$game->id] = $now;
+                        if (!array_key_exists($game->id, $lastUpdates)) {
+                            $lastUpdates[$game->id] = $now;
                         }
 
-                        $difference = $now->diffInSeconds($this->lastUpdates[$game->id]);
+                        $difference = $now->diffInSeconds($lastUpdates[$game->id]);
                         $this->log("  Game " . $game->id . " time difference: " . $difference . "/" . $game->interval);
 
                         if ($difference >= $game->interval) {
-                            $users = $gameController->getUsersInGame($game->id);
+                            $users = $gameController->getUsers($game);
                             event(new GameIntervalEvent($game->id, $users));
-                            $this->lastUpdates[$game->id] = $now;
+                            $lastUpdates[$game->id] = $now;
                             $this->log("    Invoking interval of game " . $game->id);
                         }
+                    }
+                    else if (array_key_exists($game->id, $lastUpdates)) {
+                        // Remove unused time stamps so intervals won't be instant when an id is reused or a game is resumed
+                        unset($lastUpdates[$game->id]);
                     }
                 }
             }
