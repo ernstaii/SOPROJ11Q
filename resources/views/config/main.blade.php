@@ -117,4 +117,12 @@
             <button onclick="saveMarkers({{$id}})" id="button_save_markers">Sla speelveld op</button>
         </div>
     </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            @foreach($border_markers as $border_marker)
+                applyExistingMarker({{$border_marker->location}});
+            @endforeach
+            drawLinesForExistingMarkers();
+        });
+    </script>
 @endsection

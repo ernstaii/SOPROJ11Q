@@ -6,14 +6,12 @@ const corner1 = L.latLng(53.828464, 2.871753),
     corner2 = L.latLng(50.696721, 9.188892),
     mapBounds = L.latLngBounds(corner1, corner2);
 const removeMarkerButton = document.querySelector('#button_remove_markers');
-const saveMarkerButton = document.querySelector('#button_save_markers'); //TODO: remove both buttons on save instead of disable
-
-//TODO: show already available location markers on map when loading page
+const saveMarkerButton = document.querySelector('#button_save_markers');
+const mapBox = document.querySelector('.mapbox');
 
 let markerLatLngs = [];
 let markers = [];
 let lines = [];
-let savedMarkers = false;
 
 setTimeout(() => {
     mymap.invalidateSize(true);
@@ -35,9 +33,6 @@ function initMap() {
 }
 
 function addMarker(e) {
-    if (savedMarkers) {
-        return;
-    }
     let contains = false;
     markerLatLngs.forEach(latlng => {
         if (latlng.equals(e.latlng)) {
@@ -66,9 +61,6 @@ function addMarker(e) {
 }
 
 function removeLastMarker() {
-    if (savedMarkers) {
-        return;
-    }
     if (markers.length > 0) {
         mymap.removeLayer(markers[markers.length - 1]);
         markers.pop();
@@ -122,11 +114,37 @@ async function saveMarkers(id) {
         data: { lats: lats, lngs: lngs },
         success: function (data) {
             mymap.off('click');
-            removeMarkerButton.disabled = true;
-            savedMarkers = true;
+            mapBox.removeChild(saveMarkerButton);
+            mapBox.removeChild(removeMarkerButton);
         },
         error: function () {
             console.log('An unknown error occurred.');
         },
     });
+}
+
+function applyExistingMarker(lat, lng) {
+    let latlng = L.latLng(lat, lng);
+    let newMarker = L.marker(latlng)
+        .bindPopup(L.popup({ maxWidth: maxPopupWidth })
+            .setContent('Locatie marker ' + (markers.length + 1)))
+        .addTo(mymap);
+    markers.push(newMarker);
+    markerLatLngs.push(newMarker.getLatLng());
+}
+
+function drawLinesForExistingMarkers() {
+    if (markers.length > 0) {
+        mymap.off('click');
+        mapBox.removeChild(saveMarkerButton);
+        mapBox.removeChild(removeMarkerButton);
+    }
+    for(let i = 0; i < markerLatLngs.length - 1; i++) {
+        if (i < markerLatLngs.length - 2) {
+            lines.push(L.polyline(markerLatLngs, {color: 'red'}).addTo(mymap));
+        }
+        else {
+            addNewLineBetweenFirstAndLast();
+        }
+    }
 }

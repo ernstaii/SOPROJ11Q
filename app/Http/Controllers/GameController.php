@@ -49,6 +49,7 @@ class GameController extends Controller
                 return view('config.main', [
                     'police_keys' => $game->get_keys_for_role(Roles::Police),
                     'thief_keys' => $game->get_keys_for_role(Roles::Thief),
+                    'border_markers' => $game->border_markers,
                     'id' => $game->id
                 ]);
             default:
