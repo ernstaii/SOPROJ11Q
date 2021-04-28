@@ -113,6 +113,7 @@
         </div>
         <div class="mapbox shadow">
             <div id="map"></div>
+            <button onclick="removeLastMarker()">Verwijder laatste marker</button>
         </div>
     </div>
 @endsection

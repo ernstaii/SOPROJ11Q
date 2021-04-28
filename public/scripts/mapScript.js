@@ -5,6 +5,9 @@ const minZoomLevel = 9;
 const corner1 = L.latLng(53.828464, 2.871753),
     corner2 = L.latLng(50.696721, 9.188892),
     mapBounds = L.latLngBounds(corner1, corner2);
+let markerLatLngs = [];
+let markers = [];
+let lines = [];
 
 setTimeout(() => {
     mymap.invalidateSize(true);
@@ -22,12 +25,28 @@ function initMap() {
     const tiles = L.tileLayer(tileURL, { attribution });
 
     tiles.addTo(mymap);
+    mymap.on('click', addMarker)
 }
 
-function addMarker(lat, lon) {
-    let marker = L.marker(lat, lon)
+function addMarker(e) {
+    let newMarker = L.marker(e.latlng)
         .bindPopup(L.popup({ maxWidth: maxPopupWidth })
             .setContent(`text in popup window!`))
         .addTo(mymap);
+    markers.push(newMarker);
+    markerLatLngs.push(newMarker.getLatLng());
+    if (markerLatLngs.length > 1) {
+        lines.push(L.polyline(markerLatLngs, {color: 'red'}).addTo(mymap));
+    }
 }
 
+function removeLastMarker() {
+    if (markers.length > 0) {
+        mymap.removeLayer(markers[markers.length - 1]);
+        markers.pop()
+    }
+    if (lines.length > 0) {
+        mymap.removeLayer(lines[lines.length - 1]);
+        lines.pop();
+    }
+}
