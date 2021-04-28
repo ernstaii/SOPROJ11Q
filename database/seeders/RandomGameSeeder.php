@@ -58,23 +58,23 @@ class RandomGameSeeder extends Seeder
             }
 
             BorderMarker::create([
-                'location' => $this->getRandLocationForMarkersNearOss($i),
+                'location' => $this->getRandLocationForMarkersNearOss(1),
                 'game_id' => $game->id
             ]);
             BorderMarker::create([
-                'location' => $this->getRandLocationForMarkersNearOss($i),
+                'location' => $this->getRandLocationForMarkersNearOss(2),
                 'game_id' => $game->id
             ]);
             BorderMarker::create([
-                'location' => $this->getRandLocationForMarkersNearOss($i),
+                'location' => $this->getRandLocationForMarkersNearOss(3),
                 'game_id' => $game->id
             ]);
             BorderMarker::create([
-                'location' => $this->getRandLocationForMarkersNearOss($i),
+                'location' => $this->getRandLocationForMarkersNearOss(4),
                 'game_id' => $game->id
             ]);
             BorderMarker::create([
-                'location' => $this->getRandLocationForMarkersNearOss($i),
+                'location' => $this->getRandLocationForMarkersNearOss(5),
                 'game_id' => $game->id
             ]);
 
