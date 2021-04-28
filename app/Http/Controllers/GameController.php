@@ -8,7 +8,9 @@ use App\Events\EndGameEvent;
 use App\Events\PauseGameEvent;
 use App\Events\ResumeGameEvent;
 use App\Events\StartGameEvent;
+use App\Http\Requests\StoreBorderMarkerRequest;
 use App\Http\Requests\UpdateGameStateRequest;
+use App\Models\BorderMarker;
 use App\Models\Game;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -128,5 +130,16 @@ class GameController extends Controller
         $game->delete();
 
         return redirect()->route('games.index');
+    }
+
+    public function storeMarkers(StoreBorderMarkerRequest $request, Game $game) {
+        $lats = $request->lats;
+        $lngs = $request->lngs;
+        for($i = 0; $i < count($lats); $i++) {
+            BorderMarker::create([
+                'location' => strval($lats[$i]) . ',' . strval($lngs[$i]),
+                'game_id' => $game->id
+            ]);
+        }
     }
 }

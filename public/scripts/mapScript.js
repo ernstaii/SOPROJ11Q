@@ -5,9 +5,15 @@ const minZoomLevel = 9;
 const corner1 = L.latLng(53.828464, 2.871753),
     corner2 = L.latLng(50.696721, 9.188892),
     mapBounds = L.latLngBounds(corner1, corner2);
+const removeMarkerButton = document.querySelector('#button_remove_markers');
+const saveMarkerButton = document.querySelector('#button_save_markers'); //TODO: remove both buttons on save instead of disable
+
+//TODO: show already available location markers on map when loading page
+
 let markerLatLngs = [];
 let markers = [];
 let lines = [];
+let savedMarkers = false;
 
 setTimeout(() => {
     mymap.invalidateSize(true);
@@ -29,6 +35,9 @@ function initMap() {
 }
 
 function addMarker(e) {
+    if (savedMarkers) {
+        return;
+    }
     let contains = false;
     markerLatLngs.forEach(latlng => {
         if (latlng.equals(e.latlng)) {
@@ -40,7 +49,7 @@ function addMarker(e) {
     }
     let newMarker = L.marker(e.latlng)
         .bindPopup(L.popup({ maxWidth: maxPopupWidth })
-            .setContent(`text in popup window!`))
+            .setContent('Locatie marker ' + (markers.length + 1)))
         .addTo(mymap);
     markers.push(newMarker);
     markerLatLngs.push(newMarker.getLatLng());
@@ -57,6 +66,9 @@ function addMarker(e) {
 }
 
 function removeLastMarker() {
+    if (savedMarkers) {
+        return;
+    }
     if (markers.length > 0) {
         mymap.removeLayer(markers[markers.length - 1]);
         markers.pop();
@@ -85,4 +97,36 @@ function addNewLineBetweenFirstAndLast() {
     let firstLastMarkerLatLngs = [];
     firstLastMarkerLatLngs.push(markerLatLngs[0], markerLatLngs[markerLatLngs.length - 1]);
     lines.push(L.polyline(firstLastMarkerLatLngs, {color: 'red'}).addTo(mymap));
+}
+
+async function saveMarkers(id) {
+    if (markers.length < 3) {
+        alert('Plaats a.u.b. drie of meer locatie markers op de kaart!');
+        return;
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    let lats = [];
+    let lngs = [];
+    markerLatLngs.forEach(latLng => {
+        lats.push(latLng.lat);
+        lngs.push(latLng.lng);
+    });
+
+    await $.ajax({
+        url: '/games/' + id + '/border-markers',
+        type: 'POST',
+        data: { lats: lats, lngs: lngs },
+        success: function (data) {
+            mymap.off('click');
+            removeMarkerButton.disabled = true;
+            savedMarkers = true;
+        },
+        error: function () {
+            console.log('An unknown error occurred.');
+        },
+    });
 }

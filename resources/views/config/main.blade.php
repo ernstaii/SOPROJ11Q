@@ -113,7 +113,8 @@
         </div>
         <div class="mapbox shadow">
             <div id="map"></div>
-            <button onclick="removeLastMarker()">Verwijder laatste marker</button>
+            <button onclick="removeLastMarker()" id="button_remove_markers">Verwijder laatste marker</button>
+            <button onclick="saveMarkers({{$id}})" id="button_save_markers">Sla speelveld op</button>
         </div>
     </div>
 @endsection

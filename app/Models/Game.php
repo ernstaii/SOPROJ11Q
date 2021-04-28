@@ -65,6 +65,11 @@ class Game extends Model
         return $this->hasMany(InviteKey::class);
     }
 
+    public function border_markers()
+    {
+        return $this->hasMany(BorderMarker::class);
+    }
+
     public function get_users()
     {
         $keys = $this->invite_keys()->get();
