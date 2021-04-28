@@ -138,10 +138,11 @@ class GameController extends Controller
         return redirect()->route('games.index');
     }
 
-    public function storeMarkers(StoreBorderMarkerRequest $request, Game $game) {
+    public function storeMarkers(StoreBorderMarkerRequest $request, Game $game)
+    {
         $lats = $request->lats;
         $lngs = $request->lngs;
-        for($i = 0; $i < count($lats); $i++) {
+        for ($i = 0; $i < count($lats); $i++) {
             BorderMarker::create([
                 'location' => strval($lats[$i]) . ',' . strval($lngs[$i]),
                 'game_id' => $game->id
