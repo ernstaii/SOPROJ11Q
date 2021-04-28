@@ -24,7 +24,16 @@ class StoreBorderMarkerRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'lats' => 'array',
+            'lngs' => 'array'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'lats.array' => 'mapScript.js:114|type should be "array", different type provided.',
+            'lngs.array' => 'mapScript.js:114|type should be "array", different type provided.'
         ];
     }
 }

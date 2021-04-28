@@ -68,6 +68,10 @@ class GameController extends Controller
 
     public function update(UpdateGameStateRequest $request, Game $game)
     {
+        if ($game->border_markers()->count() < 3) {
+            return redirect()->route('games.show', [$game])->withErrors(['Creëer a.u.b. eerst een speelveld door drie locatie markers op de kaart te plaatsen en dan op de knop "Sla speelveld op" te klikken.']);
+        }
+
         if ($game->status === Statuses::Config) {
             $game->duration = $request->duration;
             $game->interval = $request->interval;
