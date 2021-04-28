@@ -43,7 +43,8 @@ function addMarker(e) {
 function removeLastMarker() {
     if (markers.length > 0) {
         mymap.removeLayer(markers[markers.length - 1]);
-        markers.pop()
+        markers.pop();
+        markerLatLngs.pop();
     }
     if (lines.length > 0) {
         mymap.removeLayer(lines[lines.length - 1]);
