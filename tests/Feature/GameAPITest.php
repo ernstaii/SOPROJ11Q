@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\BorderMarker;
 use App\Models\Game;
 use App\Models\Loot;
 use App\Models\User;
@@ -126,7 +127,6 @@ class GameAPITest extends TestCase
             'ratio' => 25
         ])->assertStatus(200)
             ->assertJsonCount(10);
-
         $this->assertDatabaseCount('invite_keys', 10);
     }
 

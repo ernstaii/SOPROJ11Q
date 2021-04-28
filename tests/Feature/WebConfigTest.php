@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\Statuses;
 use App\Events\StartGameEvent;
+use App\Models\BorderMarker;
 use App\Models\InviteKey;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Game;
@@ -30,6 +31,9 @@ class WebConfigTest extends TestCase
 
         $game = Game::factory()->create();
         InviteKey::factory()->count(3)->state([
+            'game_id' => $game->id
+        ])->create();
+        BorderMarker::factory()->count(3)->state([
             'game_id' => $game->id
         ])->create();
 
