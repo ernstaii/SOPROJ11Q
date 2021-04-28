@@ -29,14 +29,30 @@ function initMap() {
 }
 
 function addMarker(e) {
+    let contains = false;
+    markerLatLngs.forEach(latlng => {
+        if (latlng.equals(e.latlng)) {
+            contains = true;
+        }
+    });
+    if (contains) {
+        return;
+    }
     let newMarker = L.marker(e.latlng)
         .bindPopup(L.popup({ maxWidth: maxPopupWidth })
             .setContent(`text in popup window!`))
         .addTo(mymap);
     markers.push(newMarker);
     markerLatLngs.push(newMarker.getLatLng());
-    if (markerLatLngs.length > 1) {
+    if (lines.length > 1) {
+        mymap.removeLayer(lines[lines.length - 1]);
+        lines.pop();
+    }
+    if (markers.length > 1) {
         lines.push(L.polyline(markerLatLngs, {color: 'red'}).addTo(mymap));
+    }
+    if (markers.length > 2) {
+        addNewLineBetweenFirstAndLast();
     }
 }
 
@@ -47,7 +63,26 @@ function removeLastMarker() {
         markerLatLngs.pop();
     }
     if (lines.length > 0) {
-        mymap.removeLayer(lines[lines.length - 1]);
-        lines.pop();
+        if (markers.length > 1) {
+            for (let i = 0; i < 2; i++) {
+                if (lines.length > 1) {
+                    mymap.removeLayer(lines[lines.length - 1]);
+                    lines.pop();
+                }
+            }
+        }
+        else {
+            mymap.removeLayer(lines[lines.length - 1]);
+            lines.pop();
+        }
     }
+    if (markers.length > 2) {
+        addNewLineBetweenFirstAndLast();
+    }
+}
+
+function addNewLineBetweenFirstAndLast() {
+    let firstLastMarkerLatLngs = [];
+    firstLastMarkerLatLngs.push(markerLatLngs[0], markerLatLngs[markerLatLngs.length - 1]);
+    lines.push(L.polyline(firstLastMarkerLatLngs, {color: 'red'}).addTo(mymap));
 }
