@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\Roles;
+use App\Models\BorderMarker;
 use App\Models\Game;
 use App\Models\InviteKey;
 use App\Models\Loot;
@@ -56,6 +57,27 @@ class RandomGameSeeder extends Seeder
                 $game->loot()->attach($loot_item->id);
             }
 
+            BorderMarker::create([
+                'location' => $this->getRandLocationForMarkersNearOss($i),
+                'game_id' => $game->id
+            ]);
+            BorderMarker::create([
+                'location' => $this->getRandLocationForMarkersNearOss($i),
+                'game_id' => $game->id
+            ]);
+            BorderMarker::create([
+                'location' => $this->getRandLocationForMarkersNearOss($i),
+                'game_id' => $game->id
+            ]);
+            BorderMarker::create([
+                'location' => $this->getRandLocationForMarkersNearOss($i),
+                'game_id' => $game->id
+            ]);
+            BorderMarker::create([
+                'location' => $this->getRandLocationForMarkersNearOss($i),
+                'game_id' => $game->id
+            ]);
+
             $keys = array();
             for ($x = 0; $x < $amount_of_users_per_game; $x++) {
                 $key = $this->createKeyString($keys);
@@ -88,5 +110,23 @@ class RandomGameSeeder extends Seeder
             }
         }
         return $key;
+    }
+
+    private function getRandLocationForMarkersNearOss($number)
+    {
+        switch($number) {
+            case 1:
+                return "51.7" . strval(rand(30421, 34703)) . ",5." . strval(rand(470841, 482090));
+            case 2:
+                return "51.7" . strval(rand(31104, 35002)) . ",5." . strval(rand(593363, 598034));
+            case 3:
+                return "51.7" . strval(rand(90136, 93482)) . ",5." . strval(rand(576329, 579863));
+            case 4:
+                return "51.7" . strval(rand(76128, 79084)) . ",5." . strval(rand(528871, 543762));
+            case 5:
+                return "51.7" . strval(rand(80532, 82789)) . ",5." . strval(rand(474034, 497632));
+            default:
+                return "51.7" . strval(rand(30000, 33000)) . ",5." . strval(rand(470000, 480000));
+        }
     }
 }
