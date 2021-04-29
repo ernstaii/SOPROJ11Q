@@ -42,7 +42,7 @@ class GameController extends Controller
 
     public function getInviteKeys(Game $game)
     {
-        return $game->invite_keys()->first()->get();
+        return $game->invite_keys()->get();
     }
 
     public function show(Game $game)
