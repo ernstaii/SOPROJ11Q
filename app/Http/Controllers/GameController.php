@@ -138,6 +138,12 @@ class GameController extends Controller
         return redirect()->route('games.index');
     }
 
+    /**
+     * AJAX function. Not to be called via manual routing.
+     *
+     * @param StoreBorderMarkerRequest $request
+     * @param Game $game
+     */
     public function storeMarkers(StoreBorderMarkerRequest $request, Game $game)
     {
         $lats = $request->lats;
