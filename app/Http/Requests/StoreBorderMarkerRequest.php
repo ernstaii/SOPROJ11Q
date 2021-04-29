@@ -14,8 +14,8 @@ class StoreBorderMarkerRequest extends FormRequest
     public function rules()
     {
         return [
-            'lats' => 'array',
-            'lngs' => 'array'
+            'lats' => ['array', 'min:1'],
+            'lngs' => ['array', 'min:1']
         ];
     }
 

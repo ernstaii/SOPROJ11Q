@@ -103,6 +103,22 @@ class GameAPITest extends TestCase
             ->assertJsonCount(1);
     }
 
+     public function test_can_get_border_markers_of_game()
+     {
+         $game = Game::factory()->create();
+         BorderMarker::factory()->state(['game_id' => $game->id])->isFirstMarker()->create();
+         BorderMarker::factory()->state(['game_id' => $game->id])->isSecondMarker()->create();
+         BorderMarker::factory()->state(['game_id' => $game->id])->isThirdMarker()->create();
+         BorderMarker::factory()->state(['game_id' => $game->id])->isFourthMarker()->create();
+         BorderMarker::factory()->state(['game_id' => $game->id])->isFifthMarker()->create();
+
+         $this->get('/api/games/' . $game->id . '/border-markers')
+             ->assertStatus(200)
+             ->assertJsonCount(5);
+
+         $this->assertDatabaseCount('border_markers', 5);
+     }
+
     public function test_cannot_get_used_key()
     {
         $game = Game::factory()->create();
