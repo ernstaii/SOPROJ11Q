@@ -24,6 +24,10 @@
     margin-bottom: 0;
 }
 
+#button_save_markers {
+    pointer-events: auto;
+}
+
 @keyframes rollout {
 0%{
     width: 55vw;
