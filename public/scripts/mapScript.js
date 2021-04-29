@@ -29,7 +29,9 @@ function initMap() {
     const tiles = L.tileLayer(tileURL, { attribution });
 
     tiles.addTo(mymap);
-    mymap.on('click', addMarker)
+    mymap.on('click', addMarker);
+
+    saveMarkerButton.disabled = true;
 }
 
 function addMarker(e) {
@@ -58,6 +60,11 @@ function addMarker(e) {
     if (markers.length > 2) {
         addNewLineBetweenFirstAndLast();
     }
+
+    if (markers.length >= 3) {
+        saveMarkerButton.disabled = false;
+        saveMarkerButton.title = '';
+    }
 }
 
 function removeLastMarker() {
@@ -83,6 +90,11 @@ function removeLastMarker() {
     if (markers.length > 2) {
         addNewLineBetweenFirstAndLast();
     }
+
+    if (markers.length < 3) {
+        saveMarkerButton.disabled = true;
+        saveMarkerButton.title = 'Er zijn minstens 3 markers nodig voordat het veld opgeslagen kan worden.';
+    }
 }
 
 function addNewLineBetweenFirstAndLast() {
@@ -92,6 +104,9 @@ function addNewLineBetweenFirstAndLast() {
 }
 
 async function saveMarkers(id) {
+    if (markers.length < 3) {
+        return;
+    }
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -113,8 +128,8 @@ async function saveMarkers(id) {
             mapBox.removeChild(saveMarkerButton);
             mapBox.removeChild(removeMarkerButton);
         },
-        error: function () {
-            console.log('An unknown error occurred.');
+        error: function (err) {
+            console.log(err);
         },
     });
 }
