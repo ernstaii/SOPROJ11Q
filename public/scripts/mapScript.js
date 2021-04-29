@@ -92,10 +92,6 @@ function addNewLineBetweenFirstAndLast() {
 }
 
 async function saveMarkers(id) {
-    if (markers.length < 3) {
-        alert('Plaats a.u.b. drie of meer locatie markers op de kaart!');
-        return;
-    }
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
