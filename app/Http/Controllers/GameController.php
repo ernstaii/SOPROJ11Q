@@ -40,6 +40,11 @@ class GameController extends Controller
         return $game->loot()->get();
     }
 
+    public function getInviteKeys(Game $game)
+    {
+        return $game->invite_keys()->first()->get();
+    }
+
     public function show(Game $game)
     {
         switch ($game->status) {
