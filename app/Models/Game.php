@@ -15,6 +15,8 @@ use function PHPUnit\Framework\isEmpty;
  * @property int $duration
  * @property int $interval
  * @property int $time_left
+ * @property int $thieves_score
+ * @property int $police_score
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\App\Models\InviteKey[] $invite_keys
@@ -44,6 +46,8 @@ class Game extends Model
         'duration',
         'interval',
         'time_left',
+        'thieves_score',
+        'police_score',
         'created_at',
         'updated_at'
     ];

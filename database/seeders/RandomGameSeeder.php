@@ -52,6 +52,10 @@ class RandomGameSeeder extends Seeder
                 'id' => $id
             ]);
 
+            $game->thieves_score = rand(0, 1000);
+            $game->police_score = rand(0, 1000);
+            $game->save();
+
             foreach ($loot as $loot_item) {
                 $game->loot()->attach($loot_item->id);
             }

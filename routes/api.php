@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\InviteKeyController;
+use App\Http\Controllers\LootController;
 use App\Http\Controllers\UserController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
@@ -26,4 +27,7 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/games/{game}/users', [GameController::class, 'getUsers']);
     $router->get('/games/{game}/users-with-role', [GameController::class, 'getUsersWithRole']);
     $router->get('/games/{game}/loot', [GameController::class, 'getLoot']);
+    $router->patch('/games/{game}/thieves-score/{score}', [GameController::class, 'updateThievesScore']);
+    $router->patch('/games/{game}/police-score/{score}', [GameController::class, 'updatePoliceScore']);
+    $router->delete('/loots/{loot}', [LootController::class, 'destroy']);
 });

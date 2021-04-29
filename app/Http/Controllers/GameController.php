@@ -129,4 +129,14 @@ class GameController extends Controller
 
         return redirect()->route('games.index');
     }
+
+    public function updateThievesScore(Game $game, int $score){
+        $game->thieves_score = $score;
+        $game->save();
+    }
+
+    public function updatePoliceScore(Game $game, int $score){
+        $game->police_score = $score;
+        $game->save();
+    }
 }
