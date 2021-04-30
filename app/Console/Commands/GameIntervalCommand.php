@@ -48,6 +48,7 @@ class GameIntervalCommand extends Command
         $lastUpdates = [];
 
         while (1 < 2) {
+            $game_ended = false;
             $this->log("Checking intervals");
 
             $now = Carbon::now();
@@ -63,25 +64,22 @@ class GameIntervalCommand extends Command
                         $game->time_left = $game->time_left - $now->diffInSeconds(Carbon::parse($game->updated_at));
 
                         if ($game->time_left <= 0)
-                        {
-                            $game->status = Statuses::Finished;
-                            $game->save();
-                            event(new EndGameEvent($game->id, 'De tijd is op. Het spel is beëindigd.'));
-                        }
+                            $game_ended = true;
 
                         $difference = $now->diffInSeconds($lastUpdates[$game->id]);
                         $this->log("  Game " . $game->id . " time difference: " . $difference . "/" . $game->interval);
 
-                        if ($difference >= $game->interval) {
+                        if ($difference >= $game->interval || $game_ended) {
                             $users = $gameController->getUsers($game);
                             event(new GameIntervalEvent($game->id, $users));
                             $lastUpdates[$game->id] = $now;
                             $this->log("    Invoking interval of game " . $game->id);
 
-                            if ($game->time_left <= 0) {
+                            if ($game_ended) {
                                 $game->status = Statuses::Finished;
                                 event(new EndGameEvent($game->id, 'De tijd is op. Het spel is beëindigd.'));
                             }
+
                             $game->save();
                         }
                     } else if (array_key_exists($game->id, $lastUpdates)) {
