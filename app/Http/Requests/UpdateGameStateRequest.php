@@ -43,6 +43,10 @@ class UpdateGameStateRequest extends FormRequest
             ]);
 
         if ($this->game->status === Statuses::Config) {
+            if ($this->game->border_markers()->count() < 3)
+                throw ValidationException::withMessages([
+                    'hasBorderMarkers' => 'Creëer a.u.b. eerst een speelveld door minimaal drie locatie markers op de kaart te plaatsen en dan op de knop "Sla speelveld op" te klikken.'
+                ]);
             return [
                 'state' => ['required', 'string'],
                 'duration' => ['required', 'integer', 'between:10,1440'],

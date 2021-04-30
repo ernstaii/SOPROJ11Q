@@ -24,3 +24,4 @@ Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show')
 Route::put('/games/{game}', [GameController::class, 'update'])->name('games.update');
 Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy');
 Route::post('/games/{game}/invite-keys', [InviteKeyController::class, 'generateKeys'])->name('games.invite-keys.store');
+Route::post('/games/{game}/border-markers', [GameController::class, 'storeMarkers'])->name('games.border-markers.store');

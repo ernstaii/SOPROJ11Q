@@ -8,7 +8,9 @@ use App\Events\EndGameEvent;
 use App\Events\PauseGameEvent;
 use App\Events\ResumeGameEvent;
 use App\Events\StartGameEvent;
+use App\Http\Requests\StoreBorderMarkerRequest;
 use App\Http\Requests\UpdateGameStateRequest;
+use App\Models\BorderMarker;
 use App\Models\Game;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -43,6 +45,11 @@ class GameController extends Controller
     public function getInviteKeys(Game $game)
     {
         return $game->invite_keys()->get();
+	}
+	
+    public function getBorderMarkers(Game $game)
+    {
+        return $game->border_markers()->get();
     }
 
     public function show(Game $game)
@@ -52,6 +59,7 @@ class GameController extends Controller
                 return view('config.main', [
                     'police_keys' => $game->get_keys_for_role(Roles::Police),
                     'thief_keys' => $game->get_keys_for_role(Roles::Thief),
+                    'border_markers' => $game->border_markers,
                     'id' => $game->id
                 ]);
             default:
@@ -135,13 +143,33 @@ class GameController extends Controller
         return redirect()->route('games.index');
     }
 
-    public function updateThievesScore(Game $game, int $score){
+    public function updateThievesScore(Game $game, int $score)
+	{
         $game->thieves_score = $score;
         $game->save();
     }
 
-    public function updatePoliceScore(Game $game, int $score){
+    public function updatePoliceScore(Game $game, int $score)
+	{
         $game->police_score = $score;
         $game->save();
+	}
+	
+    /**
+     * AJAX function. Not to be called via manual routing.
+     *
+     * @param StoreBorderMarkerRequest $request
+     * @param Game $game
+     */
+    public function storeMarkers(StoreBorderMarkerRequest $request, Game $game)
+    {
+        $lats = $request->lats;
+        $lngs = $request->lngs;
+        for ($i = 0; $i < count($lats); $i++) {
+            BorderMarker::create([
+                'location' => strval($lats[$i]) . ',' . strval($lngs[$i]),
+                'game_id' => $game->id
+            ]);
+        }
     }
 }

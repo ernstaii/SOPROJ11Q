@@ -28,6 +28,7 @@ function generateKey(id) {
         setTimeout(function () {
             if (errorMessage !== null) {
                 formBox.removeChild(errorMessage);
+                errorMessage = null;
             }
         }, 7500);
     } else {
@@ -157,7 +158,9 @@ setInterval(function() {
     let error_box_total = document.querySelector('#error-box');
     if (error_box_total !== null && error_box_total.children[0].childNodes.length > 0) {
         setTimeout(function () {
-            document.body.removeChild(error_box_total);
-        }, 7500);
+            if (error_box_total !== null) {
+                document.body.removeChild(error_box_total);
+            }
+        }, 5000);
     }
-}, 2000);
+}, 10000);

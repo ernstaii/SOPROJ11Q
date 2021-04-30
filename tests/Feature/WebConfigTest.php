@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\Statuses;
 use App\Events\StartGameEvent;
+use App\Models\BorderMarker;
 use App\Models\InviteKey;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Game;
@@ -32,6 +33,9 @@ class WebConfigTest extends TestCase
         InviteKey::factory()->count(3)->state([
             'game_id' => $game->id
         ])->create();
+        BorderMarker::factory()->count(3)->state([
+            'game_id' => $game->id
+        ])->create();
 
         $this->put('/games/' . $game->id, [
             'duration' => '120',
@@ -58,6 +62,26 @@ class WebConfigTest extends TestCase
 
         $game->refresh();
         $this->assertEquals(Statuses::Config, $game->status);
+    }
+
+    public function test_can_store_border_markers()
+    {
+        $game = Game::factory()->create();
+
+        $this->post('/games/' . $game->id . '/border-markers', [
+            'lats' => [
+                51.733201,
+                51.733725,
+                51.790284
+            ],
+            'lngs' => [
+                5.480463,
+                5.587817,
+                5.577451
+            ]
+        ])->assertStatus(200);
+
+        $this->assertDatabaseCount('border_markers', 3);
     }
 
     public function test_cannot_update_state_if_game_is_in_invalid_state()

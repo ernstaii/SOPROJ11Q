@@ -13,13 +13,13 @@ class InviteKeyController extends Controller
     public function get(InviteKey $key)
     {
         if ($key->user()->count() > 0) {
-            response()->json([
-                'value' => 'De code \'' . $key->value . '\' is al in gebruik.'
-            ], 422)->throwResponse();
+            response()->json(['errors' => [
+                'value' => ['De code \'' . $key->value . '\' is al in gebruik.']
+            ]], 422)->throwResponse();
         } else if ($key->game->status === Statuses::Finished) {
-            response()->json([
-                'value' => 'De code \'' . $key->value . '\' is verlopen, omdat het spel is afgelopen.'
-            ], 422)->throwResponse();
+            response()->json(['errors' => [
+                'value' => ['De code \'' . $key->value . '\' is verlopen, omdat het spel is afgelopen.']
+            ]], 422)->throwResponse();
         }
 
         return $key->getOriginal();

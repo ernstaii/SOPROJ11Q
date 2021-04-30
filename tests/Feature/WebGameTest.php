@@ -6,6 +6,7 @@ use App\Enums\Statuses;
 use App\Events\EndGameEvent;
 use App\Events\PauseGameEvent;
 use App\Events\ResumeGameEvent;
+use App\Models\BorderMarker;
 use App\Models\Game;
 use App\Models\InviteKey;
 use App\Models\Loot;
@@ -54,6 +55,9 @@ class WebGameTest extends TestCase
 
         $game = Game::factory()->ongoing()->create();
         InviteKey::factory()->count(3)->state([
+            'game_id' => $game->id
+        ])->create();
+        BorderMarker::factory()->count(3)->state([
             'game_id' => $game->id
         ])->create();
 
