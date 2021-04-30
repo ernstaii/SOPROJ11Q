@@ -60,6 +60,14 @@ class GameIntervalCommand extends Command
                         if (!array_key_exists($game->id, $lastUpdates)) {
                             $lastUpdates[$game->id] = $now;
                         }
+                        $game->time_left = $game->time_left - $now->diffInSeconds(Carbon::parse($game->updated_at));
+
+                        if ($game->time_left <= 0)
+                        {
+                            $game->status = Statuses::Finished;
+                            $game->save();
+                            event(new EndGameEvent($game->id, 'De tijd is op. Het spel is beëindigd.'));
+                        }
 
                         $difference = $now->diffInSeconds($lastUpdates[$game->id]);
                         $this->log("  Game " . $game->id . " time difference: " . $difference . "/" . $game->interval);
@@ -70,14 +78,11 @@ class GameIntervalCommand extends Command
                             $lastUpdates[$game->id] = $now;
                             $this->log("    Invoking interval of game " . $game->id);
 
-                            $game->time_left = $game->time_left - $now->diffInSeconds(Carbon::parse($game->updated_at));
-                            $game->save();
-
                             if ($game->time_left <= 0) {
                                 $game->status = Statuses::Finished;
-                                $game->save();
                                 event(new EndGameEvent($game->id, 'De tijd is op. Het spel is beëindigd.'));
                             }
+                            $game->save();
                         }
                     } else if (array_key_exists($game->id, $lastUpdates)) {
                         // Remove unused time stamps so intervals won't be instant when an id is reused or a game is resumed
