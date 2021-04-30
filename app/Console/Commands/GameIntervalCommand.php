@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Enums\Statuses;
+use App\Events\EndGameEvent;
 use App\Events\GameIntervalEvent;
 use App\Http\Controllers\GameController;
 use App\Models\Game;
@@ -46,7 +47,7 @@ class GameIntervalCommand extends Command
         $gameController = new GameController();
         $lastUpdates = [];
 
-        while(1<2){
+        while (1 < 2) {
             $this->log("Checking intervals");
 
             $now = Carbon::now();
@@ -68,15 +69,22 @@ class GameIntervalCommand extends Command
                             event(new GameIntervalEvent($game->id, $users));
                             $lastUpdates[$game->id] = $now;
                             $this->log("    Invoking interval of game " . $game->id);
+
+                            $game->time_left = $game->time_left - $now->diffInSeconds(Carbon::parse($game->updated_at));
+                            $game->save();
+
+                            if ($game->time_left <= 0) {
+                                $game->status = Statuses::Finished;
+                                $game->save();
+                                event(new EndGameEvent($game->id, 'De tijd is op. Het spel is beëindigd.'));
+                            }
                         }
-                    }
-                    else if (array_key_exists($game->id, $lastUpdates)) {
+                    } else if (array_key_exists($game->id, $lastUpdates)) {
                         // Remove unused time stamps so intervals won't be instant when an id is reused or a game is resumed
                         unset($lastUpdates[$game->id]);
                     }
                 }
-            }
-            catch(Exception $exception) {
+            } catch (Exception $exception) {
                 echo "An error occurred: \n\r" . $exception->getTraceAsString() . "\n\r";
             }
 
@@ -85,8 +93,9 @@ class GameIntervalCommand extends Command
         return 0;
     }
 
-    private function log($message){
-        if($this->option('log')){
+    private function log($message)
+    {
+        if ($this->option('log')) {
             echo $message . "\n";
         }
     }

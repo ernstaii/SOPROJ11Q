@@ -33,11 +33,11 @@
                             @csrf
                             @method('PUT')
                             <div class="form-item">
-                                <label class="form-label-0" for="duration">Tijdslimiet</label>
+                                <label class="form-label-0" for="duration">Spelduratie (min)</label>
                                 <input name="duration" class="input-numeric-0" id="duration" type="text">
                             </div>
                             <div class="form-item">
-                                <label class="form-label-0" for="interval">Interval locatieupdates</label>
+                                <label class="form-label-0" for="interval">Locatieupdate interval (sec)</label>
                                 <input name="interval" class="input-numeric-0" id="interval" type="text">
                             </div>
                             <div class="form-item">
