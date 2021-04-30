@@ -47,7 +47,7 @@ class GameIntervalCommand extends Command
         $gameController = new GameController();
         $lastUpdates = [];
 
-        while (1 < 2) {
+        while (true) {
             $game_ended = false;
             $this->log("Checking intervals");
 
@@ -93,7 +93,6 @@ class GameIntervalCommand extends Command
 
             sleep(5);
         }
-        return 0;
     }
 
     private function log($message)
