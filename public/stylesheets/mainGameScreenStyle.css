@@ -90,7 +90,9 @@ h2
 {
     align-items:                center;
     display:                    flex;
+    height:                     40px;
     justify-content:            center;
+    max-height:                 40px;
     width:                      50%;
 }
 
