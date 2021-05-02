@@ -1,9 +1,9 @@
-const mapCenter = [51.560596, 5.0919143];
+const mapCenter = [51.950180, 5.235682];
 const maxPopupWidth = 400;
 const zoomLevel = 9;
 const minZoomLevel = 9;
 const corner1 = L.latLng(53.828464, 2.871753),
-    corner2 = L.latLng(50.696721, 9.188892),
+    corner2 = L.latLng(50.559772, 7.521491),
     mapBounds = L.latLngBounds(corner1, corner2);
 const mapBox = document.querySelector('.mapbox');
 
@@ -49,7 +49,7 @@ const borderIcon = new L.Icon({
 
 setTimeout(() => {
     mymap.invalidateSize(true);
-}, 200);
+}, 0);
 
 let mymap;
 initMap();
