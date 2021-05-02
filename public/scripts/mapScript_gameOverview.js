@@ -42,7 +42,7 @@ function applyLootMarker(lat, lng, loot_name) {
     let latlng = L.latLng(lat, lng);
     let newMarker = L.marker(latlng, {icon: lootIcon})
         .bindPopup(L.popup({ maxWidth: maxPopupWidth })
-            .setContent(loot_name))
+            .setContent('Buit: ' + loot_name))
         .addTo(mymap);
     markers.push(newMarker);
     markerLatLngs.push(newMarker.getLatLng());
