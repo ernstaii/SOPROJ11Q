@@ -1,7 +1,6 @@
 @extends('layout')
 
 @section('head')
-    <link rel="stylesheet" href="{{asset('stylesheets/configStyle.css')}}">
     <link rel="stylesheet" href="{{asset('stylesheets/mainGameScreenStyle.css')}}">
     <link rel="stylesheet" href="{{asset('stylesheets/mapStyle.css')}}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -76,7 +75,7 @@
                 </div>
             </div>
         </div>
-        <div class="box shadow">
+        <div class="box shadow" id="outer_keys_box">
             <div class="item-header">
                 <h2>CODES</h2>
             </div>
@@ -111,10 +110,17 @@
                 <button class="generic-button" id="print_button" onclick="printKeys()">Print codes</button>
             </div>
         </div>
-        <div class="mapbox shadow">
-            <div id="map"></div>
-            <button onclick="removeLastMarker()" id="button_remove_markers">Verwijder laatste marker</button>
-            <button onclick="saveMarkers({{$id}})" id="button_save_markers" title="Er zijn minstens 3 markers nodig voordat het veld opgeslagen kan worden.">Sla speelveld op</button>
+        <div class="total-map-box">
+            <div class="map-top-tabs">
+                <div class="map-top-tab"><p>Spelgrenzen</p></div>
+                <div class="map-top-tab"><p>Buiten</p></div>
+                <div class="map-top-tab"><p>Politiebureau</p></div>
+            </div>
+            <div class="mapbox shadow">
+                <div id="map"></div>
+                <button onclick="removeLastMarker()" id="button_remove_markers">Verwijder laatste marker</button>
+                <button onclick="saveMarkers({{$id}})" id="button_save_markers" title="Er zijn minstens 3 markers nodig voordat het veld opgeslagen kan worden.">Sla speelveld op</button>
+            </div>
         </div>
     </div>
     <script>

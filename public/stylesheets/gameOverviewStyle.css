@@ -1,0 +1,14 @@
+.game-main-box
+{
+    display:                    flex;
+    flex-direction:             column;
+}
+
+.game-main-screen
+{
+    display:                    flex;
+    flex-direction:             row;
+    flex-wrap:                  wrap;
+    margin-top:                 2.8vh;
+    text-align:                 center;
+}

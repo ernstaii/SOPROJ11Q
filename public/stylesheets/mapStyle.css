@@ -1,38 +1,100 @@
-#mapButton button{
-    background: #DEDEDE;
+#button_save_markers
+{
+    pointer-events:             auto;
 }
 
-#map {
-    width: 30vw;
-    height: 40vh;
-    display: block;
-    animation: rollout 1s ease;
-    box-shadow: rgba(128, 128, 128, 0.56) 0px 3px 2px;
-    text-align: left;
+.leaflet-control a
+{
+    background-color:           white;
+    border:                     none;
+    border-radius:              0;
+    color:                      dodgerblue;
+    cursor:                     auto;
+    font-size:                  11px;
+    margin-bottom:              0;
+    margin-left:                0;
+    text-decoration:            none;
+    width:                      0;
 }
 
-.leaflet-control a {
-    background-color: white;
-    border: none;
-    border-radius: 0;
-    text-decoration: none;
-    font-size: 11px;
-    color: dodgerblue;
-    cursor: auto;
-    width: 0;
-    margin-left: 0;
-    margin-bottom: 0;
+#map
+{
+    animation:                  rollout 1s ease;
+    box-shadow:                 rgba(128, 128, 128, 0.56) 0px 3px 2px;
+    display:                    block;
+    height:                     40vh;
+    text-align:                 left;
+    width:                      30vw;
 }
 
-#button_save_markers {
-    pointer-events: auto;
+.map-top-tab
+{
+    align-items:                center;
+    background:                 white;
+    border-color:               grey;
+    border-radius:              1vw 1vw 0 0;
+    border-style:               solid;
+    border-width:               2px;
+    display:                    flex;
+    justify-content:            center;
+    margin-right:               1vw;
+
+    /* OVERWRITES */
+    border-bottom-style:        none; /* OVERWRITE FOR: border-style */
 }
 
-@keyframes rollout {
-0%{
-    width: 55vw;
+.map-top-tab p
+{
+    font-size:                  1.7vh;
+    margin:                     1.5vh 1vw 1.5vh 1vw;
 }
-100%{
-    width: 65vw;
+
+.map-top-tabs
+{
+    display:                    flex;
+    flex-direction:             row;
+    margin-left:                2vw;
 }
+
+.mapbox
+{
+    background:                 #fff;
+    border-color:               grey;
+    border-style:               solid;
+    border-width:               2px;
+    margin-left:                2vw;
+    margin-right:               1vw;
+    max-height:                 40vh;
+    min-width:                  375px;
+    text-align:                 center;
+    width:                      30vw;
+}
+
+.mapbox button
+{
+    margin:                     2vh;
+    padding:                    1.2vh;
+}
+
+#mapButton button
+{
+    background:                 #DEDEDE;
+}
+
+.total-map-box
+{
+    width:                      30vw;
+}
+
+@keyframes rollout
+{
+    0%
+    {
+        width:                  55vw;
+    }
+
+    100%
+    {
+        width:                  65vw;
+    }
 }
