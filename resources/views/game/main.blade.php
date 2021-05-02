@@ -64,7 +64,14 @@
             @foreach($loot as $loot_item)
                 applyLootMarker({{$loot_item->location}}, '{{$loot_item->name}}');
             @endforeach
-
+            @foreach($users as $user)
+                applyUserMarker({{$user->location}}, '{{$user->username}}', '{{$user->role}}');
+            @endforeach
+            updateUserPinsOnChange();
+            @foreach($border_markers as $border_marker)
+                applyExistingMarker({{$border_marker->location}});
+            @endforeach
+            drawLinesForExistingMarkers();
         });
     </script>
 @endsection

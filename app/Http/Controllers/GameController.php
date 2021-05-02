@@ -61,7 +61,8 @@ class GameController extends Controller
                 return view('game.main', [
                     'id' => $game->id,
                     'loot' => $game->loot,
-                    'users' => $game->get_users()
+                    'users' => $game->get_users_with_role(),
+                    'border_markers' => $game->border_markers
                 ]);
         }
     }
