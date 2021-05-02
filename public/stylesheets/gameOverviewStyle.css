@@ -1,9 +1,3 @@
-.game-main-box
-{
-    display:                    flex;
-    flex-direction:             column;
-}
-
 .game-main-screen
 {
     display:                    flex;

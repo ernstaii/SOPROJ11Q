@@ -60,6 +60,7 @@ class GameController extends Controller
             default:
                 return view('game.main', [
                     'id' => $game->id,
+                    'loot' => $game->loot,
                     'users' => $game->get_users()
                 ]);
         }
