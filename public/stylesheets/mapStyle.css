@@ -85,16 +85,3 @@
 {
     width:                      30vw;
 }
-
-@keyframes rollout
-{
-    0%
-    {
-        width:                  55vw;
-    }
-
-    100%
-    {
-        width:                  65vw;
-    }
-}
