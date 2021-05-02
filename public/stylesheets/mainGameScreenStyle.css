@@ -90,7 +90,9 @@ h2
 {
     align-items:                center;
     display:                    flex;
+    height:                     40px;
     justify-content:            center;
+    max-height:                 40px;
     width:                      50%;
 }
 
@@ -153,7 +155,7 @@ h2
 
 #outer_keys_box
 {
-    visibility:                 collapse;
+    display:                    none;
 }
 
 .slider-labels

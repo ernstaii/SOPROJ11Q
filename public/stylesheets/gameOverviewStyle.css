@@ -1,3 +1,19 @@
+.form-item
+{
+    margin-top:                 0;
+}
+
+.game-form
+{
+    padding-top:                1.5vh;
+    padding-bottom:             1.5vh;
+}
+
+.game-form label, .game-form input, .game-form button
+{
+    margin:                     0.6vh 0 0.6vh 0;
+}
+
 .game-main-screen
 {
     display:                    flex;
