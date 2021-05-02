@@ -1,7 +1,6 @@
 @extends('layout')
 
 @section('head')
-    <title>Overzicht Spel {{$id}}</title>
     <link rel="stylesheet" href="{{asset('stylesheets/mainGameScreenStyle.css')}}">
     <link rel="stylesheet" href="{{asset('stylesheets/mapStyle.css')}}">
     <link rel="stylesheet" href="{{asset('stylesheets/gameOverviewStyle.css')}}">
@@ -14,6 +13,9 @@
             crossorigin=""></script>
     <script src="{{asset('scripts/mapScript_gameOverview.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Overzicht Spel {{$id}}</title>
 @endsection
 
 @section('content')
@@ -67,7 +69,7 @@
             @foreach($users as $user)
                 applyUserMarker({{$user->location}}, '{{$user->username}}', '{{$user->role}}');
             @endforeach
-            updateUserPinsOnChange();
+            updateUserPinsOnChange({{$interval}}, '{{$game_status}}', {{$id}});
             @foreach($border_markers as $border_marker)
                 applyExistingMarker({{$border_marker->location}});
             @endforeach

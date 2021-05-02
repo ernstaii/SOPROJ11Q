@@ -62,7 +62,10 @@ class GameController extends Controller
                     'id' => $game->id,
                     'loot' => $game->loot,
                     'users' => $game->get_users_with_role(),
-                    'border_markers' => $game->border_markers
+                    'border_markers' => $game->border_markers,
+                    'interval' => $game->interval,
+                    'duration' => $game->duration,
+                    'game_status' => $game->status
                 ]);
         }
     }

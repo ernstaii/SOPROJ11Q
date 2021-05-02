@@ -10,6 +10,8 @@ const mapBox = document.querySelector('.mapbox');
 let markerLatLngs = [];
 let markers = [];
 let lines = [];
+let userMarkers = [];
+let lootMarkers = [];
 
 const lootIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
@@ -72,6 +74,7 @@ function applyLootMarker(lat, lng, loot_name) {
             .setContent('Buit: ' + loot_name))
         .addTo(mymap);
     applyEvents(newMarker);
+    lootMarkers.push(newMarker);
 }
 
 function applyUserMarker(lat, lng, name, role) {
@@ -91,10 +94,45 @@ function applyUserMarker(lat, lng, name, role) {
     }
 
     applyEvents(newMarker);
+    userMarkers.push(newMarker);
 }
 
-function updateUserPinsOnChange() {
-    //TODO: implement timer that updates user locations every interval.
+function updateUserPinsOnChange(interval, status, game_id) {
+    if (status === 'on-going') {
+        setTimeout(() => {
+            setInterval(() => {
+                getLatestUserLocations(game_id);
+            }, (interval * 1000));
+        }, 5000);
+    }
+}
+
+async function getLatestUserLocations(game_id) {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    await $.ajax({
+        url: '/api/games/' + game_id + '/users-with-role',
+        type: 'GET',
+        data: {},
+        success: function (data) {
+            let originalLastIndex = (userMarkers.length - 1);
+            for (let i = originalLastIndex; i >= 0; i--) {
+                mymap.removeLayer(userMarkers[i]);
+                userMarkers.pop();
+            }
+
+            data.forEach(user => {
+                applyUserMarker(Number(user.location.split(',')[0]), Number(user.location.split(',')[1]), user.username, user.role);
+            });
+        },
+        error: function (err) {
+            console.log(err);
+        },
+    });
 }
 
 function applyExistingMarker(lat, lng) {
