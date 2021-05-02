@@ -9,7 +9,7 @@ if (police_keys_box.childElementCount > 0 || thieves_keys_box.childElementCount 
     formBox.children[0].children[1].removeChild(code_input);
     formBox.children[0].children[1].removeChild(code_button);
     formBox.children[0].children[1].removeChild(document.querySelector('#ratio_slider'));
-    outer_keys_box.style.visibility = 'visible';
+    outer_keys_box.style.display = 'block';
 }
 
 function generateKey(id) {
@@ -69,7 +69,7 @@ async function getKeys(input, ratio, id) {
                         thieves_keys_box.appendChild(div);
                     }
                 }
-                outer_keys_box.style.visibility = 'visible';
+                outer_keys_box.style.display = 'block';
             }
         },
         error: function () {

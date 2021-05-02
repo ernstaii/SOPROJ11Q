@@ -153,7 +153,7 @@ h2
 
 #outer_keys_box
 {
-    visibility:                 collapse;
+    display:                    none;
 }
 
 .slider-labels
