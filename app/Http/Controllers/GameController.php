@@ -46,7 +46,7 @@ class GameController extends Controller
     {
         return $game->invite_keys()->get();
 	}
-	
+
     public function getBorderMarkers(Game $game)
     {
         return $game->border_markers()->get();
@@ -147,14 +147,18 @@ class GameController extends Controller
 	{
         $game->thieves_score = $score;
         $game->save();
+
+        return $game;
     }
 
     public function updatePoliceScore(Game $game, int $score)
 	{
         $game->police_score = $score;
         $game->save();
+
+        return $game;
 	}
-	
+
     /**
      * AJAX function. Not to be called via manual routing.
      *
