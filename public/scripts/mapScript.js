@@ -96,7 +96,7 @@ function addMarker(e) {
         lines.pop();
     }
     if (markers.length > 1) {
-        lines.push(L.polyline(markerLatLngs, {color: 'red'}).addTo(mymap));
+        lines.push(L.polyline(markerLatLngs, {color: 'black', dashArray: '30, 30', dashOffset: '0'}).addTo(mymap));
     }
     if (markers.length > 2) {
         addNewLineBetweenFirstAndLast();
@@ -141,7 +141,7 @@ function removeLastMarker() {
 function addNewLineBetweenFirstAndLast() {
     let firstLastMarkerLatLngs = [];
     firstLastMarkerLatLngs.push(markerLatLngs[0], markerLatLngs[markerLatLngs.length - 1]);
-    lines.push(L.polyline(firstLastMarkerLatLngs, {color: 'red'}).addTo(mymap));
+    lines.push(L.polyline(firstLastMarkerLatLngs, {color: 'black', dashArray: '30, 30', dashOffset: '0'}).addTo(mymap));
 }
 
 async function saveMarkers(id) {
@@ -198,7 +198,7 @@ function drawLinesForExistingMarkers(game_id) {
     }
     for(let i = 0; i < markerLatLngs.length - 1; i++) {
         if (i < markerLatLngs.length - 2) {
-            lines.push(L.polyline(markerLatLngs, {color: 'red'}).addTo(mymap));
+            lines.push(L.polyline(markerLatLngs, {color: 'black', dashArray: '30, 30', dashOffset: '0'}).addTo(mymap));
         }
         else {
             addNewLineBetweenFirstAndLast();
