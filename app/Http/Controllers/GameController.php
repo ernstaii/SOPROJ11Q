@@ -65,7 +65,8 @@ class GameController extends Controller
                     'border_markers' => $game->border_markers,
                     'interval' => $game->interval,
                     'duration' => $game->duration,
-                    'game_status' => $game->status
+                    'game_status' => $game->status,
+                    'time_left' => $game->time_left
                 ]);
         }
     }

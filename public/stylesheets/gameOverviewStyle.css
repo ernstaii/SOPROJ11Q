@@ -1,3 +1,11 @@
+.center-box
+{
+    align-items:                center;
+    display:                    flex;
+    flex-direction:             column;
+    justify-content:            center;
+}
+
 .form-item
 {
     margin-top:                 0;
@@ -21,4 +29,23 @@
     flex-wrap:                  wrap;
     margin-top:                 2.8vh;
     text-align:                 center;
+}
+
+.timer
+{
+    font-size:                  3vw;
+}
+
+.timer-box
+{
+    align-items:                center;
+    background:                 #fff;
+    border-radius:              1vw;
+    display:                    flex;
+    justify-content:            center;
+    margin-left:                2vw;
+    margin-right:               1vw;
+    min-width:                  375px;
+    text-align:                 center;
+    width:                      20vw;
 }

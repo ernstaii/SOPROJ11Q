@@ -79,9 +79,8 @@ class GameIntervalCommand extends Command
                                 $game->status = Statuses::Finished;
                                 event(new EndGameEvent($game->id, 'De tijd is op. Het spel is beëindigd.'));
                             }
-
-                            $game->save();
                         }
+                        $game->save();
                     } else if (array_key_exists($game->id, $lastUpdates)) {
                         // Remove unused time stamps so intervals won't be instant when an id is reused or a game is resumed
                         unset($lastUpdates[$game->id]);

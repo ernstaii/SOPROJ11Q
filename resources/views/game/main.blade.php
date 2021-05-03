@@ -60,6 +60,12 @@
             <div id="map">
             </div>
         </div>
+        <div class="timer-box shadow">
+            <div class="center-box">
+                <h2>Totale speelduur: {{$duration}} minuten</h2>
+                <h1 class="timer">00:00:00</h1>
+            </div>
+        </div>
     </div>
     <script>
         window.addEventListener('DOMContentLoaded', function() {
@@ -74,6 +80,7 @@
                 applyExistingMarker({{$border_marker->location}});
             @endforeach
             drawLinesForExistingMarkers();
+            handleTimerElement('{{$game_status}}', '{{$time_left}}', '{{$duration}}', {{$id}});
         });
     </script>
 @endsection

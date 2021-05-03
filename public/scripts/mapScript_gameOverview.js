@@ -6,12 +6,14 @@ const corner1 = L.latLng(53.828464, 2.871753),
     corner2 = L.latLng(50.559772, 7.521491),
     mapBounds = L.latLngBounds(corner1, corner2);
 const mapBox = document.querySelector('.mapbox');
+const timerElmt = document.querySelector('.timer');
 
 let markerLatLngs = [];
 let markers = [];
 let lines = [];
 let userMarkers = [];
 let lootMarkers = [];
+let totalSeconds = 0;
 
 const lootIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
@@ -169,5 +171,43 @@ function applyEvents(marker) {
     });
     marker.on('mouseout', function (e) {
         this.closePopup();
+    });
+}
+
+function handleTimerElement(status, time_left, duration, game_id) {
+    let seconds = (duration * 60) - time_left;
+    timerElmt.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
+    if (status === 'on-going') {
+        setInterval(() => {
+            getGameObject(game_id).then(() => {
+                seconds = (duration * 60) - totalSeconds;
+                seconds++;
+                timerElmt.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
+            });
+        }, 5000);
+        setInterval(() => {
+            seconds++;
+            timerElmt.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
+        }, 1000);
+    }
+}
+
+async function getGameObject(game_id) {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    await $.ajax({
+        url: '/api/games/' + game_id,
+        type: 'GET',
+        data: {},
+        success: function (data) {
+            totalSeconds = data.time_left;
+        },
+        error: function (err) {
+            console.log(err);
+        },
     });
 }
