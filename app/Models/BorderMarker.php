@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 /**
  * App\Models\BorderMarker
  *
@@ -19,15 +19,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker query()
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereDuration($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereGameId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereInterval($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereTimeLeft($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereUpdatedAt($value)
  * @mixin \Eloquent
- * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereGameId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereLocation($value)
  */
 class BorderMarker extends Model
 {

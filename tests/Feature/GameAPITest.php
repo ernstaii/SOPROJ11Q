@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Enums\Roles;
+use App\Enums\UserStatuses;
 use App\Models\BorderMarker;
 use App\Models\Game;
 use App\Models\Loot;
@@ -17,6 +19,7 @@ class GameAPITest extends TestCase
     public function test_can_get_game()
     {
         $game = Game::factory()->create();
+        $game->refresh();
 
         $this->get('/api/games/' . $game->id)
             ->assertStatus(200)
@@ -134,6 +137,43 @@ class GameAPITest extends TestCase
             ->isInvalid();
     }
 
+    public function test_can_catch_thief()
+    {
+        $game = Game::factory()->create();
+        $user = User::factory()->create();
+        InviteKey::factory()->state([
+            'game_id' => $game->id,
+            'user_id' => $user->id,
+            'role' => Roles::Thief
+        ])->create();
+
+        $this->patch('/api/users/' . $user->id . '/catch')
+            ->assertStatus(200);
+
+        $user->refresh();
+        $this->assertEquals(UserStatuses::Caught, $user->status);
+    }
+
+    public function test_cannot_catch_thief_not_playing()
+    {
+        $game = Game::factory()->create();
+        $user = User::factory()->state([
+            'status' => UserStatuses::InLobby
+        ])->create();
+        InviteKey::factory()->state([
+            'game_id' => $game->id,
+            'user_id' => $user->id,
+            'role' => Roles::Thief
+        ])->create();
+
+        $this->patch('/api/users/' . $user->id . '/catch')
+            ->assertStatus(422)
+            ->isInvalid();
+
+        $user->refresh();
+        $this->assertEquals(UserStatuses::InLobby, $user->status);
+    }
+
     public function test_can_request_new_keys_for_game()
     {
         $game = Game::factory()->create();
@@ -175,9 +215,12 @@ class GameAPITest extends TestCase
             ->isInvalid();
     }
 
-    public function test_requesting_unknown_key_gives_404()
+    public function test_requesting_unknown_resource_returns_404()
     {
         $this->get('/api/invite-keys/AAAA')
+            ->assertStatus(404);
+
+        $this->patch('/api/users/1/catch')
             ->assertStatus(404);
     }
 }

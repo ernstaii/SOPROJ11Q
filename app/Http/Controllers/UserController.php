@@ -19,6 +19,12 @@ class UserController extends Controller
 
     public function catchThief(User $user)
     {
+        if ($user->status != UserStatuses::Playing) {
+            response()->json(['errors' => [
+                'value' => ['Alleen spelers die niet gevangen of in de lobby zijn kunnen gevangen worden.']
+            ]], 422)->throwResponse();
+        }
+
         $user->status = UserStatuses::Caught;
         $user->caught_at = Carbon::now();
         $user->save();

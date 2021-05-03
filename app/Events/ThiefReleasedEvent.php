@@ -11,12 +11,12 @@ class ThiefReleasedEvent extends GameEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
+    public $user;
 
     public function __construct(User $user)
     {
         $this->gameId = $user->inviteKey->game->id;
-        $this->message = 'Speler ' . $user->username . ' is zojuist vrijgelaten.';
+        $this->user = $user;
     }
 
     public function broadcastAs()

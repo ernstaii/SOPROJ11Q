@@ -82,6 +82,7 @@ class GameController extends Controller
             case Statuses::Ongoing:
                 if ($game->status === Statuses::Config) {
                     $game->time_left = $request->duration * 60;
+                    $game->started_at = Carbon::now();
                     event(new StartGameEvent($game->id));
                 } else {
                     event(new ResumeGameEvent($game->id));

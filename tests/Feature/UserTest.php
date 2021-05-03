@@ -15,6 +15,7 @@ class UserTest extends TestCase
     public function test_can_get_user()
     {
         $user = User::factory()->create();
+        $user->refresh();
 
         $this->get('api/users/' . $user->id)
             ->assertStatus(200)
@@ -46,7 +47,7 @@ class UserTest extends TestCase
             'user_id' => $user->id
         ])->create();
 
-        $response = $this->put('api/users/' . $user->id, [
+        $response = $this->patch('api/users/' . $user->id, [
             'location' => '51.763010,5.426781'
         ])->assertStatus(200);
 

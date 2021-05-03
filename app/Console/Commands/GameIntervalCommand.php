@@ -7,118 +7,90 @@ use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
 use App\Events\GameIntervalEvent;
 use App\Events\ThiefReleasedEvent;
-use App\Http\Controllers\GameController;
 use App\Models\Game;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+use const Grpc\STATUS_ABORTED;
 
 class GameIntervalCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'game:intervals {--log}';
+    protected $signature = 'game:interval {--log}';
+    protected $description = 'Updates all on-going games';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Takes care of pushing game interval events';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
     public function handle()
     {
-        $gameController = new GameController();
-        $lastUpdates = [];
+        $this->log('Interval started');
+        $now = Carbon::now();
 
-        while (true) {
-            $game_ended = false;
-            $this->log("Checking intervals");
+        try {
+            $games = Game::where('status', '=', Statuses::Ongoing)->get();
+            foreach ($games as $game) {
+                $this->log('  Interval game ' . $game->id);
+                $game_ended = $this->hasGameTimeElapsed($game, $now);
 
-            $now = Carbon::now();
+                if (!$game_ended) {
+                    $this->log('    Game is on-going');
+                    $difference = $now->diffInSeconds(Carbon::parse($game->last_interval_at ?? $game->started_at));
+                    $this->log('    ' . $difference . ' seconds have elapsed since last interval');
 
-            try {
-                foreach (Game::all() as $game) {
-                    $gameTimeExpired = $now->diffInHours($game->updated_at) > $game->duration / 60 || $game->time_left <= 0;
-
-                    if ($game->status == Statuses::Ongoing && !$gameTimeExpired) {
-                        if (!array_key_exists($game->id, $lastUpdates)) {
-                            $lastUpdates[$game->id] = $now;
-                        }
-                        $game->time_left = $game->time_left - $now->diffInSeconds(Carbon::parse($game->updated_at));
-
-                        if ($game->time_left <= 0)
-                            $game_ended = true;
-
-                        $difference = $now->diffInSeconds($lastUpdates[$game->id]);
-                        $this->log("  Game " . $game->id . " time difference: " . $difference . "/" . $game->interval);
-
-                        if ($difference >= $game->interval || $game_ended) {
-                            $users = $gameController->getUsers($game);
-                            event(new GameIntervalEvent($game->id, $users));
-                            $lastUpdates[$game->id] = $now;
-                            $this->log("    Invoking interval of game " . $game->id);
-
-                            if ($game_ended) {
-                                $game->status = Statuses::Finished;
-                                event(new EndGameEvent($game->id, 'De tijd is op. Het spel is beëindigd.'));
-                            }
-
-                            $game->save();
-                        }
-                    } else if (array_key_exists($game->id, $lastUpdates)) {
-                        // Remove unused time stamps so intervals won't be instant when an id is reused or a game is resumed
-                        unset($lastUpdates[$game->id]);
+                    if ($difference >= $game->interval) {
+                        $this->log('    Invoking interval event');
+                        event(new GameIntervalEvent($game->id, $game->get_users()));
+                        $game->last_interval_at = $now;
                     }
 
-                    $this->updateUsers($game);
+                    $this->releasePlayersIfTimeHasElapsed($game, $now);
+                } else {
+                    $this->log('    Game has elapsed');
+                    $game->status = Statuses::Finished;
+                    $game->time_left = 0;
+                    event(new EndGameEvent($game->id, 'De tijd is op. Het spel is beëindigd.'));
                 }
-            } catch (Exception $exception) {
-                echo "An error occurred: \n\r" . $exception->getTraceAsString() . "\n\r";
+
+                $game->save();
             }
-
-            sleep(5);
+        } catch (Exception $exception) {
+            echo "An error occurred: \n\r" . $exception->getTraceAsString() . "\n\r";
         }
+        $this->log('Interval ended');
+        return 0;
     }
 
-    private function log($message)
+    private function releasePlayersIfTimeHasElapsed(Game $game, Carbon $now)
     {
-        if ($this->option('log')) {
-            echo $message . "\n";
-        }
-    }
+        $caught_users = $game->get_users()->where('status', '=', UserStatuses::Caught);
 
-    private function updateUsers(Game $game)
-    {
-        $users = $game->get_users();
-
-        foreach ($users as $user) {
-            if ($user->status = UserStatuses::Caught && Carbon::parse($user->caught_at)->diffInMinutes(Carbon::now()) >= 10) {
+        foreach ($caught_users as $user) {
+            if (Carbon::parse($user->caught_at)->diffInMinutes($now) >= $game->jail_time) {
                 $user->status = UserStatuses::Playing;
                 $user->caught_at = null;
                 $user->save();
                 event(new ThiefReleasedEvent($user));
                 $this->log("    Releasing player " . $user->id . " of game " . $game->id);
             }
+        }
+    }
+
+    private function hasGameTimeElapsed(Game $game, Carbon $now)
+    {
+        $game->time_left -= $now->diffInSeconds(Carbon::parse($game->updated_at));
+        if ($game->time_left <= 0)
+            return true;
+        return false;
+    }
+
+    private function log($message)
+    {
+        if ($this->option('log')) {
+            Log::debug($message);
         }
     }
 }

@@ -9,4 +9,5 @@ final class UserStatuses extends Enum
     const None = "";
     const Playing = "playing";
     const Caught = "caught";
+    const InLobby = "in-lobby";
 }
