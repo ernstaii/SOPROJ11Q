@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserStatuses;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,6 +18,8 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('username', 255);
             $table->string('location', 255)->nullable();
+            $table->string('status')->default(UserStatuses::Playing);
+            $table->timestamp('caught_at')->nullable();
             $table->timestamps();
         });
     }

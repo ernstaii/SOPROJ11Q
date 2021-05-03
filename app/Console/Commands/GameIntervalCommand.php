@@ -3,10 +3,13 @@
 namespace App\Console\Commands;
 
 use App\Enums\Statuses;
+use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
 use App\Events\GameIntervalEvent;
+use App\Events\ThiefReleasedEvent;
 use App\Http\Controllers\GameController;
 use App\Models\Game;
+use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
@@ -86,6 +89,8 @@ class GameIntervalCommand extends Command
                         // Remove unused time stamps so intervals won't be instant when an id is reused or a game is resumed
                         unset($lastUpdates[$game->id]);
                     }
+
+                    $this->updateUsers($game);
                 }
             } catch (Exception $exception) {
                 echo "An error occurred: \n\r" . $exception->getTraceAsString() . "\n\r";
@@ -99,6 +104,21 @@ class GameIntervalCommand extends Command
     {
         if ($this->option('log')) {
             echo $message . "\n";
+        }
+    }
+
+    private function updateUsers(Game $game)
+    {
+        $users = $game->get_users();
+
+        foreach ($users as $user) {
+            if ($user->status = UserStatuses::Caught && Carbon::parse($user->caught_at)->diffInMinutes(Carbon::now()) >= 10) {
+                $user->status = UserStatuses::Playing;
+                $user->caught_at = null;
+                $user->save();
+                event(new ThiefReleasedEvent($user));
+                $this->log("    Releasing player " . $user->id . " of game " . $game->id);
+            }
         }
     }
 }

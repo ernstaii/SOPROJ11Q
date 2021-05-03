@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereTimeLeft($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereGameId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereLocation($value)
  */
 class BorderMarker extends Model
 {

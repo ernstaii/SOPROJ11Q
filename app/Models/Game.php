@@ -33,6 +33,8 @@ use function PHPUnit\Framework\isEmpty;
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereTimeLeft($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read Collection|\App\Models\BorderMarker[] $border_markers
+ * @property-read int|null $border_markers_count
  */
 class Game extends Model
 {

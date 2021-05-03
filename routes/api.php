@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResource('users', UserController::class)->only(['store', 'update']);
 Route::get('/users/{user}', [UserController::class, 'get']);
+Route::patch('/users/{user}', [UserController::class, 'catchThief']);
 
 Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/invite-keys/{key}', [InviteKeyController::class, 'get']);
