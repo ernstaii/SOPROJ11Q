@@ -36,9 +36,17 @@ const borderIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+let saveLootButton;
+let lootNameInput;
+let removeLootButton;
+
 let markerLatLngs = [];
 let markers = [];
 let lines = [];
+
+let lootLatLngs = [];
+let loot_markers = [];
+let lootNames = [];
 
 setTimeout(() => {
     mymap.invalidateSize(true);
@@ -75,6 +83,7 @@ function addMarker(e) {
         .bindPopup(L.popup({ maxWidth: maxPopupWidth})
             .setContent('Locatie marker ' + (markers.length + 1)))
         .addTo(mymap);
+    applyEvents(newMarker);
     markers.push(newMarker);
     markerLatLngs.push(newMarker.getLatLng());
     if (lines.length > 1) {
@@ -154,6 +163,8 @@ async function saveMarkers(id) {
             mymap.off('click');
             mapBox.removeChild(saveMarkerButton);
             mapBox.removeChild(removeMarkerButton);
+            createLootButtons(id);
+            mymap.on('click', addLoot);
         },
         error: function (err) {
             console.log(err);
@@ -167,15 +178,18 @@ function applyExistingMarker(lat, lng) {
         .bindPopup(L.popup({ maxWidth: maxPopupWidth })
             .setContent('Locatie marker ' + (markers.length + 1)))
         .addTo(mymap);
+    applyEvents(newMarker);
     markers.push(newMarker);
     markerLatLngs.push(newMarker.getLatLng());
 }
 
-function drawLinesForExistingMarkers() {
+function drawLinesForExistingMarkers(game_id) {
     if (markers.length > 0) {
         mymap.off('click');
         mapBox.removeChild(saveMarkerButton);
         mapBox.removeChild(removeMarkerButton);
+        createLootButtons(game_id);
+        mymap.on('click', addLoot);
     }
     for(let i = 0; i < markerLatLngs.length - 1; i++) {
         if (i < markerLatLngs.length - 2) {
@@ -185,4 +199,117 @@ function drawLinesForExistingMarkers() {
             addNewLineBetweenFirstAndLast();
         }
     }
+}
+
+function createLootButtons(game_id) {
+    let button_remove_last = document.createElement('button');
+    button_remove_last.textContent = 'Verwijder laatste buit';
+    button_remove_last.onclick = removeLoot;
+    button_remove_last.id = 'button_remove_loot';
+
+    let button_save_loot = document.createElement('button');
+    button_save_loot.textContent = 'Sla buiten op';
+    button_save_loot.onclick = () => saveLoot(game_id);
+    button_save_loot.id = 'button_save_loot';
+
+    let inputField = document.createElement('input');
+    inputField.type = 'text';
+    inputField.placeholder = 'Voer hier de buit naam in...';
+    inputField.id = 'input_loot_name';
+
+    mapBox.appendChild(button_remove_last);
+    mapBox.appendChild(button_save_loot);
+    mapBox.appendChild(inputField);
+
+    removeLootButton = document.querySelector('#button_remove_loot');
+    saveLootButton = document.querySelector('#button_save_loot');
+    lootNameInput = document.querySelector('#input_loot_name');
+}
+
+function addLoot(e) {
+    if (!lootNameInput.value || lootNameInput.value.trim() === '') {
+        return;
+    }
+
+    let contains = false;
+    lootLatLngs.forEach(latlng => {
+        if (latlng.equals(e.latlng)) {
+            contains = true;
+        }
+    });
+    if (contains) {
+        return;
+    }
+    let newMarker = L.marker(e.latlng, { icon: lootIcon })
+        .bindPopup(L.popup({ maxWidth: maxPopupWidth})
+            .setContent('Buit: ' + lootNameInput.value.trim()))
+        .addTo(mymap);
+    applyEvents(newMarker);
+    loot_markers.push(newMarker);
+    lootLatLngs.push(newMarker.getLatLng());
+
+    if (loot_markers.length >= 1) {
+        saveLootButton.disabled = false;
+        saveLootButton.title = '';
+    }
+
+    lootNames.push(lootNameInput.value.trim());
+}
+
+function removeLoot() {
+    if (loot_markers.length > 0) {
+        mymap.removeLayer(loot_markers[loot_markers.length - 1]);
+        loot_markers.pop();
+        lootLatLngs.pop();
+    }
+
+    if (loot_markers.length < 1) {
+        saveLootButton.disabled = true;
+        saveLootButton.title = 'Er is minstens 1 buit nodig voordat de buiten opgeslagen mogen worden.';
+    }
+
+    if (lootNames.length > 0) {
+        lootNames.pop();
+    }
+}
+
+async function saveLoot(id) {
+    if (loot_markers.length < 1) {
+        return;
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    let lats = [];
+    let lngs = [];
+    lootLatLngs.forEach(latLng => {
+        lats.push(latLng.lat);
+        lngs.push(latLng.lng);
+    });
+
+    await $.ajax({
+        url: '/games/' + id + '/loot',
+        type: 'POST',
+        data: { lats: lats, lngs: lngs, names: lootNames },
+        success: function (data) {
+            mymap.off('click');
+            mapBox.removeChild(saveLootButton);
+            mapBox.removeChild(removeL);
+            createLootButtons(id);
+        },
+        error: function (err) {
+            console.log(err);
+        },
+    });
+}
+
+function applyEvents(marker) {
+    marker.on('mouseover', function (e) {
+        this.openPopup();
+    });
+    marker.on('mouseout', function (e) {
+        this.closePopup();
+    });
 }

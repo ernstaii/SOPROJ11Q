@@ -9,9 +9,11 @@ use App\Events\PauseGameEvent;
 use App\Events\ResumeGameEvent;
 use App\Events\StartGameEvent;
 use App\Http\Requests\StoreBorderMarkerRequest;
+use App\Http\Requests\StoreLootRequest;
 use App\Http\Requests\UpdateGameStateRequest;
 use App\Models\BorderMarker;
 use App\Models\Game;
+use App\Models\Loot;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -154,5 +156,27 @@ class GameController extends Controller
                 'game_id' => $game->id
             ]);
         }
+    }
+
+    /**
+     * AJAX function. Not to be called via manual routing.
+     *
+     * @param StoreLootRequest $request
+     * @param Game $game
+     */
+    public function storeLoot(StoreLootRequest $request, Game $game)
+    {
+        $lats = $request->lats;
+        $lngs = $request->lngs;
+        $names = $request->names;
+        for ($i = 0; $i < count($lats); $i++) {
+            $newLoot = Loot::create([
+                'name' => $names[$i],
+                'location' => strval($lats[$i]) . ',' . strval($lngs[$i]),
+                'game_id' => $game->id
+            ]);
+            $game->loot()->attach($newLoot);
+        }
+        $game->save();
     }
 }

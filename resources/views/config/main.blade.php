@@ -128,7 +128,7 @@
             @foreach($border_markers as $border_marker)
                 applyExistingMarker({{$border_marker->location}});
             @endforeach
-            drawLinesForExistingMarkers();
+            drawLinesForExistingMarkers({{$id}});
         });
     </script>
 @endsection

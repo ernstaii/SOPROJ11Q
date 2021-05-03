@@ -25,3 +25,4 @@ Route::put('/games/{game}', [GameController::class, 'update'])->name('games.upda
 Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy');
 Route::post('/games/{game}/invite-keys', [InviteKeyController::class, 'generateKeys'])->name('games.invite-keys.store');
 Route::post('/games/{game}/border-markers', [GameController::class, 'storeMarkers'])->name('games.border-markers.store');
+Route::post('/games/{game}/loot', [GameController::class, 'storeLoot'])->name('games.loot.store');
