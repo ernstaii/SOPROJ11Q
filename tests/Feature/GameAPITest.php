@@ -140,7 +140,7 @@ class GameAPITest extends TestCase
     public function test_can_catch_thief()
     {
         $game = Game::factory()->create();
-        $user = User::factory()->create();
+        $user = User::factory()->playing()->create();
         InviteKey::factory()->state([
             'game_id' => $game->id,
             'user_id' => $user->id,
