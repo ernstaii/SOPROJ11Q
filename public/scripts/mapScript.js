@@ -9,6 +9,33 @@ const removeMarkerButton = document.querySelector('#button_remove_markers');
 const saveMarkerButton = document.querySelector('#button_save_markers');
 const mapBox = document.querySelector('.mapbox');
 
+const lootIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+const policeStationIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+const borderIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 let markerLatLngs = [];
 let markers = [];
 let lines = [];
@@ -44,8 +71,8 @@ function addMarker(e) {
     if (contains) {
         return;
     }
-    let newMarker = L.marker(e.latlng)
-        .bindPopup(L.popup({ maxWidth: maxPopupWidth })
+    let newMarker = L.marker(e.latlng, { icon: borderIcon })
+        .bindPopup(L.popup({ maxWidth: maxPopupWidth})
             .setContent('Locatie marker ' + (markers.length + 1)))
         .addTo(mymap);
     markers.push(newMarker);
@@ -136,7 +163,7 @@ async function saveMarkers(id) {
 
 function applyExistingMarker(lat, lng) {
     let latlng = L.latLng(lat, lng);
-    let newMarker = L.marker(latlng)
+    let newMarker = L.marker(latlng, { icon: borderIcon })
         .bindPopup(L.popup({ maxWidth: maxPopupWidth })
             .setContent('Locatie marker ' + (markers.length + 1)))
         .addTo(mymap);
