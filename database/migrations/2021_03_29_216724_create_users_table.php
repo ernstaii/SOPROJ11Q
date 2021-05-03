@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('username', 255);
             $table->string('location', 255)->nullable();
-            $table->string('status')->default(UserStatuses::Playing);
+            $table->string('status')->default(UserStatuses::InLobby);
             $table->timestamp('caught_at')->nullable();
             $table->timestamps();
         });

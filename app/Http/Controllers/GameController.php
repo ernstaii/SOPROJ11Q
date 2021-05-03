@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Roles;
 use App\Enums\Statuses;
+use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
 use App\Events\PauseGameEvent;
 use App\Events\ResumeGameEvent;
@@ -84,6 +85,13 @@ class GameController extends Controller
                 if ($game->status === Statuses::Config) {
                     $game->time_left = $request->duration * 60;
                     $game->started_at = Carbon::now();
+
+                    $users = $game->get_users();
+                    foreach ($users as $user) {
+                        $user->status = UserStatuses::Playing;
+                        $user->save();
+                    }
+
                     event(new StartGameEvent($game->id));
                 } else {
                     event(new ResumeGameEvent($game->id));
