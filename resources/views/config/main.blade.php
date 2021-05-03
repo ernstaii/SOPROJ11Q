@@ -41,6 +41,10 @@
                                 <input name="interval" class="input-numeric-0" id="interval" type="text">
                             </div>
                             <div class="form-item">
+                                <label class="form-label-0" for="jail_time">Gevangenis tijd (min)</label>
+                                <input name="jail_time" class="input-numeric-0" id="jail_time" type="text">
+                            </div>
+                            <div class="form-item">
                                 <button type="input" class="keys-share-button" type="submit" name="state"
                                         value="{{\App\Enums\Statuses::Ongoing}}">Start spel
                                 </button>
