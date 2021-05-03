@@ -16,7 +16,8 @@ class GameFactory extends Factory
             'status' => Statuses::Config,
             'duration' => 120,
             'interval' => 60,
-            'time_left' => 7200
+            'time_left' => 7200,
+            'police_station_location' => '51.763965, 5.529218'
         ];
     }
 

@@ -15,6 +15,7 @@ use function PHPUnit\Framework\isEmpty;
  * @property int $duration
  * @property int $interval
  * @property int $time_left
+ * @property string $police_station_location
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\App\Models\InviteKey[] $invite_keys
@@ -44,6 +45,7 @@ class Game extends Model
         'duration',
         'interval',
         'time_left',
+        'police_station_location',
         'created_at',
         'updated_at'
     ];

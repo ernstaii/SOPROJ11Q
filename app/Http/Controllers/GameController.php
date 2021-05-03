@@ -11,6 +11,7 @@ use App\Events\StartGameEvent;
 use App\Http\Requests\StoreBorderMarkerRequest;
 use App\Http\Requests\StoreLootRequest;
 use App\Http\Requests\UpdateGameStateRequest;
+use App\Http\Requests\UpdatePoliceStationLocationRequest;
 use App\Models\BorderMarker;
 use App\Models\Game;
 use App\Models\Loot;
@@ -57,7 +58,9 @@ class GameController extends Controller
                     'police_keys' => $game->get_keys_for_role(Roles::Police),
                     'thief_keys' => $game->get_keys_for_role(Roles::Thief),
                     'border_markers' => $game->border_markers,
-                    'id' => $game->id
+                    'id' => $game->id,
+                    'loot' => $game->loot,
+                    'police_station_location' => $game->police_station_location
                 ]);
             default:
                 return view('game.main', [
@@ -172,11 +175,25 @@ class GameController extends Controller
         for ($i = 0; $i < count($lats); $i++) {
             $newLoot = Loot::create([
                 'name' => $names[$i],
-                'location' => strval($lats[$i]) . ',' . strval($lngs[$i]),
-                'game_id' => $game->id
+                'location' => strval($lats[$i]) . ',' . strval($lngs[$i])
             ]);
             $game->loot()->attach($newLoot);
         }
+        $game->save();
+    }
+
+    /**
+     * AJAX function. Not to be called via manual routing.
+     *
+     * @param UpdatePoliceStationLocationRequest $request
+     * @param Game $game
+     */
+    public function setPoliceStationLocation(UpdatePoliceStationLocationRequest $request, Game $game)
+    {
+        $lat = $request->lat;
+        $lng = $request->lng;
+
+        $game->police_station_location = strval($lat) . ',' . strval($lng);
         $game->save();
     }
 }

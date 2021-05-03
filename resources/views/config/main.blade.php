@@ -129,6 +129,13 @@
                 applyExistingMarker({{$border_marker->location}});
             @endforeach
             drawLinesForExistingMarkers({{$id}});
+            @foreach($loot as $loot_item)
+                applyExistingLoot({{$loot_item->location}}, '{{$loot_item->name}}');
+            @endforeach
+            checkLootState({{$id}});
+            @if (isset($police_station_location))
+                applyExistingPoliceStation({{$police_station_location}});
+            @endif
         });
     </script>
 @endsection

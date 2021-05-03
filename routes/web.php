@@ -26,3 +26,4 @@ Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.
 Route::post('/games/{game}/invite-keys', [InviteKeyController::class, 'generateKeys'])->name('games.invite-keys.store');
 Route::post('/games/{game}/border-markers', [GameController::class, 'storeMarkers'])->name('games.border-markers.store');
 Route::post('/games/{game}/loot', [GameController::class, 'storeLoot'])->name('games.loot.store');
+Route::patch('/games/{game}/police-station', [GameController::class, 'setPoliceStationLocation'])->name('games.police-station.update');

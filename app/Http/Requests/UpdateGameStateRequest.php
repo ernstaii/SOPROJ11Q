@@ -47,6 +47,14 @@ class UpdateGameStateRequest extends FormRequest
                 throw ValidationException::withMessages([
                     'hasBorderMarkers' => 'Creëer a.u.b. eerst een speelveld door minimaal drie locatie markers op de kaart te plaatsen en dan op de knop "Sla speelveld op" te klikken.'
                 ]);
+            if ($this->game->loot()->count() < 1)
+                throw ValidationException::withMessages([
+                    'hasLoot' => 'Voeg a.u.b. eerst buit(en) toe aan het spel door op de kaart te klikken en dan op de knop "Sla buit op" te klikken.'
+                ]);
+            if (!isset($this->game->police_station_location))
+                throw ValidationException::withMessages([
+                    'hasPoliceStationLocation' => 'Voeg a.u.b. eerst een politiestation toe aan het spel door op de kaart te klikken en dan op de knop "Sla politiestation op" te klikken.'
+                ]);
             return [
                 'state' => ['required', 'string'],
                 'duration' => ['required', 'integer', 'between:10,1440'],

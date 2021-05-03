@@ -39,6 +39,8 @@ const borderIcon = new L.Icon({
 let saveLootButton;
 let lootNameInput;
 let removeLootButton;
+let removePoliceStationButton;
+let savePoliceStationButton;
 
 let markerLatLngs = [];
 let markers = [];
@@ -47,6 +49,9 @@ let lines = [];
 let lootLatLngs = [];
 let loot_markers = [];
 let lootNames = [];
+
+let policeStationMarker = null;
+let policeStationLatLng = null;
 
 setTimeout(() => {
     mymap.invalidateSize(true);
@@ -224,10 +229,20 @@ function createLootButtons(game_id) {
     removeLootButton = document.querySelector('#button_remove_loot');
     saveLootButton = document.querySelector('#button_save_loot');
     lootNameInput = document.querySelector('#input_loot_name');
+
+    saveLootButton.disabled = true;
+    saveLootButton.title = 'Er is minstens 1 buit nodig voordat de buiten opgeslagen mogen worden.';
 }
 
 function addLoot(e) {
     if (!lootNameInput.value || lootNameInput.value.trim() === '') {
+        let errorMsg = document.createElement('p');
+        errorMsg.style.color = 'red';
+        errorMsg.textContent = 'Vul a.u.b. een naam in voor de buit.';
+        mapBox.appendChild(errorMsg);
+        setTimeout(() => {
+            mapBox.removeChild(errorMsg);
+        }, 5000);
         return;
     }
 
@@ -296,13 +311,131 @@ async function saveLoot(id) {
         success: function (data) {
             mymap.off('click');
             mapBox.removeChild(saveLootButton);
-            mapBox.removeChild(removeL);
-            createLootButtons(id);
+            mapBox.removeChild(removeLootButton);
+            mapBox.removeChild(lootNameInput);
+            createPoliceStationButton(id);
+            mymap.on('click', addPoliceStation);
         },
         error: function (err) {
             console.log(err);
         },
     });
+}
+
+function applyExistingLoot(lat, lng, loot_name) {
+    let latlng = L.latLng(lat, lng);
+    let newMarker = L.marker(latlng, { icon: lootIcon })
+        .bindPopup(L.popup({ maxWidth: maxPopupWidth })
+            .setContent('Buit: ' + loot_name))
+        .addTo(mymap);
+    applyEvents(newMarker);
+    loot_markers.push(newMarker);
+    lootLatLngs.push(newMarker.getLatLng());
+    lootNames.push(loot_name);
+}
+
+function checkLootState(game_id) {
+    if (loot_markers.length > 0) {
+        mymap.off('click');
+        mapBox.removeChild(saveLootButton);
+        mapBox.removeChild(removeLootButton);
+        mapBox.removeChild(lootNameInput);
+        createPoliceStationButton(game_id);
+        mymap.on('click', addPoliceStation);
+    }
+}
+
+function createPoliceStationButton(game_id) {
+    let button_remove = document.createElement('button');
+    button_remove.textContent = 'Verwijder politiestation';
+    button_remove.onclick = removePoliceStation;
+    button_remove.id = 'button_remove_police_station';
+
+    let button_save = document.createElement('button');
+    button_save.textContent = 'Sla politiestation op';
+    button_save.onclick = () => savePoliceStation(game_id);
+    button_save.id = 'button_save_police_station';
+
+    mapBox.appendChild(button_remove);
+    mapBox.appendChild(button_save);
+
+    removePoliceStationButton = document.querySelector('#button_remove_police_station');
+    savePoliceStationButton = document.querySelector('#button_save_police_station');
+
+    savePoliceStationButton.disabled = true;
+    savePoliceStationButton.title = 'Plaats eerst een politiestation op de kaart.';
+}
+
+function addPoliceStation(e) {
+    if (policeStationMarker !== null) {
+        return;
+    }
+
+    let newMarker = L.marker(e.latlng, { icon: policeStationIcon })
+        .bindPopup(L.popup({ maxWidth: maxPopupWidth})
+            .setContent('Politiestation'))
+        .addTo(mymap);
+    applyEvents(newMarker);
+    policeStationMarker = newMarker;
+    policeStationLatLng = newMarker.getLatLng();
+
+    if (policeStationMarker !== null) {
+        savePoliceStationButton.disabled = false;
+        savePoliceStationButton.title = '';
+    }
+}
+
+function removePoliceStation() {
+    if (policeStationMarker !== null) {
+        mymap.removeLayer(policeStationMarker);
+        policeStationMarker = null;
+        policeStationLatLng = null;
+    }
+
+    savePoliceStationButton.disabled = true;
+    savePoliceStationButton.title = 'Plaats eerst een politiestation op de kaart.';
+}
+
+async function savePoliceStation(id) {
+    if (policeStationMarker === null) {
+        return;
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    await $.ajax({
+        url: '/games/' + id + '/police-station',
+        type: 'PATCH',
+        data: { lat: policeStationLatLng.lat, lng: policeStationLatLng.lng },
+        success: function (data) {
+            mymap.off('click');
+            mapBox.removeChild(savePoliceStationButton);
+            mapBox.removeChild(removePoliceStationButton);
+        },
+        error: function (err) {
+            console.log(err);
+        },
+    });
+}
+
+function applyExistingPoliceStation(lat, lng) {
+    let latlng = L.latLng(lat, lng);
+    let newMarker = L.marker(latlng, { icon: policeStationIcon })
+        .bindPopup(L.popup({ maxWidth: maxPopupWidth })
+            .setContent('Politiestation'))
+        .addTo(mymap);
+    applyEvents(newMarker);
+    policeStationMarker = newMarker;
+    policeStationLatLng = newMarker.getLatLng();
+
+    if (policeStationMarker !== null) {
+        mymap.off('click');
+        mapBox.removeChild(savePoliceStationButton);
+        mapBox.removeChild(removePoliceStationButton);
+    }
 }
 
 function applyEvents(marker) {
