@@ -15142,26 +15142,6 @@
                     /**
          * 
          *
-         * @static 
-         */ 
-        public static function reportErrorLevels($reportErrorLevels)
-        {
-                        /** @var \Facade\FlareClient\Flare $instance */
-                        return $instance->reportErrorLevels($reportErrorLevels);
-        }
-                    /**
-         * 
-         *
-         * @static 
-         */ 
-        public static function filterExceptionsUsing($filterExceptionsCallable)
-        {
-                        /** @var \Facade\FlareClient\Flare $instance */
-                        return $instance->filterExceptionsUsing($filterExceptionsCallable);
-        }
-                    /**
-         * 
-         *
          * @return null|string 
          * @static 
          */ 
