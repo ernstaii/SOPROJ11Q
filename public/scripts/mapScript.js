@@ -8,6 +8,8 @@ const corner1 = L.latLng(53.828464, 2.871753),
 const removeMarkerButton = document.querySelector('#button_remove_markers');
 const saveMarkerButton = document.querySelector('#button_save_markers');
 const mapBox = document.querySelector('.mapbox');
+const tab_2 = document.querySelector('#tab_2');
+const tab_3 = document.querySelector('#tab_3');
 
 const lootIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
@@ -232,6 +234,9 @@ function createLootButtons(game_id) {
 
     saveLootButton.disabled = true;
     saveLootButton.title = 'Er is minstens 1 buit nodig voordat de buiten opgeslagen mogen worden.';
+
+    tab_2.style.background = 'white';
+    tab_2.style.color = '#888';
 }
 
 function addLoot(e) {
@@ -364,6 +369,9 @@ function createPoliceStationButton(game_id) {
 
     savePoliceStationButton.disabled = true;
     savePoliceStationButton.title = 'Plaats eerst een politiestation op de kaart.';
+
+    tab_3.style.background = 'white';
+    tab_3.style.color = '#888';
 }
 
 function addPoliceStation(e) {

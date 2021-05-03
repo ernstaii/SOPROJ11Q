@@ -112,9 +112,9 @@
         </div>
         <div class="total-map-box">
             <div class="map-top-tabs">
-                <div class="map-top-tab"><p>Spelgrenzen</p></div>
-                <div class="map-top-tab"><p>Buiten</p></div>
-                <div class="map-top-tab"><p>Politiebureau</p></div>
+                <div class="map-top-tab" id="tab_1"><p>Spelgrenzen</p></div>
+                <div class="map-top-tab" id="tab_2"><p>Buiten</p></div>
+                <div class="map-top-tab" id="tab_3"><p>Politiebureau</p></div>
             </div>
             <div class="mapbox shadow">
                 <div id="map"></div>
