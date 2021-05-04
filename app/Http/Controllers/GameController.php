@@ -58,8 +58,10 @@ class GameController extends Controller
                     'id' => $game->id
                 ]);
             default:
-                $game->time_left -= Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
-                $game->save();
+                if ($game->status == Statuses::Ongoing) {
+                    $game->time_left -= Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
+                    $game->save();
+                }
                 return view('game.main', [
                     'id' => $game->id,
                     'loot' => $game->loot,

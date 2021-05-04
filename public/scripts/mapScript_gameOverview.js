@@ -86,12 +86,12 @@ function applyUserMarker(lat, lng, name, role) {
     if (role === 'thief') {
         newMarker = L.marker(latlng, {icon: thiefIcon})
             .bindPopup(L.popup({ maxWidth: maxPopupWidth })
-                .setContent('Speler: ' + name))
+                .setContent('Boef: ' + name))
             .addTo(mymap);
     } else {
         newMarker = L.marker(latlng, {icon: agentIcon})
             .bindPopup(L.popup({ maxWidth: maxPopupWidth })
-                .setContent('Speler: ' + name))
+                .setContent('Agent: ' + name))
             .addTo(mymap);
     }
 
@@ -141,7 +141,7 @@ function applyExistingMarker(lat, lng) {
     let latlng = L.latLng(lat, lng);
     let newMarker = L.marker(latlng, {icon: borderIcon})
         .bindPopup(L.popup({ maxWidth: maxPopupWidth })
-            .setContent('Locatie marker ' + (markers.length + 1)))
+            .setContent('Border marker ' + (markers.length + 1)))
         .addTo(mymap);
     applyEvents(newMarker);
     markers.push(newMarker);
