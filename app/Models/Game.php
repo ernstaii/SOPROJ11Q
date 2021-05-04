@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use function PHPUnit\Framework\isEmpty;
 
 /**
  * App\Models\Game
@@ -17,8 +16,13 @@ use function PHPUnit\Framework\isEmpty;
  * @property int $time_left
  * @property int $thieves_score
  * @property int $police_score
+ * @property int $jail_time
+ * @property string|null $last_interval_at
+ * @property string|null $started_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Collection|\App\Models\BorderMarker[] $border_markers
+ * @property-read int|null $border_markers_count
  * @property-read Collection|\App\Models\InviteKey[] $invite_keys
  * @property-read int|null $invite_keys_count
  * @property-read Collection|\App\Models\Loot[] $loot
@@ -31,6 +35,9 @@ use function PHPUnit\Framework\isEmpty;
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereDuration($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereInterval($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereJailTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereLastIntervalAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereStartedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereTimeLeft($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereUpdatedAt($value)
@@ -48,6 +55,9 @@ class Game extends Model
         'time_left',
         'thieves_score',
         'police_score',
+        'jail_time',
+        'last_interval_at',
+        'started_at',
         'created_at',
         'updated_at'
     ];
