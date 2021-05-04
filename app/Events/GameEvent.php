@@ -15,10 +15,9 @@ abstract class GameEvent implements ShouldBroadcastNow
     protected $gameId;
     protected $message;
 
-    public function __construct($gameId, $message)
+    public function __construct($gameId)
     {
         $this->gameId = $gameId;
-        $this->message = $message;
     }
 
     public function broadcastOn()
