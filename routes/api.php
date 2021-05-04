@@ -31,5 +31,5 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/games/{game}/border-markers', [GameController::class, 'getBorderMarkers']);
     $router->patch('/games/{game}/thieves-score/{score}', [GameController::class, 'updateThievesScore']);
     $router->patch('/games/{game}/police-score/{score}', [GameController::class, 'updatePoliceScore']);
-    $router->delete('/loots/{loot}', [LootController::class, 'destroy']);
+    $router->delete('/loot/{loot}', [LootController::class, 'destroy']);
 });
