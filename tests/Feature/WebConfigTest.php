@@ -6,6 +6,7 @@ use App\Enums\Statuses;
 use App\Events\StartGameEvent;
 use App\Models\BorderMarker;
 use App\Models\InviteKey;
+use App\Models\Loot;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Game;
 use Illuminate\Support\Facades\Event;
@@ -36,6 +37,11 @@ class WebConfigTest extends TestCase
         BorderMarker::factory()->count(3)->state([
             'game_id' => $game->id
         ])->create();
+        $loot = array();
+        array_push($loot, Loot::factory()->count(4)->create());
+        foreach ($loot as $loot_item) {
+            $game->loot()->attach($loot_item);
+        }
 
         $this->put('/games/' . $game->id, [
             'duration' => '120',

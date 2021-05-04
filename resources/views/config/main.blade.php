@@ -116,9 +116,9 @@
         </div>
         <div class="total-map-box">
             <div class="map-top-tabs">
-                <div class="map-top-tab"><p>Spelgrenzen</p></div>
-                <div class="map-top-tab"><p>Buiten</p></div>
-                <div class="map-top-tab"><p>Politiebureau</p></div>
+                <div class="map-top-tab" id="tab_1"><p>Spelgrenzen</p></div>
+                <div class="map-top-tab" id="tab_2"><p>Buiten</p></div>
+                <div class="map-top-tab" id="tab_3"><p>Politiebureau</p></div>
             </div>
             <div class="mapbox shadow">
                 <div id="map"></div>
@@ -132,7 +132,14 @@
             @foreach($border_markers as $border_marker)
                 applyExistingMarker({{$border_marker->location}});
             @endforeach
-            drawLinesForExistingMarkers();
+            drawLinesForExistingMarkers({{$id}});
+            @foreach($loot as $loot_item)
+                applyExistingLoot({{$loot_item->location}}, '{{$loot_item->name}}');
+            @endforeach
+            checkLootState({{$id}});
+            @if (isset($police_station_location))
+                applyExistingPoliceStation({{$police_station_location}});
+            @endif
         });
     </script>
 @endsection

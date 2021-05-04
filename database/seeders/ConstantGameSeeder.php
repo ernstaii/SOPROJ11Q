@@ -35,7 +35,9 @@ class ConstantGameSeeder extends Seeder
             ]));
         }
 
-        $game = Game::create();
+        $game = Game::create([
+            'police_station_location' => $this->getRandLocationNearOss()
+        ]);
 
         foreach ($loot as $loot_item) {
             $game->loot()->attach($loot_item->id);
@@ -112,7 +114,9 @@ class ConstantGameSeeder extends Seeder
             ]));
         }
 
-        $game = Game::create();
+        $game = Game::create([
+            'police_station_location' => $this->getRandLocationNearOss()
+        ]);
 
         foreach ($loot as $loot_item) {
             $game->loot()->attach($loot_item->id);

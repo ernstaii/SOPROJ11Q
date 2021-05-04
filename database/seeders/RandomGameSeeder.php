@@ -50,7 +50,8 @@ class RandomGameSeeder extends Seeder
             }
 
             $game = Game::create([
-                'id' => $id
+                'id' => $id,
+                'police_station_location' => $this->getRandLocationNearOss()
             ]);
 
             $game->thieves_score = rand(0, 1000);

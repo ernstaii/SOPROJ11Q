@@ -21,6 +21,7 @@ class CreateGamesTable extends Migration
             $table->integer('duration')->default(120);
             $table->integer('interval')->default(60);
             $table->integer('time_left')->default(7200);
+            $table->string('police_station_location', 255)->nullable();
             $table->integer('thieves_score')->default(0);
             $table->integer('police_score')->default(0);
             $table->integer('jail_time')->default(10);
