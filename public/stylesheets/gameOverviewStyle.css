@@ -1,3 +1,26 @@
+.bottom-box
+{
+    background:                 #fff;
+    border-radius:              1vw;
+    display:                    flex;
+    flex-direction:             column;
+    margin-left:                2vw;
+    margin-right:               1vw;
+    margin-top:                 2.5vh;
+    max-height:                 385px;
+    min-width:                  375px;
+    text-align:                 center;
+    width:                      20vw;
+}
+
+.bottom-box p
+{
+    margin-left:                0.5vw;
+    margin-right:               0.5vw;
+    overflow-wrap:              break-word;
+    text-align:                 left;
+}
+
 .center-box
 {
     align-items:                center;
@@ -31,19 +54,15 @@
     text-align:                 center;
 }
 
-.score-box
+.messages
 {
-    background:                 #fff;
-    border-radius:              1vw;
-    display:                    flex;
-    flex-direction:             column;
-    justify-content:            center;
-    margin-left:                2vw;
-    margin-right:               1vw;
-    margin-top:                 2.5vh;
-    min-width:                  375px;
-    text-align:                 center;
-    width:                      20vw;
+    justify-content:            stretch;
+    overflow-y:                 auto;
+}
+
+.score-text
+{
+    font-size:                  2vh;
 }
 
 .timer

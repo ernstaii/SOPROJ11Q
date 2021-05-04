@@ -64,14 +64,19 @@
             <div class="center-box">
                 <h2>Totale speelduur: {{$duration}} minuten</h2>
                 <h1 class="timer">00:00:00</h1>
+                <p class="score-text">Boeven score: {{$thieves_score}}</p>
+                <p class="score-text">Politie score: {{$police_score}}</p>
             </div>
         </div>
-        <div class="score-box shadow">
+        <div class="bottom-box shadow">
             <div class="item-header">
-                <h2>Spel Scores</h2>
+                <h2>Spel Notificaties</h2>
             </div>
-            <p>Boeven score: {{$thieves_score}}</p>
-            <p>Politie score: {{$police_score}}</p>
+            <div class="messages">
+                @foreach($notifications as $notification)
+                    <p>{{$notification->created_at}}: {{$notification->message}}</p>
+                @endforeach
+            </div>
         </div>
     </div>
     <script>
