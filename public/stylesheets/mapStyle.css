@@ -85,3 +85,9 @@
 {
     width:                      30vw;
 }
+
+#tab_2, #tab_3
+{
+    background:                 grey;
+    color:                      black;
+}
