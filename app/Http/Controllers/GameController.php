@@ -10,9 +10,12 @@ use App\Events\PauseGameEvent;
 use App\Events\ResumeGameEvent;
 use App\Events\StartGameEvent;
 use App\Http\Requests\StoreBorderMarkerRequest;
+use App\Http\Requests\StoreLootRequest;
 use App\Http\Requests\UpdateGameStateRequest;
+use App\Http\Requests\UpdatePoliceStationLocationRequest;
 use App\Models\BorderMarker;
 use App\Models\Game;
+use App\Models\Loot;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -61,7 +64,9 @@ class GameController extends Controller
                     'police_keys' => $game->get_keys_for_role(Roles::Police),
                     'thief_keys' => $game->get_keys_for_role(Roles::Thief),
                     'border_markers' => $game->border_markers,
-                    'id' => $game->id
+                    'id' => $game->id,
+                    'loot' => $game->loot,
+                    'police_station_location' => $game->police_station_location
                 ]);
             default:
                 if ($game->status == Statuses::Ongoing) {
@@ -202,5 +207,40 @@ class GameController extends Controller
                 'game_id' => $game->id
             ]);
         }
+    }
+
+    /**
+     * AJAX function. Not to be called via manual routing.
+     *
+     * @param StoreLootRequest $request
+     * @param Game $game
+     */
+    public function storeLoot(StoreLootRequest $request, Game $game)
+    {
+        $lats = $request->lats;
+        $lngs = $request->lngs;
+        $names = $request->names;
+        for ($i = 0; $i < count($lats); $i++) {
+            $newLoot = Loot::create([
+                'name' => $names[$i],
+                'location' => strval($lats[$i]) . ',' . strval($lngs[$i])
+            ]);
+            $game->loot()->attach($newLoot);
+        }
+    }
+
+    /**
+     * AJAX function. Not to be called via manual routing.
+     *
+     * @param UpdatePoliceStationLocationRequest $request
+     * @param Game $game
+     */
+    public function setPoliceStationLocation(UpdatePoliceStationLocationRequest $request, Game $game)
+    {
+        $lat = $request->lat;
+        $lng = $request->lng;
+
+        $game->police_station_location = strval($lat) . ',' . strval($lng);
+        $game->save();
     }
 }
