@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $interval
  * @property int $time_left
  * @property string $police_station_location
+ * @property int $thieves_score
+ * @property int $police_score
  * @property int $jail_time
  * @property string|null $last_interval_at
  * @property string|null $started_at
@@ -53,6 +55,8 @@ class Game extends Model
         'interval',
         'time_left',
         'police_station_location',
+        'thieves_score',
+        'police_score',
         'jail_time',
         'last_interval_at',
         'started_at',

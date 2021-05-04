@@ -54,6 +54,10 @@ class RandomGameSeeder extends Seeder
                 'police_station_location' => $this->getRandLocationNearOss()
             ]);
 
+            $game->thieves_score = rand(0, 1000);
+            $game->police_score = rand(0, 1000);
+            $game->save();
+
             foreach ($loot as $loot_item) {
                 $game->loot()->attach($loot_item->id);
             }
