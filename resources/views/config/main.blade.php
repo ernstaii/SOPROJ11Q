@@ -33,15 +33,15 @@
                             @method('PUT')
                             <div class="form-item">
                                 <label class="form-label-0" for="duration">Spelduratie (min)</label>
-                                <input name="duration" class="input-numeric-0" id="duration" type="text">
+                                <input name="duration" class="input-numeric-0" id="duration" type="number" min="10" max="1440">
                             </div>
                             <div class="form-item">
                                 <label class="form-label-0" for="interval">Locatieupdate interval (sec)</label>
-                                <input name="interval" class="input-numeric-0" id="interval" type="text">
+                                <input name="interval" class="input-numeric-0" id="interval" type="number" min="30" max="300">
                             </div>
                             <div class="form-item">
                                 <label class="form-label-0" for="jail_time">Gevangenis tijd (min)</label>
-                                <input name="jail_time" class="input-numeric-0" id="jail_time" type="text">
+                                <input name="jail_time" class="input-numeric-0" id="jail_time" type="number" min="3" max="30">
                             </div>
                             <div class="form-item">
                                 <button type="input" class="keys-share-button" type="submit" name="state"
