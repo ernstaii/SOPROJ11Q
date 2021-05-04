@@ -174,40 +174,13 @@ function applyEvents(marker) {
     });
 }
 
-function handleTimerElement(status, time_left, duration, game_id) {
+function handleTimerElement(status, time_left, duration) {
     let seconds = (duration * 60) - time_left;
     timerElmt.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
     if (status === 'on-going') {
-        setInterval(() => {
-            getGameObject(game_id).then(() => {
-                seconds = (duration * 60) - totalSeconds;
-                seconds++;
-                timerElmt.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
-            });
-        }, 5000);
         setInterval(() => {
             seconds++;
             timerElmt.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
         }, 1000);
     }
-}
-
-async function getGameObject(game_id) {
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-    await $.ajax({
-        url: '/api/games/' + game_id,
-        type: 'GET',
-        data: {},
-        success: function (data) {
-            totalSeconds = data.time_left;
-        },
-        error: function (err) {
-            console.log(err);
-        },
-    });
 }

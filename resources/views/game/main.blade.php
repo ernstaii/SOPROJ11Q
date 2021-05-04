@@ -80,7 +80,7 @@
                 applyExistingMarker({{$border_marker->location}});
             @endforeach
             drawLinesForExistingMarkers();
-            handleTimerElement('{{$game_status}}', '{{$time_left}}', '{{$duration}}', {{$id}});
+            handleTimerElement('{{$game_status}}', '{{$time_left}}', '{{$duration}}');
         });
     </script>
 @endsection
