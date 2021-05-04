@@ -66,6 +66,13 @@
                 <h1 class="timer">00:00:00</h1>
             </div>
         </div>
+        <div class="score-box shadow">
+            <div class="item-header">
+                <h2>Spel Scores</h2>
+            </div>
+            <p>Boeven score: {{$thieves_score}}</p>
+            <p>Politie score: {{$police_score}}</p>
+        </div>
     </div>
     <script>
         window.addEventListener('DOMContentLoaded', function() {

@@ -82,7 +82,9 @@ class GameController extends Controller
                     'duration' => $game->duration,
                     'game_status' => $game->status,
                     'time_left' => $game->time_left,
-                    'notifications' => $game->notifications
+                    'notifications' => $game->notifications,
+                    'thieves_score' => $game->thieves_score,
+                    'police_score' => $game->police_score
                 ]);
         }
     }
