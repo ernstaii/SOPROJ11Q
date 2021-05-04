@@ -53,7 +53,7 @@ class UpdateGameStateRequest extends FormRequest
                 ]);
             if (!isset($this->game->police_station_location))
                 throw ValidationException::withMessages([
-                    'hasPoliceStationLocation' => 'Voeg a.u.b. eerst een politiestation toe aan het spel door op de kaart te klikken en dan op de knop "Sla politiestation op" te klikken.'
+                    'hasPoliceStationLocation' => 'Voeg a.u.b. eerst een politiebureau toe aan het spel door op de kaart te klikken en dan op de knop "Sla politiebureau op" te klikken.'
                 ]);
             return [
                 'state' => ['required', 'string'],

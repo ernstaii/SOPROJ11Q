@@ -352,12 +352,12 @@ function checkLootState(game_id) {
 
 function createPoliceStationButton(game_id) {
     let button_remove = document.createElement('button');
-    button_remove.textContent = 'Verwijder politiestation';
+    button_remove.textContent = 'Verwijder politiebureau';
     button_remove.onclick = removePoliceStation;
     button_remove.id = 'button_remove_police_station';
 
     let button_save = document.createElement('button');
-    button_save.textContent = 'Sla politiestation op';
+    button_save.textContent = 'Sla politiebureau op';
     button_save.onclick = () => savePoliceStation(game_id);
     button_save.id = 'button_save_police_station';
 
@@ -368,7 +368,7 @@ function createPoliceStationButton(game_id) {
     savePoliceStationButton = document.querySelector('#button_save_police_station');
 
     savePoliceStationButton.disabled = true;
-    savePoliceStationButton.title = 'Plaats eerst een politiestation op de kaart.';
+    savePoliceStationButton.title = 'Plaats eerst een politiebureau op de kaart.';
 
     tab_3.style.background = 'white';
     tab_3.style.color = '#888';
@@ -381,7 +381,7 @@ function addPoliceStation(e) {
 
     let newMarker = L.marker(e.latlng, { icon: policeStationIcon })
         .bindPopup(L.popup({ maxWidth: maxPopupWidth})
-            .setContent('Politiestation'))
+            .setContent('Politiebureau'))
         .addTo(mymap);
     applyEvents(newMarker);
     policeStationMarker = newMarker;
@@ -401,7 +401,7 @@ function removePoliceStation() {
     }
 
     savePoliceStationButton.disabled = true;
-    savePoliceStationButton.title = 'Plaats eerst een politiestation op de kaart.';
+    savePoliceStationButton.title = 'Plaats eerst een politiebureau op de kaart.';
 }
 
 async function savePoliceStation(id) {
@@ -433,7 +433,7 @@ function applyExistingPoliceStation(lat, lng) {
     let latlng = L.latLng(lat, lng);
     let newMarker = L.marker(latlng, { icon: policeStationIcon })
         .bindPopup(L.popup({ maxWidth: maxPopupWidth })
-            .setContent('Politiestation'))
+            .setContent('Politiebureau'))
         .addTo(mymap);
     applyEvents(newMarker);
     policeStationMarker = newMarker;
