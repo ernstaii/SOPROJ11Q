@@ -1,13 +1,15 @@
-let police_keys_box = document.querySelector('#police_keys_box');
-let thieves_keys_box = document.querySelector('#thieves_keys_box');
-let formBox = document.querySelector('#form_box');
-let code_input = document.querySelector('#code_input');
-let code_button = document.querySelector('#code_button');
+const police_keys_box = document.querySelector('#police_keys_box');
+const thieves_keys_box = document.querySelector('#thieves_keys_box');
+const formBox = document.querySelector('#form_box');
+const code_input = document.querySelector('#code_input');
+const code_button = document.querySelector('#code_button');
+const outer_keys_box = document.querySelector('#outer_keys_box');
 
 if (police_keys_box.childElementCount > 0 || thieves_keys_box.childElementCount > 0) {
     formBox.children[0].children[1].removeChild(code_input);
     formBox.children[0].children[1].removeChild(code_button);
     formBox.children[0].children[1].removeChild(document.querySelector('#ratio_slider'));
+    outer_keys_box.style.display = 'block';
 }
 
 function generateKey(id) {
@@ -67,6 +69,7 @@ async function getKeys(input, ratio, id) {
                         thieves_keys_box.appendChild(div);
                     }
                 }
+                outer_keys_box.style.display = 'block';
             }
         },
         error: function () {

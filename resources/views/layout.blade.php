@@ -3,8 +3,12 @@
 <head>
     @yield('head')
     <link rel="stylesheet" href="{{ asset('stylesheets/error.css') }}">
+    <link rel="stylesheet" href="{{asset('stylesheets/configStyle.css')}}">
 </head>
 <body>
+<div class="page-top-bar">
+    <h1 class="page-top-bar-header">Hunted Spel Configuratie</h1>
+</div>
 @if (session()->has('errors'))
     <div id="error-box">
         <ul>
