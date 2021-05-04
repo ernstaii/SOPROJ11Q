@@ -16,7 +16,9 @@ class GameFactory extends Factory
             'status' => Statuses::Config,
             'duration' => 120,
             'interval' => 60,
-            'time_left' => 7200
+            'time_left' => 7200,
+            'thieves_score' => 0,
+            'police_score' => 0,
         ];
     }
 

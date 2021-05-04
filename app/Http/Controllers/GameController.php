@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Roles;
 use App\Enums\Statuses;
+use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
 use App\Events\PauseGameEvent;
 use App\Events\ResumeGameEvent;
@@ -41,6 +42,11 @@ class GameController extends Controller
     {
         return $game->loot()->get();
     }
+
+    public function getInviteKeys(Game $game)
+    {
+        return $game->invite_keys()->get();
+	}
 
     public function getBorderMarkers(Game $game)
     {
@@ -86,12 +92,21 @@ class GameController extends Controller
         if ($game->status === Statuses::Config) {
             $game->duration = $request->duration;
             $game->interval = $request->interval;
+            $game->jail_time = $request->jail_time;
         }
 
         switch ($request->state) {
             case Statuses::Ongoing:
                 if ($game->status === Statuses::Config) {
                     $game->time_left = $request->duration * 60;
+                    $game->started_at = Carbon::now();
+
+                    $users = $game->get_users();
+                    foreach ($users as $user) {
+                        $user->status = UserStatuses::Playing;
+                        $user->save();
+                    }
+
                     event(new StartGameEvent($game->id));
                 } else {
                     event(new ResumeGameEvent($game->id));
@@ -105,6 +120,13 @@ class GameController extends Controller
                 if (is_null($message)) {
                     $message = "Het spel is beëindigd!";
                 }
+
+                $users = $game->get_users();
+                foreach ($users as $user) {
+                    $user->status = UserStatuses::Retired;
+                    $user->save();
+                }
+
                 event(new EndGameEvent($game->id, $message));
                 break;
             case Statuses::Paused:
@@ -147,6 +169,22 @@ class GameController extends Controller
 
         return redirect()->route('games.index');
     }
+
+    public function updateThievesScore(Game $game, int $score)
+	{
+        $game->thieves_score = $score;
+        $game->save();
+
+        return $game;
+    }
+
+    public function updatePoliceScore(Game $game, int $score)
+	{
+        $game->police_score = $score;
+        $game->save();
+
+        return $game;
+	}
 
     /**
      * AJAX function. Not to be called via manual routing.
