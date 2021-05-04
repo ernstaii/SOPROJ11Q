@@ -1,161 +1,183 @@
-label {
-    color: black;
+button
+{
+    border-radius:              5vw;
+    border-style:               solid;
+    border-width:               1px;
 }
 
-button {
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 5vw;
+h2
+{
+    color:                      #C6002A;
+    margin:                     1vh;
 }
 
-.box {
-    min-width: 375px;
-    width: 20vw;
-    background: #fff;
-    text-align: center;
-    border-radius: 1vw;
-    margin-right: 1vw;
+.background-box
+{
+    display:                    flex;
+    flex-direction:             row;
+    flex-wrap:                  wrap;
+    margin-top:                 2.8vh;
 }
 
-.mapbox {
-    min-width: 375px;
-    width: 30vw;
-    background: #fff;
-    text-align: center;
-    border-radius: 1vw;
-    margin-right: 1vw;
-    max-height: 40vh;
+.box
+{
+    background:                 #fff;
+    border-radius:              1vw;
+    margin-left:                2vw;
+    margin-right:               1vw;
+    min-width:                  375px;
+    text-align:                 center;
+    width:                      20vw;
 }
 
-.background-box {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+.config-form
+{
+    display:                    flex;
+    flex-direction:             row;
+    flex-wrap:                  nowrap;
+    justify-content:            space-between;
+    margin-bottom:              8vh;
 }
 
-.item-header {
-    border-style: solid;
-    border-color: black;
-    border-width: 1px;
-    border-radius: 1vw;
+.form-col-1
+{
+    margin-left:                1vw;
 }
 
-h2 {
-    margin: 1vh;
-    color: black;
+.form-col-2
+{
+    margin-right:               1vw;
 }
 
-.form-col-1, .form-col-2 {
-    max-width: 160px;
+.form-col-1, .form-col-2
+{
+    max-width:                  160px;
 }
 
-.config-form {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    margin-bottom: 8vh;
+.form-item
+{
+    display:                    flex;
+    flex-direction:             column;
+    margin-top:                 2vh;
+    text-align:                 left;
 }
 
-.form-item {
-    display: flex;
-    flex-direction: column;
-    margin-top: 2vh;
-    text-align: left;
+.game-form
+{
+    padding:                    2vw;
 }
 
-.form-col-1 {
-    margin-left: 1vw;
+.generic-button
+{
+    margin:                     0.5vw;
+    padding:                    0.5vw;
 }
 
-.form-col-2 {
-    margin-right: 1vw;
+.item-box
+{
+    max-height:                 401px;
+    min-height:                 200px;
 }
 
-.item-box {
-    max-height: 401px;
-    min-height: 200px;
+.item-header
+{
+    border-bottom-color:        #C6002A;
+    border-bottom-style:        solid;
+    border-bottom-width:        5px;
 }
 
-.keys-box {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: stretch;
-    text-align: left;
-    overflow-y: auto;
-    height: 200px;
+.key-item
+{
+    align-items:                center;
+    display:                    flex;
+    height:                     40px;
+    justify-content:            center;
+    max-height:                 40px;
+    width:                      50%;
 }
 
-.key-item {
-    width: 49.4%;
-    border-style: solid;
-    border-color: black;
-    border-width: 1px;
+.key-item h3
+{
+    color:                      darkred;
 }
 
-.key-item p {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+.key-item p
+{
+    -webkit-user-select:        none;
+    -moz-user-select:           none;
+    -ms-user-select:            none;
+    color:                      black;
+    font-weight:                bold;
+    user-select:                none;
 }
 
-.mouse-hover-event {
-    background: gray;
-    height: 5px;
-    position: relative;
-    cursor: row-resize;
+#keys_button_box
+{
+    display:                    flex;
+    flex-direction:             row;
+    flex-wrap:                  wrap;
+    justify-content:            center;
+    padding:                    1.7vh 0 0.5vh 0;
 }
 
-.vert-keys-box {
-    width: 49.4%;
-    border-style: solid;
-    border-color: black;
-    border-width: 1px;
+#keys_button_box button
+{
+    -webkit-user-select:        none;
+    -moz-user-select:           none;
+    -ms-user-select:            none;
+    color:                      darkred;
+    user-select:                none;
 }
 
-.vert-keys-box .key-item {
-    width: 99%;
+.keys-box
+{
+    display:                    flex;
+    flex-direction:             row;
+    flex-wrap:                  wrap;
+    height:                     200px;
+    justify-content:            stretch;
+    overflow-y:                 auto;
+    text-align:                 left;
 }
 
-.key-item p {
-    margin-left: 1vw;
-    color: black;
-    font-weight: bold;
+.keys-share-button, .submit-button-0
+{
+    color:                      darkred;
 }
 
-#keys_button_box {
-    padding: 0.5vh 0 0.5vh 0;
-    border-style: solid;
-    border-color: black;
-    border-width: 1px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+.mouse-hover-event
+{
+    background:                 gray;
+    cursor:                     row-resize;
+    height:                     5px;
+    position:                   relative;
 }
 
-#keys_button_box button {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+#outer_keys_box
+{
+    display:                    none;
 }
 
-.generic-button {
-    padding: 0.5vw;
-    margin: 0.5vw;
+.slider-labels
+{
+    display:                    flex;
+    flex-direction:             row;
+    justify-content:            space-between;
 }
 
-.slider-labels {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+.slider-labels p
+{
+    font-size:                  1vh;
+    margin:                     0;
+    text-align:                 center;
 }
 
-.slider-labels p {
-    text-align: center;
-    font-size: 1vh;
-    margin: 0;
+.vert-keys-box
+{
+    width:                      50%;
+}
+
+.vert-keys-box .key-item
+{
+    width:                      99%;
 }
