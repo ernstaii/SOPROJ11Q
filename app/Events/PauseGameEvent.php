@@ -6,8 +6,6 @@ use App\Models\Notification;
 
 class PauseGameEvent extends GameEvent
 {
-    public $message;
-
     public function __construct($gameId, $message)
     {
         $this->gameId = $gameId;

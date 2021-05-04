@@ -13,10 +13,12 @@ abstract class GameEvent implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     protected $gameId;
+    protected $message;
 
-    public function __construct($gameId)
+    public function __construct($gameId, $message)
     {
         $this->gameId = $gameId;
+        $this->message = $message;
     }
 
     public function broadcastOn()
