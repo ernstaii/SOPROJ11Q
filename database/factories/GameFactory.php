@@ -17,7 +17,7 @@ class GameFactory extends Factory
             'duration' => 120,
             'interval' => 60,
             'time_left' => 7200,
-            'police_station_location' => '51.763965, 5.529218'
+            'police_station_location' => '51.763965, 5.529218',
             'thieves_score' => 0,
             'police_score' => 0,
         ];
