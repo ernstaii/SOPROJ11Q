@@ -69,9 +69,24 @@ class GameController extends Controller
                     'police_station_location' => $game->police_station_location
                 ]);
             default:
+                $status_text = '';
                 if ($game->status == Statuses::Ongoing) {
                     $game->time_left -= Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
                     $game->save();
+                }
+                switch($game->status) {
+                    case Statuses::Finished:
+                        $status_text = 'Beëindigd';
+                        break;
+                    case Statuses::Ongoing:
+                        $status_text = 'Gaande';
+                        break;
+                    case Statuses::Paused:
+                        $status_text = 'Gepauzeerd';
+                        break;
+                    default:
+                        $status_text = 'Configuratie-modus';
+                        break;
                 }
                 return view('game.main', [
                     'id' => $game->id,
@@ -84,7 +99,9 @@ class GameController extends Controller
                     'time_left' => $game->time_left,
                     'notifications' => $game->notifications,
                     'thieves_score' => $game->thieves_score,
-                    'police_score' => $game->police_score
+                    'police_score' => $game->police_score,
+                    'police_station_location' => $game->police_station_location,
+                    'status_text' => $status_text
                 ]);
         }
     }

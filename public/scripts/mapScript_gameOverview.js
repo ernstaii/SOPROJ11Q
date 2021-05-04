@@ -51,6 +51,15 @@ const borderIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+const policeStationIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 setTimeout(() => {
     mymap.invalidateSize(true);
 }, 0);
@@ -183,4 +192,13 @@ function handleTimerElement(status, time_left, duration) {
             timerElmt.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
         }, 1000);
     }
+}
+
+function applyExistingPoliceStation(lat, lng) {
+    let latlng = L.latLng(lat, lng);
+    let newMarker = L.marker(latlng, { icon: policeStationIcon })
+        .bindPopup(L.popup({ maxWidth: maxPopupWidth })
+            .setContent('Politiebureau'))
+        .addTo(mymap);
+    applyEvents(newMarker);
 }

@@ -63,7 +63,14 @@
         <div class="timer-box shadow">
             <div class="center-box">
                 <h2>Totale speelduur: {{$duration}} minuten</h2>
-                <h1 class="timer">00:00:00</h1>
+                <div class="timer-with-label">
+                    @if($game_status != 'finished')
+                        <h1 class="timer">00:00:00</h1>
+                        <h2 class="score-text">{{$status_text}}</h2>
+                    @else
+                        <h1 class="timer">{{$status_text}}</h1>
+                    @endif
+                </div>
                 <p class="score-text">Boeven score: {{$thieves_score}}</p>
                 <p class="score-text">Politie score: {{$police_score}}</p>
             </div>
@@ -92,7 +99,10 @@
                 applyExistingMarker({{$border_marker->location}});
             @endforeach
             drawLinesForExistingMarkers();
-            handleTimerElement('{{$game_status}}', '{{$time_left}}', '{{$duration}}');
+            @if($game_status != 'finished')
+                handleTimerElement('{{$game_status}}', '{{$time_left}}', '{{$duration}}');
+            @endif
+            applyExistingPoliceStation({{$police_station_location}});
         });
     </script>
 @endsection
