@@ -76,7 +76,8 @@ class GameController extends Controller
                     'interval' => $game->interval,
                     'duration' => $game->duration,
                     'game_status' => $game->status,
-                    'time_left' => $game->time_left
+                    'time_left' => $game->time_left,
+                    'notifications' => $game->notifications
                 ]);
         }
     }

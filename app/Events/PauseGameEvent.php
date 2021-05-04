@@ -2,6 +2,8 @@
 
 namespace App\Events;
 
+use App\Models\Notification;
+
 class PauseGameEvent extends GameEvent
 {
     public $message;
@@ -10,6 +12,11 @@ class PauseGameEvent extends GameEvent
     {
         $this->gameId = $gameId;
         $this->message = $message;
+
+        Notification::create([
+            'game_id' => $gameId,
+            'message' => $message
+        ]);
     }
 
     public function broadcastAs()
