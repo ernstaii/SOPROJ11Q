@@ -10,4 +10,5 @@ final class UserStatuses extends Enum
     const Playing = "playing";
     const Caught = "caught";
     const InLobby = "in-lobby";
+    const Retired = "retired";
 }

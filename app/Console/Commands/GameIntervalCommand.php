@@ -52,6 +52,13 @@ class GameIntervalCommand extends Command
                     $this->log('    Game has elapsed');
                     $game->status = Statuses::Finished;
                     $game->time_left = 0;
+
+                    $users = $game->get_users();
+                    foreach ($users as $user) {
+                        $user->status = UserStatuses::Retired;
+                        $user->save();
+                    }
+
                     event(new EndGameEvent($game->id, 'De tijd is op. Het spel is beëindigd.'));
                 }
 

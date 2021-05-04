@@ -105,6 +105,13 @@ class GameController extends Controller
                 if (is_null($message)) {
                     $message = "Het spel is beëindigd!";
                 }
+
+                $users = $game->get_users();
+                foreach ($users as $user) {
+                    $user->status = UserStatuses::Retired;
+                    $user->save();
+                }
+
                 event(new EndGameEvent($game->id, $message));
                 break;
             case Statuses::Paused:
