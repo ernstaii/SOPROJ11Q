@@ -3,36 +3,26 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Container\Container;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Spatie\ShortSchedule\ShortSchedule;
 
 class Kernel extends ConsoleKernel
 {
-    /**
-     * The Artisan commands provided by your application.
-     *
-     * @var array
-     */
+
     protected $commands = [
         //
     ];
 
-    /**
-     * Define the application's command schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
-     */
     protected function schedule(Schedule $schedule)
     {
         //
     }
 
-    /**
-     * Register the commands for the application.
-     *
-     * @return void
-     */
+    protected function shortSchedule(ShortSchedule $shortSchedule)
+    {
+        $shortSchedule->command('game:interval --log')->everySeconds(5);
+    }
+
     protected function commands()
     {
         $this->load(__DIR__.'/Commands');

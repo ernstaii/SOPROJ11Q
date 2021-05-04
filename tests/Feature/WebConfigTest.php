@@ -40,6 +40,7 @@ class WebConfigTest extends TestCase
         $this->put('/games/' . $game->id, [
             'duration' => '120',
             'interval' => '30',
+            'jail_time' => '20',
             'state' => Statuses::Ongoing
         ])->assertStatus(302)
             ->assertRedirect('/games/' . $game->id);
