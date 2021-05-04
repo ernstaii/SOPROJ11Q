@@ -196,7 +196,6 @@ class GameController extends Controller
             ]);
             $game->loot()->attach($newLoot);
         }
-        $game->save();
     }
 
     /**
