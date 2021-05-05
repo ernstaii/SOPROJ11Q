@@ -25,7 +25,7 @@ class ThiefCaughtEvent extends GameEvent
             'message' => $this->message
         ]);
 
-        event(new GameIntervalEvent($game->id, $game->get_users()->where('status', '=', UserStatuses::Playing)));
+        event(new GameIntervalEvent($game->id, $game->get_users()->where('status', '=', UserStatuses::Playing), $game->loot));
         $game->last_interval_at = Carbon::now();
         $game->save();
     }
