@@ -113,6 +113,7 @@ function updateUserPinsOnChange(interval, status, game_id) {
         setTimeout(() => {
             setInterval(() => {
                 getLatestUserLocations(game_id);
+                getLatestLoot(game_id);
             }, (interval * 1000));
         }, 5000);
     }
@@ -138,6 +139,34 @@ async function getLatestUserLocations(game_id) {
 
             data.forEach(user => {
                 applyUserMarker(Number(user.location.split(',')[0]), Number(user.location.split(',')[1]), user.username, user.role);
+            });
+        },
+        error: function (err) {
+            console.log(err);
+        },
+    });
+}
+
+async function getLatestLoot(game_id) {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    await $.ajax({
+        url: '/api/games/' + game_id + '/loot',
+        type: 'GET',
+        data: {},
+        success: function (data) {
+            let originalLastIndex = (lootMarkers.length - 1);
+            for (let i = originalLastIndex; i >= 0; i--) {
+                mymap.removeLayer(lootMarkers[i]);
+                lootMarkers.pop();
+            }
+
+            data.forEach(loot => {
+                applyLootMarker(Number(loot.location.split(',')[0]), Number(loot.location.split(',')[1]), loot.name);
             });
         },
         error: function (err) {
@@ -205,6 +234,7 @@ function applyExistingPoliceStation(lat, lng) {
 
 
 function callGameDetails(game_id) {
+    getGameNotifications(game_id);
     setInterval(() => {
         getGameDetails(game_id);
         getGameNotifications(game_id);
@@ -250,7 +280,8 @@ async function getGameNotifications(game_id) {
             messages_div.innerHTML = '';
             data.forEach(notification => {
                 let message = document.createElement('p');
-                message.textContent = notification.created_at + ': ' + notification.message;
+
+                message.textContent = new Date(notification.created_at).toLocaleString() + ': ' + notification.message;
                 messages_div.appendChild(message);
             });
         },

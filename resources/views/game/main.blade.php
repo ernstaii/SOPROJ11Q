@@ -80,9 +80,6 @@
                 <h2>Spel Notificaties</h2>
             </div>
             <div class="messages">
-                @foreach($notifications as $notification)
-                    <p>{{$notification->created_at}}: {{$notification->message}}</p>
-                @endforeach
             </div>
         </div>
     </div>
