@@ -61,6 +61,11 @@ class GameController extends Controller
         return $game->notifications()->get();
     }
 
+    public function getTimeLeftOfGame(Game $game)
+    {
+        return $game->time_left()->get();
+    }
+
     public function show(Game $game)
     {
         switch ($game->status) {
