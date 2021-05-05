@@ -56,6 +56,11 @@ class GameController extends Controller
         return $game->border_markers()->get();
     }
 
+    public function getNotifications(Game $game)
+    {
+        return $game->notifications()->get();
+    }
+
     public function show(Game $game)
     {
         switch ($game->status) {

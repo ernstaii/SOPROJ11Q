@@ -202,3 +202,60 @@ function applyExistingPoliceStation(lat, lng) {
         .addTo(mymap);
     applyEvents(newMarker);
 }
+
+
+function callGameDetails(game_id) {
+    setInterval(() => {
+        getGameDetails(game_id);
+        getGameNotifications(game_id);
+    }, 5000);
+}
+
+async function getGameDetails(game_id) {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    await $.ajax({
+        url: '/api/games/' + game_id,
+        type: 'GET',
+        data: {},
+        success: function (data) {
+            let thieves_score = document.querySelector('#score_1');
+            let police_score = document.querySelector('#score_2');
+            thieves_score.textContent = 'Boeven score: ' + data.thieves_score;
+            police_score.textContent = 'Politie score: ' + data.police_score;
+        },
+        error: function (err) {
+            console.log(err);
+        },
+    });
+}
+
+async function getGameNotifications(game_id) {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    await $.ajax({
+        url: '/api/games/' + game_id + '/notifications',
+        type: 'GET',
+        data: {},
+        success: function (data) {
+            let messages_div = document.querySelector('.messages');
+            messages_div.innerHTML = '';
+            data.forEach(notification => {
+                let message = document.createElement('p');
+                message.textContent = notification.created_at + ': ' + notification.message;
+                messages_div.appendChild(message);
+            });
+        },
+        error: function (err) {
+            console.log(err);
+        },
+    });
+}
