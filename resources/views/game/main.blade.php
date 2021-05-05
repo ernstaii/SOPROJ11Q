@@ -71,8 +71,8 @@
                         <h1 class="timer">{{$status_text}}</h1>
                     @endif
                 </div>
-                <p class="score-text">Boeven score: {{$thieves_score}}</p>
-                <p class="score-text">Politie score: {{$police_score}}</p>
+                <p class="score-text" id="score_1">Boeven score: {{$thieves_score}}</p>
+                <p class="score-text" id="score_2">Politie score: {{$police_score}}</p>
             </div>
         </div>
         <div class="bottom-box shadow">
@@ -103,6 +103,7 @@
                 handleTimerElement('{{$game_status}}', '{{$time_left}}', '{{$duration}}');
             @endif
             applyExistingPoliceStation({{$police_station_location}});
+            callGameDetails({{$id}});
         });
     </script>
 @endsection
