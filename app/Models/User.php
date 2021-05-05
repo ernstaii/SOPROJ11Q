@@ -45,4 +45,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(InviteKey::class, "user_id", "id");
     }
+
+    public function get_game()
+    {
+        return $this->inviteKey->game;
+    }
 }

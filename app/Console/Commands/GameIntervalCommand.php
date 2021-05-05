@@ -43,7 +43,7 @@ class GameIntervalCommand extends Command
 
                     if ($difference >= $game->interval) {
                         $this->log('    Invoking interval event');
-                        event(new GameIntervalEvent($game->id, $game->get_users()));
+                        event(new GameIntervalEvent($game->id, $game->get_users(), $game->loot));
                         $game->last_interval_at = $now;
                     }
 

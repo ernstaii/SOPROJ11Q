@@ -11,10 +11,10 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $status
- * @property int $duration
+ * @property int $durations
  * @property int $interval
  * @property int $time_left
- * @property string $police_station_location
+ * @property string|null $police_station_location
  * @property int $thieves_score
  * @property int $police_score
  * @property int $jail_time
@@ -28,6 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $invite_keys_count
  * @property-read Collection|\App\Models\Loot[] $loot
  * @property-read int|null $loot_count
+ * @property-read Collection|\App\Models\Notification[] $notifications
+ * @property-read int|null $notifications_count
  * @method static \Database\Factories\GameFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Game newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Game newQuery()
@@ -38,8 +40,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereInterval($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereJailTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereLastIntervalAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game wherePoliceScore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game wherePoliceStationLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereStartedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereThievesScore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereTimeLeft($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereUpdatedAt($value)
  * @mixin \Eloquent
@@ -74,6 +79,11 @@ class Game extends Model
     public function loot()
     {
         return $this->belongsToMany(Loot::class, 'game_loot');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
     }
 
     public function invite_keys()

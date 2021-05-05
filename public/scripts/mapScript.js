@@ -88,7 +88,7 @@ function addMarker(e) {
     }
     let newMarker = L.marker(e.latlng, { icon: borderIcon })
         .bindPopup(L.popup({ maxWidth: maxPopupWidth})
-            .setContent('Locatie marker ' + (markers.length + 1)))
+            .setContent('Border marker ' + (markers.length + 1)))
         .addTo(mymap);
     applyEvents(newMarker);
     markers.push(newMarker);
@@ -183,7 +183,7 @@ function applyExistingMarker(lat, lng) {
     let latlng = L.latLng(lat, lng);
     let newMarker = L.marker(latlng, { icon: borderIcon })
         .bindPopup(L.popup({ maxWidth: maxPopupWidth })
-            .setContent('Locatie marker ' + (markers.length + 1)))
+            .setContent('Border marker ' + (markers.length + 1)))
         .addTo(mymap);
     applyEvents(newMarker);
     markers.push(newMarker);

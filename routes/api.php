@@ -30,6 +30,7 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/games/{game}/loot', [GameController::class, 'getLoot']);
     $router->get('/games/{game}/invite-keys', [GameController::class, 'getInviteKeys']);
     $router->get('/games/{game}/border-markers', [GameController::class, 'getBorderMarkers']);
+    $router->get('/games/{game}/notifications', [GameController::class, 'getNotifications']);
     $router->patch('/games/{game}/thieves-score/{score}', [GameController::class, 'updateThievesScore']);
     $router->patch('/games/{game}/police-score/{score}', [GameController::class, 'updatePoliceScore']);
     $router->delete('/loot/{loot}', [LootController::class, 'destroy']);
