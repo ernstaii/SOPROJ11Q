@@ -20,7 +20,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResource('users', UserController::class)->only(['store', 'update']);
 Route::get('/users/{user}', [UserController::class, 'get']);
-Route::patch('/users/{user}/catch', [UserController::class, 'catchThief']);
 
 Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/invite-keys/{key}', [InviteKeyController::class, 'get']);
@@ -33,5 +32,6 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/games/{game}/notifications', [GameController::class, 'getNotifications']);
     $router->patch('/games/{game}/thieves-score/{score}', [GameController::class, 'updateThievesScore']);
     $router->patch('/games/{game}/police-score/{score}', [GameController::class, 'updatePoliceScore']);
+    $router->patch('/users/{user}/catch', [UserController::class, 'catchThief']);
     $router->delete('/loot/{loot}', [LootController::class, 'destroy']);
 });
