@@ -1,9 +1,21 @@
 @extends('layout')
 
 @section('head')
-    <title>Overzicht Spel {{$id}}</title>
     <link rel="stylesheet" href="{{asset('stylesheets/mainGameScreenStyle.css')}}">
+    <link rel="stylesheet" href="{{asset('stylesheets/mapStyle.css')}}">
     <link rel="stylesheet" href="{{asset('stylesheets/gameOverviewStyle.css')}}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+    <script src="{{asset('scripts/mapScript_gameOverview.js')}}" defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Overzicht Spel {{$id}}</title>
 @endsection
 
 @section('content')
@@ -44,5 +56,51 @@
                 </form>
             </div>
         </div>
+        <div class="mapbox shadow">
+            <div id="map">
+            </div>
+        </div>
+        <div class="timer-box shadow">
+            <div class="center-box">
+                <h2>Totale speelduur: {{$duration}} minuten</h2>
+                <div class="timer-with-label">
+                    @if($game_status != 'finished')
+                        <h1 class="timer">00:00:00</h1>
+                        <h2 class="score-text">{{$status_text}}</h2>
+                    @else
+                        <h1 class="timer">{{$status_text}}</h1>
+                    @endif
+                </div>
+                <p class="score-text" id="score_1">Boeven score: {{$thieves_score}}</p>
+                <p class="score-text" id="score_2">Politie score: {{$police_score}}</p>
+            </div>
+        </div>
+        <div class="bottom-box shadow">
+            <div class="item-header">
+                <h2>Spel Notificaties</h2>
+            </div>
+            <div class="messages">
+            </div>
+        </div>
     </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            @foreach($loot as $loot_item)
+                applyLootMarker({{$loot_item->location}}, '{{$loot_item->name}}');
+            @endforeach
+            @foreach($users as $user)
+                applyUserMarker({{$user->location}}, '{{$user->username}}', '{{$user->role}}');
+            @endforeach
+            updateUserPinsOnChange({{$interval}}, '{{$game_status}}', {{$id}});
+            @foreach($border_markers as $border_marker)
+                applyExistingMarker({{$border_marker->location}});
+            @endforeach
+            drawLinesForExistingMarkers();
+            @if($game_status != 'finished')
+                handleTimerElement('{{$game_status}}', '{{$time_left}}', '{{$duration}}');
+            @endif
+            applyExistingPoliceStation({{$police_station_location}});
+            callGameDetails({{$id}});
+        });
+    </script>
 @endsection

@@ -1,3 +1,34 @@
+.bottom-box
+{
+    background:                 #fff;
+    border-radius:              1vw;
+    display:                    flex;
+    flex-direction:             column;
+    margin-left:                2vw;
+    margin-right:               1vw;
+    margin-top:                 2.5vh;
+    max-height:                 385px;
+    min-width:                  375px;
+    text-align:                 center;
+    width:                      20vw;
+}
+
+.bottom-box p
+{
+    margin-left:                0.5vw;
+    margin-right:               0.5vw;
+    overflow-wrap:              break-word;
+    text-align:                 left;
+}
+
+.center-box
+{
+    align-items:                center;
+    display:                    flex;
+    flex-direction:             column;
+    justify-content:            center;
+}
+
 .form-item
 {
     margin-top:                 0;
@@ -21,4 +52,35 @@
     flex-wrap:                  wrap;
     margin-top:                 2.8vh;
     text-align:                 center;
+}
+
+.messages
+{
+    justify-content:            stretch;
+    overflow-y:                 auto;
+}
+
+.score-text
+{
+    font-size:                  2vh;
+}
+
+.timer
+{
+    font-size:                  3vw;
+    margin-bottom:              0;
+}
+
+.timer-box
+{
+    align-items:                center;
+    background:                 #fff;
+    border-radius:              1vw;
+    display:                    flex;
+    justify-content:            center;
+    margin-left:                2vw;
+    margin-right:               1vw;
+    min-width:                  375px;
+    text-align:                 center;
+    width:                      20vw;
 }
