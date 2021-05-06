@@ -31,7 +31,9 @@
                         @method('PUT')
                         <label for="reason">Geef een reden voor het beëindigen</label>
                         <input type="text" id="reason" name="reason">
-                        <button type="input" class="keys-share-button" type="submit" name="state" value="{{\App\Enums\Statuses::Finished}}">Beëindig spel</button>
+                        <button type="input" class="keys-share-button" type="submit" name="state"
+                                value="{{\App\Enums\Statuses::Finished}}">Beëindig spel
+                        </button>
                     </div>
                 </form>
             </div>
@@ -42,7 +44,9 @@
                         @method('PUT')
                         <label for="reason">Geef een reden voor het pauzeren</label>
                         <input type="text" id="reason" name="reason">
-                        <button type="input" class="keys-share-button" type="submit" name="state" value="{{\App\Enums\Statuses::Paused}}">Pauzeer spel</button>
+                        <button type="input" class="keys-share-button" type="submit" name="state"
+                                value="{{\App\Enums\Statuses::Paused}}">Pauzeer spel
+                        </button>
                     </div>
                 </form>
             </div>
@@ -51,7 +55,9 @@
                     <div class="form-item game-form">
                         @csrf
                         @method('PUT')
-                        <button type="input" class="keys-share-button" type="submit" name="state" value="{{\App\Enums\Statuses::Ongoing}}">Hervat spel</button>
+                        <button type="input" class="keys-share-button" type="submit" name="state"
+                                value="{{\App\Enums\Statuses::Ongoing}}">Hervat spel
+                        </button>
                     </div>
                 </form>
             </div>
@@ -84,20 +90,22 @@
         </div>
     </div>
     <script>
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             @foreach($loot as $loot_item)
-                applyLootMarker({{$loot_item->location}}, '{{$loot_item->name}}');
+            applyLootMarker({{$loot_item->location}}, '{{$loot_item->name}}');
             @endforeach
             @foreach($users as $user)
-                applyUserMarker({{$user->location}}, '{{$user->username}}', '{{$user->role}}');
+            @if ($user->location != null)
+            applyUserMarker({{$user->location}}, '{{$user->username}}', '{{$user->role}}');
+            @endif
             @endforeach
             updateUserPinsOnChange({{$interval}}, '{{$game_status}}', {{$id}});
             @foreach($border_markers as $border_marker)
-                applyExistingMarker({{$border_marker->location}});
+            applyExistingMarker({{$border_marker->location}});
             @endforeach
             drawLinesForExistingMarkers();
             @if($game_status != 'finished')
-                handleTimerElement('{{$game_status}}', '{{$time_left}}', '{{$duration}}');
+            handleTimerElement('{{$game_status}}', '{{$time_left}}', '{{$duration}}');
             @endif
             applyExistingPoliceStation({{$police_station_location}});
             callGameDetails({{$id}});

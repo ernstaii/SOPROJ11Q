@@ -10,6 +10,7 @@ use App\Models\Loot;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
+use function Sodium\add;
 
 class RandomGameSeeder extends Seeder
 {
@@ -33,11 +34,13 @@ class RandomGameSeeder extends Seeder
             $id = $first_available_id + $i;
 
             $keys = array();
+            $users = new Collection();
             for ($x = 0; $x < $amount_of_users_per_game; $x++) {
                 $user = User::create([
                     'username' => self::USERNAMES[rand(0, count(self::USERNAMES) - 1)],
                     'location' => $this->getRandLocationNearOss()
                 ]);
+                $users->push($user);
             }
 
             $loot = new Collection();
@@ -84,16 +87,22 @@ class RandomGameSeeder extends Seeder
             ]);
 
             $keys = array();
-            for ($x = 0; $x < $amount_of_users_per_game; $x++) {
+            $invite_keys = new Collection();
+            for ($x = 0; $x < $amount_of_users_per_game + 2; $x++) {
                 $key = $this->createKeyString($keys);
                 array_push($keys, $key);
 
-                InviteKey::create([
+                $db_key = InviteKey::create([
                     'value' => $key,
                     'game_id' => $id,
-                    'user_id' => $user->id,
                     'role' => self::USER_ROLES[rand(0, 1)]
                 ]);
+                $invite_keys->push($db_key);
+            }
+
+            for ($x = 0; $x < $amount_of_users_per_game; $x++) {
+                $invite_keys[$x]->user_id = $users[$x]->id;
+                $invite_keys[$x]->save();
             }
         }
     }
