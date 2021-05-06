@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Statuses;
 use App\Enums\UserStatuses;
+use App\Events\PlayerJoinedGameEvent;
 use App\Events\ThiefCaughtEvent;
 use App\Http\Requests\UpdateLocationRequest;
 use App\Http\Requests\UserStoreRequest;
@@ -41,6 +43,9 @@ class UserController extends Controller
         $inviteKey = InviteKey::where('value', '=', $request->invite_key)->first();
         $inviteKey->user_id = $user->id;
         $inviteKey->save();
+
+        if (in_array($inviteKey->game->status, [Statuses::Ongoing, Statuses::Paused]))
+            event(new PlayerJoinedGameEvent($inviteKey->game->id, $user));
 
         return $user;
     }
