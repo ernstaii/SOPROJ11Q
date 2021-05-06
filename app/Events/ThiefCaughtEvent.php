@@ -14,8 +14,11 @@ class ThiefCaughtEvent extends GameEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $user;
+
     public function __construct(User $user)
     {
+        $this->user = $user;
         $game = $user->get_game();
         $this->gameId = $game->id;
         $this->message = 'Boef ' . $user->username . ' is zojuist gevangen!';
@@ -25,7 +28,7 @@ class ThiefCaughtEvent extends GameEvent
             'message' => $this->message
         ]);
 
-        event(new GameIntervalEvent($game->id, $game->get_users()->where('status', '=', UserStatuses::Playing), $game->loot));
+        event(new GameIntervalEvent($game->id, $game->get_users_with_role()->where('status', '=', UserStatuses::Playing), $game->loot));
         $game->last_interval_at = Carbon::now();
         $game->save();
     }
