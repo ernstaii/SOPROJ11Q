@@ -6,10 +6,12 @@ use App\Models\Notification;
 
 class ResumeGameEvent extends GameEvent
 {
-    public function __construct($gameId)
+
+    public function __construct($gameId, $timeLeft)
     {
         $this->gameId = $gameId;
         $this->message = 'Het spel is hervat.';
+        $this->timeLeft = $timeLeft;
 
         Notification::create([
             'game_id' => $gameId,

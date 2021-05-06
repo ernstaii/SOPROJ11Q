@@ -61,11 +61,6 @@ class GameController extends Controller
         return $game->notifications()->get();
     }
 
-    public function getTimeLeftOfGame(Game $game)
-    {
-        return $game->time_left;
-    }
-
     public function show(Game $game)
     {
         switch ($game->status) {
@@ -144,7 +139,7 @@ class GameController extends Controller
 
                     event(new StartGameEvent($game->id));
                 } else {
-                    event(new ResumeGameEvent($game->id));
+                    event(new ResumeGameEvent($game->id, $game->time_left));
                 }
                 $game->status = $request->state;
                 break;
