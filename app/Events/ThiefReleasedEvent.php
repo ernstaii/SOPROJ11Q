@@ -14,8 +14,11 @@ class ThiefReleasedEvent extends GameEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $user;
+
     public function __construct(User $user)
     {
+        $this->user = $user;
         $game = $user->get_game();
         $this->gameId = $game->id;
         $this->message = 'Boef ' . $user->username . ' is zojuist vrijgelaten.';
