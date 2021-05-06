@@ -63,7 +63,7 @@ class GameController extends Controller
 
     public function getTimeLeftOfGame(Game $game)
     {
-        return $game->time_left()->get();
+        return $game->time_left;
     }
 
     public function show(Game $game)
