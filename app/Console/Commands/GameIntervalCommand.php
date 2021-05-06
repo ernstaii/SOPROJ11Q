@@ -41,13 +41,13 @@ class GameIntervalCommand extends Command
                     $difference = $now->diffInSeconds(Carbon::parse($game->last_interval_at ?? $game->started_at));
                     $this->log('    ' . $difference . ' seconds have elapsed since last interval');
 
+                    $this->releasePlayersIfTimeHasElapsed($game, $now);
+
                     if ($difference >= $game->interval) {
                         $this->log('    Invoking interval event');
-                        event(new GameIntervalEvent($game->id, $game->get_users(), $game->loot));
+                        event(new GameIntervalEvent($game->id, $game->get_users_with_role(), $game->loot));
                         $game->last_interval_at = $now;
                     }
-
-                    $this->releasePlayersIfTimeHasElapsed($game, $now);
                 } else {
                     $this->log('    Game has elapsed');
                     $game->status = Statuses::Finished;
