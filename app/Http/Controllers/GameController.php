@@ -139,7 +139,7 @@ class GameController extends Controller
 
                     event(new StartGameEvent($game->id));
                 } else {
-                    event(new ResumeGameEvent($game->id));
+                    event(new ResumeGameEvent($game->id, $game->time_left));
                 }
                 $game->status = $request->state;
                 break;

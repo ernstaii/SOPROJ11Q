@@ -14,6 +14,7 @@ abstract class GameEvent implements ShouldBroadcastNow
 
     protected $gameId;
     public $message;
+    public $timeLeft;
 
     public function __construct($gameId)
     {
