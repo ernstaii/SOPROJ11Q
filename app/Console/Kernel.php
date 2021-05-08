@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\RunShortSchedule;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Spatie\ShortSchedule\ShortSchedule;
@@ -10,7 +11,7 @@ class Kernel extends ConsoleKernel
 {
 
     protected $commands = [
-        //
+        RunShortSchedule::class
     ];
 
     protected function schedule(Schedule $schedule)
