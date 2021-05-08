@@ -1,2 +1,2 @@
 web: vendor/bin/heroku-php-apache2 public/
-scheduler: php artisan game:intervals
+scheduler: php -d memory_limit=512M artisan short-schedule:daemon
