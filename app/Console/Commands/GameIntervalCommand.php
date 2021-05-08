@@ -38,7 +38,11 @@ class GameIntervalCommand extends Command
 
                 if (!$game_ended) {
                     $this->log('    Game is on-going');
-                    $difference = $now->diffInSeconds(Carbon::parse($game->last_interval_at ?? $game->started_at));
+                    if ($game->last_interval_at == null) {
+                        $difference = 99999999;
+                        $game->last_interval_at = $now;
+                    } else
+                        $difference = $now->diffInSeconds(Carbon::parse($game->last_interval_at ?? $game->started_at));
                     $this->log('    ' . $difference . ' seconds have elapsed since last interval');
 
                     $this->releasePlayersIfTimeHasElapsed($game, $now);
