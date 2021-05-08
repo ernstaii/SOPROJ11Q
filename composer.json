@@ -55,17 +55,17 @@
     "prefer-stable": true,
     "scripts": {
         "post-install-cmd": [
-            "chmod -R 777 public/"
+            "chmod -R 777 public/",
+            "@php artisan clear-compiled",
+            "@php artisan config:clear",
+            "@php artisan cache:clear"
         ],
         "post-update-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "@php artisan ide-helper:generate",
-            "@php artisan ide-helper:meta"
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi",
-            "@php artisan optimize"
+            "@php artisan package:discover --ansi"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
