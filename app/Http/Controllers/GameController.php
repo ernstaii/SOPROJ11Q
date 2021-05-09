@@ -177,6 +177,8 @@ class GameController extends Controller
     public function destroy(Game $game)
     {
         $invite_keys = $game->invite_keys();
+        $border_markers = $game->border_markers();
+        $notifications = $game->notifications();
 
         $users = new Collection();
         foreach ($invite_keys->get() as $key) {
@@ -184,6 +186,8 @@ class GameController extends Controller
         }
 
         $invite_keys->delete();
+        $border_markers->delete();
+        $notifications->delete();
 
         foreach ($users as $user) {
             $user->delete();
