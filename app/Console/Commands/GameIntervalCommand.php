@@ -41,8 +41,6 @@ class GameIntervalCommand extends Command
                     $difference = $now->diffInSeconds(Carbon::parse($game->last_interval_at ?? $game->started_at));
                     $this->log('    ' . $difference . ' seconds have elapsed since last interval');
 
-                    $this->releasePlayersIfTimeHasElapsed($game, $now);
-
                     if ($difference >= $game->interval) {
                         $this->log('    Invoking interval event');
                         event(new GameIntervalEvent($game->id, $game->get_users_with_role(), $game->loot));
@@ -69,21 +67,6 @@ class GameIntervalCommand extends Command
         }
         $this->log('Interval ended');
         return 0;
-    }
-
-    private function releasePlayersIfTimeHasElapsed(Game $game, Carbon $now)
-    {
-        $caught_users = $game->get_users()->where('status', '=', UserStatuses::Caught);
-
-        foreach ($caught_users as $user) {
-            if (Carbon::parse($user->caught_at)->diffInMinutes($now) >= $game->jail_time) {
-                $user->status = UserStatuses::Playing;
-                $user->caught_at = null;
-                $user->save();
-                event(new ThiefReleasedEvent($user));
-                $this->log("    Releasing player " . $user->id . " of game " . $game->id);
-            }
-        }
     }
 
     private function hasGameTimeElapsed(Game $game, Carbon $now)
