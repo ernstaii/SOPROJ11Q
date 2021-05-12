@@ -7,6 +7,16 @@ body
     padding:                    0;
 }
 
+h3, h5
+{
+    margin:                     5px;
+}
+
+label
+{
+    color:                      #C6002A;
+}
+
 .bottom-box
 {
     background:                 #fff;
@@ -28,16 +38,6 @@ body
     margin-right:               0.5vw;
     overflow-wrap:              break-word;
     text-align:                 left;
-}
-
-h3, h5
-{
-    margin:                     5px;
-}
-
-label
-{
-    color:                      #C6002A;
 }
 
 .page-top-bar

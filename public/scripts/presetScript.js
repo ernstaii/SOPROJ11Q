@@ -2,7 +2,7 @@ const presetBox = document.querySelector("#preset-box");
 
 async function savePreset() {
     // TODO: Add game theme
-    let presetNameInput = document.querySelector("#preset_name")
+    let presetNameInput = document.querySelector("#preset_name");
     let durationInput = document.querySelector("#duration");
     let intervalInput = document.querySelector("#interval");
     let lootLats = [];
