@@ -133,7 +133,9 @@ class GameController extends Controller
         if ($game->status === Statuses::Config) {
             $game->duration = $request->duration;
             $game->interval = $request->interval;
-            $game->logo = base64_encode(file_get_contents($request->file('logo')));
+            if (isset($game->logo))
+                $game->logo = base64_encode(file_get_contents($request->file('logo')));
+
             $game->colour_theme = $request->colour;
         }
 
