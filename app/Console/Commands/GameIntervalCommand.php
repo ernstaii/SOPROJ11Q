@@ -6,7 +6,6 @@ use App\Enums\Statuses;
 use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
 use App\Events\GameIntervalEvent;
-use App\Events\ThiefReleasedEvent;
 use App\Models\Game;
 use App\Models\User;
 use Carbon\Carbon;
