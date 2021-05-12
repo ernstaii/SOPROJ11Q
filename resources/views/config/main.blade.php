@@ -129,7 +129,7 @@
         </div>
         <div class="bottom-box shadow">
             <div class="item-header">
-                <h2>Presets</h2>
+                <h2>TEMPLATES</h2>
             </div>
             <form action="{{route('presets.store')}}" method="post">
                 <div class="form-item game-form">

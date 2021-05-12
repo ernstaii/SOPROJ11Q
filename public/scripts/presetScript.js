@@ -8,9 +8,9 @@ async function savePreset() {
     let borderLats = [];
     let borderLngs = [];
 
-    if (lootLatLngs.length !== 0 || markerLatLngs.length !== 0 || policeStationLatLng == null || !(presetNameInput.value || presetNameInput.value.trim() === "") || !durationInput.value || !intervalInput.value) {
+    if (lootLatLngs.length !== 0 || markerLatLngs.length !== 0 || policeStationLatLng == null ||
+        !(presetNameInput.value || presetNameInput.value.trim() === "") || !durationInput.value || !intervalInput.value) {
         let errorMsg = document.createElement('p');
-        return;
     }
 
     lootLatLngs.forEach(latLng => {
@@ -21,6 +21,8 @@ async function savePreset() {
         borderLats.push(border.lat);
         borderLngs.push(border.lng);
     });
+
+    console.log(lootLats);
 
     $.ajaxSetup({
         headers: {
