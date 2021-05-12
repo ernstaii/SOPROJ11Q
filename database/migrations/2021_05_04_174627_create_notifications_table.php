@@ -16,6 +16,7 @@ class CreateNotificationsTable extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('game_id');
+            $table->unsignedBigInteger('user_id')->nullable(true);
             $table->string('message');
             $table->timestamps();
 
