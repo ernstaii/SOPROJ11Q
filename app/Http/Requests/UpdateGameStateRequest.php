@@ -58,11 +58,20 @@ class UpdateGameStateRequest extends FormRequest
             return [
                 'state' => ['required', 'string'],
                 'duration' => ['required', 'integer', 'between:10,1440'],
-                'interval' => ['required', 'integer', 'between:30,300']
+                'interval' => ['required', 'integer', 'between:30,300'],
+                'logo' => ['nullable', 'image', 'dimensions:max_width=300,max_height=200'],
+                'colour' => ['nullable', 'string']
             ];
         }
         return [
             'state' => ['required', 'string']
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'logo.dimensions' => 'Upload a.u.b. een afbeelding welke maximaal 300x200 pixels groot is.'
         ];
     }
 }
