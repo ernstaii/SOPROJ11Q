@@ -66,6 +66,7 @@ function initMap() {
     mymap = L.map(document.getElementById('map')).setView(mapCenter, zoomLevel);
     mymap.options.minZoom = minZoomLevel;
     mymap.setMaxBounds(mapBounds);
+    mymap.addControl(new L.Control.Fullscreen());
     const attribution = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
     const tileURL = 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png';
     const tiles = L.tileLayer(tileURL, { attribution });
@@ -215,7 +216,7 @@ function createLootButtons(game_id) {
     button_remove_last.id = 'button_remove_loot';
 
     let button_save_loot = document.createElement('button');
-    button_save_loot.textContent = 'Sla buiten op';
+    button_save_loot.textContent = 'Sla buit op';
     button_save_loot.onclick = () => saveLoot(game_id);
     button_save_loot.id = 'button_save_loot';
 
@@ -233,7 +234,7 @@ function createLootButtons(game_id) {
     lootNameInput = document.querySelector('#input_loot_name');
 
     saveLootButton.disabled = true;
-    saveLootButton.title = 'Er is minstens 1 buit nodig voordat de buiten opgeslagen mogen worden.';
+    saveLootButton.title = 'Er is minstens 1 buit pin nodig voordat de buit opgeslagen kan worden.';
 
     tab_2.style.background = 'white';
     tab_2.style.color = '#888';
@@ -285,7 +286,7 @@ function removeLoot() {
 
     if (loot_markers.length < 1) {
         saveLootButton.disabled = true;
-        saveLootButton.title = 'Er is minstens 1 buit nodig voordat de buiten opgeslagen mogen worden.';
+        saveLootButton.title = 'Er is minstens 1 buit pin nodig voordat de buit opgeslagen kan worden.';
     }
 
     if (lootNames.length > 0) {

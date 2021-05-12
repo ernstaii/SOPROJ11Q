@@ -71,6 +71,7 @@ function initMap() {
     mymap = L.map(document.getElementById('map')).setView(mapCenter, zoomLevel);
     mymap.options.minZoom = minZoomLevel;
     mymap.setMaxBounds(mapBounds);
+    mymap.addControl(new L.Control.Fullscreen());
     const attribution = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
     const tileURL = 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png';
     const tiles = L.tileLayer(tileURL, { attribution });

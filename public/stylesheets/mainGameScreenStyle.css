@@ -185,6 +185,11 @@ h2
     text-align:                 center;
 }
 
+#upload_box
+{
+    width:                      375px;
+}
+
 .vert-keys-box
 {
     width:                      50%;

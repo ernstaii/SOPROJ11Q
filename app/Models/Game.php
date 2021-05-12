@@ -17,9 +17,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $police_station_location
  * @property int $thieves_score
  * @property int $police_score
- * @property int $jail_time
  * @property string|null $last_interval_at
  * @property string|null $started_at
+ * @property string|null $logo
+ * @property string $colour_theme
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\App\Models\BorderMarker[] $border_markers
@@ -38,7 +39,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereDuration($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereInterval($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Game whereJailTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereLastIntervalAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game wherePoliceScore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game wherePoliceStationLocation($value)
@@ -62,9 +62,10 @@ class Game extends Model
         'police_station_location',
         'thieves_score',
         'police_score',
-        'jail_time',
         'last_interval_at',
         'started_at',
+        'logo',
+        'colour_theme',
         'created_at',
         'updated_at'
     ];
