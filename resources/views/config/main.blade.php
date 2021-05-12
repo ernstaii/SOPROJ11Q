@@ -46,7 +46,7 @@
                                 <label class="form-label-0" for="colour">Kleurthema (app)</label>
                                 <input name="colour" class="input-numeric-0" id="colour" type="color" value="#0099ff">
                             </div>
-                            <div class="form-item">
+                            <div class="form-item" id="upload_box">
                                 <label class="form-label-0" for="logo">Logo (app)</label>
                                 <input name="logo" class="input-numeric-0" id="logo" type="file" accept="image/*">
                             </div>
