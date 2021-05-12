@@ -39,7 +39,8 @@ h2
     margin-bottom:              8vh;
 }
 
-.config-main-screen {
+.config-main-screen
+{
     display:                    flex;
     flex-direction:             row;
     flex-wrap:                  wrap;
