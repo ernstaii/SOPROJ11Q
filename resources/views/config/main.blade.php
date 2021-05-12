@@ -6,10 +6,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
           integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
           crossorigin=""/>
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""></script>
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
     <script src="{{asset('scripts/keyGen.js')}}" defer></script>
     <script src="{{asset('scripts/resizeScript.js')}}" defer></script>
     <script src="{{asset('scripts/mapScript.js')}}" defer></script>
@@ -32,16 +34,12 @@
                             @csrf
                             @method('PUT')
                             <div class="form-item">
-                                <label class="form-label-0" for="duration">Spelduratie (min)</label>
+                                <label class="form-label-0" for="duration">Speelduur (min)</label>
                                 <input name="duration" class="input-numeric-0" id="duration" type="number" min="10" max="1440">
                             </div>
                             <div class="form-item">
                                 <label class="form-label-0" for="interval">Locatieupdate interval (sec)</label>
                                 <input name="interval" class="input-numeric-0" id="interval" type="number" min="30" max="300">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label-0" for="jail_time">Gevangenis tijd (min)</label>
-                                <input name="jail_time" class="input-numeric-0" id="jail_time" type="number" min="3" max="30">
                             </div>
                             <div class="form-item">
                                 <button type="input" class="keys-share-button" type="submit" name="state"
@@ -117,7 +115,7 @@
         <div class="total-map-box">
             <div class="map-top-tabs">
                 <div class="map-top-tab" id="tab_1"><p>Spelgrenzen</p></div>
-                <div class="map-top-tab" id="tab_2"><p>Buiten</p></div>
+                <div class="map-top-tab" id="tab_2"><p>Buit</p></div>
                 <div class="map-top-tab" id="tab_3"><p>Politiebureau</p></div>
             </div>
             <div class="mapbox shadow">

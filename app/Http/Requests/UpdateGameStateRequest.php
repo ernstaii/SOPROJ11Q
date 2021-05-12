@@ -58,8 +58,7 @@ class UpdateGameStateRequest extends FormRequest
             return [
                 'state' => ['required', 'string'],
                 'duration' => ['required', 'integer', 'between:10,1440'],
-                'interval' => ['required', 'integer', 'between:30,300'],
-                'jail_time' => ['required', 'integer', 'between:3,30']
+                'interval' => ['required', 'integer', 'between:30,300']
             ];
         }
         return [
