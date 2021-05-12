@@ -8,9 +8,11 @@ use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
 use App\Events\PauseGameEvent;
 use App\Events\ResumeGameEvent;
+use App\Events\SendNotificationEvent;
 use App\Events\StartGameEvent;
 use App\Http\Requests\StoreBorderMarkerRequest;
 use App\Http\Requests\StoreLootRequest;
+use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Requests\UpdateGameStateRequest;
 use App\Http\Requests\UpdatePoliceStationLocationRequest;
 use App\Models\BorderMarker;
@@ -229,6 +231,12 @@ class GameController extends Controller
 
         return $game;
 	}
+
+	public function sendNotification(StoreNotificationRequest $request, Game $game)
+    {
+        event(new SendNotificationEvent($game->id, $request->message));
+        return redirect()->route('games.show', [$game]);
+    }
 
     /**
      * AJAX function. Not to be called via manual routing.

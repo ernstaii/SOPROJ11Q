@@ -63,6 +63,16 @@
                     </div>
                 </form>
             </div>
+            <div class="button-4">
+                <form action="{{route('games.sendMessage', ['game' => $id])}}" method="post">
+                    <div class="form-item game-form">
+                        @csrf
+                        <label for="message">Stuur een bericht naar de spelers</label>
+                        <input type="text" id="message" name="message">
+                        <button type="input" class="keys-share-button" type="submit" name="state">Stuur bericht</button>
+                    </div>
+                </form>
+            </div>
         </div>
         <div class="mapbox shadow">
             <div id="map">
