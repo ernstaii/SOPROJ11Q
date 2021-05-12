@@ -30,7 +30,8 @@
             <div class="item-box">
                 <div id="form_box">
                     <div class="config-form">
-                        <form class="form-col-1" action="{{route('games.update', ['game' => $id])}}}" method="post">
+                        <form class="form-col-1" action="{{route('games.update', ['game' => $id])}}}" method="post"
+                              enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="form-item">
@@ -40,6 +41,14 @@
                             <div class="form-item">
                                 <label class="form-label-0" for="interval">Locatieupdate interval (sec)</label>
                                 <input name="interval" class="input-numeric-0" id="interval" type="number" min="30" max="300">
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label-0" for="colour">Kleurthema (app)</label>
+                                <input name="colour" class="input-numeric-0" id="colour" type="color" value="#0099ff">
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label-0" for="logo">Logo (app)</label>
+                                <input name="logo" class="input-numeric-0" id="logo" type="file" accept="image/*">
                             </div>
                             <div class="form-item">
                                 <button type="input" class="keys-share-button" type="submit" name="state"

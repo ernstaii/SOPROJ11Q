@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $police_score
  * @property string|null $last_interval_at
  * @property string|null $started_at
+ * @property string|null $logo
+ * @property string $colour_theme
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\App\Models\BorderMarker[] $border_markers
@@ -62,6 +64,8 @@ class Game extends Model
         'police_score',
         'last_interval_at',
         'started_at',
+        'logo',
+        'colour_theme',
         'created_at',
         'updated_at'
     ];

@@ -26,6 +26,8 @@ class CreateGamesTable extends Migration
             $table->integer('police_score')->default(0);
             $table->timestamp('last_interval_at')->nullable();
             $table->timestamp('started_at')->nullable();
+            $table->longText('logo')->nullable();
+            $table->string('colour_theme')->default('#0099ff');
             $table->timestamps();
         });
     }

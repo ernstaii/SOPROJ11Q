@@ -61,6 +61,15 @@ class GameController extends Controller
         return $game->notifications()->get();
     }
 
+    public function getLogo(Game $game)
+    {
+        $headers = [
+            'Content-Type' => 'image/png'
+        ];
+
+        return response(base64_decode($game->logo), 200, $headers);
+    }
+
     public function show(Game $game)
     {
         switch ($game->status) {
@@ -122,6 +131,8 @@ class GameController extends Controller
         if ($game->status === Statuses::Config) {
             $game->duration = $request->duration;
             $game->interval = $request->interval;
+            $game->logo = base64_encode(file_get_contents($request->file('logo')));
+            $game->colour_theme = $request->colour;
         }
 
         switch ($request->state) {
