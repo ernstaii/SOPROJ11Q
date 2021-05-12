@@ -135,7 +135,7 @@
                 <div class="form-item game-form">
                     @csrf
                     <label for="preset_name">Naam</label>
-                    <input type="text" id="preset_name" name="name">
+                    <input type="text" id="preset_name" name="name" value="{{ old('name') }}">
                     <button onclick="savePreset()" class="keys-share-button">Opslaan</button>
                 </div>
             </form>
