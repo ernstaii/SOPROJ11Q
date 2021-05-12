@@ -135,6 +135,7 @@ class GameController extends Controller
             $game->interval = $request->interval;
             if (isset($request->logo))
                 $game->logo = base64_encode(file_get_contents($request->logo));
+            if (isset($request->colour))
             $game->colour_theme = $request->colour;
         }
 

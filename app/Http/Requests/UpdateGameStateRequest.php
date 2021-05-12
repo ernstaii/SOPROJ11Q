@@ -59,8 +59,8 @@ class UpdateGameStateRequest extends FormRequest
                 'state' => ['required', 'string'],
                 'duration' => ['required', 'integer', 'between:10,1440'],
                 'interval' => ['required', 'integer', 'between:30,300'],
-                'logo' => ['image', 'dimensions:max_width=300,max_height=200'],
-                'colour' => ['required', 'string']
+                'logo' => ['nullable', 'image', 'dimensions:max_width=300,max_height=200'],
+                'colour' => ['nullable', 'string']
             ];
         }
         return [
