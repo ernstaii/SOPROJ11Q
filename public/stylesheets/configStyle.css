@@ -7,12 +7,14 @@ body
     padding:                    0;
 }
 
-.config-main-screen {
-    display:                    flex;
-    flex-direction:             row;
-    flex-wrap:                  wrap;
-    margin-top:                 2.8vh;
-    text-align:                 center;
+h3, h5
+{
+    margin:                     5px;
+}
+
+label
+{
+    color:                      #C6002A;
 }
 
 .bottom-box
@@ -36,16 +38,6 @@ body
     margin-right:               0.5vw;
     overflow-wrap:              break-word;
     text-align:                 left;
-}
-
-h3, h5
-{
-    margin:                     5px;
-}
-
-label
-{
-    color:                      #C6002A;
 }
 
 .page-top-bar
