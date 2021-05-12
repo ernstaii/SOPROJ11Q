@@ -167,6 +167,10 @@ h2
     display:                    none;
 }
 
+#preset_name {
+    margin-bottom:              3px;
+}
+
 .slider-labels
 {
     display:                    flex;

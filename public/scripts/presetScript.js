@@ -1,3 +1,5 @@
+const presetBox = document.querySelector("#preset-box");
+
 async function savePreset() {
     // TODO: Add game theme
     let presetNameInput = document.querySelector("#preset_name")
@@ -8,21 +10,36 @@ async function savePreset() {
     let borderLats = [];
     let borderLngs = [];
 
-    if (lootLatLngs.length !== 0 || markerLatLngs.length !== 0 || policeStationLatLng == null ||
-        !(presetNameInput.value || presetNameInput.value.trim() === "") || !durationInput.value || !intervalInput.value) {
-        let errorMsg = document.createElement('p');
+    let mapDataValid = (lootLatLngs.length > 0 && markerLatLngs.length > 0 && policeStationLatLng != null);
+    let durationInputValid = (durationInput.value && durationInput.checkValidity());
+    let intervalInputValid = (intervalInput.value && intervalInput.checkValidity());
+    let presetNameValid = (presetNameInput.value && presetNameInput.value.trim() !== "");
+
+    if (!mapDataValid) {
+        showValidationError('Plaats a.u.b. alle pins op de kaart.');
+        return;
+    }
+    if (!durationInputValid) {
+        showValidationError('Vul a.u.b. een valide speelduur in.');
+        return;
+    }
+    if (!intervalInputValid) {
+        showValidationError('Vul a.u.b. een valide interval in tussen locatieupdates.');
+        return;
+    }
+    if (!presetNameValid) {
+        showValidationError('Vul a.u.b. een naam in voor het template.');
+        return;
     }
 
-    lootLatLngs.forEach(latLng => {
-        lootLats.push(latLng.lat);
-        lootLngs.push(latLng.lng);
+    lootLatLngs.forEach(lootItem => {
+        lootLats.push(lootItem.lat);
+        lootLngs.push(lootItem.lng);
     });
     markerLatLngs.forEach(border => {
         borderLats.push(border.lat);
         borderLngs.push(border.lng);
     });
-
-    console.log(lootLats);
 
     $.ajaxSetup({
         headers: {
@@ -52,4 +69,31 @@ async function savePreset() {
 
 function loadPreset() {
 
+}
+
+function showValidationError (message) {
+    let validationBox = document.querySelector('#template_validation_msg');
+
+    if (validationBox == null) {
+        validationBox = document.createElement('div');
+        validationBox.classList.add('form-item');
+        validationBox.id = "template_validation_msg";
+        presetBox.appendChild(validationBox);
+    }
+
+    let errorMsgElem = document.createElement('p');
+    errorMsgElem.id = 'validation_msg';
+    errorMsgElem.style.color = 'red';
+    errorMsgElem.textContent = message;
+    validationBox.appendChild(errorMsgElem);
+
+    if (validationBox.children.length > 4) {
+        validationBox.removeChild(validationBox.children[3]);
+    }
+
+    setTimeout(function () {
+        if (validationBox.children.length > 0) {
+            validationBox.removeChild(validationBox.children[0]);
+        }
+    }, 7500);
 }

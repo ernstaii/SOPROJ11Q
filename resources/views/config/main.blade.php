@@ -131,14 +131,13 @@
             <div class="item-header">
                 <h2>TEMPLATES</h2>
             </div>
-            <form action="{{route('presets.store')}}" method="post">
-                <div class="form-item game-form">
-                    @csrf
+            <div class="item-box">
+                <div class="form-item game-form" id="preset-box">
                     <label for="preset_name">Naam</label>
                     <input type="text" id="preset_name" name="name" value="{{ old('name') }}">
                     <button onclick="savePreset()" class="keys-share-button">Opslaan</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
     <script>
@@ -157,3 +156,4 @@
         });
     </script>
 @endsection
+
