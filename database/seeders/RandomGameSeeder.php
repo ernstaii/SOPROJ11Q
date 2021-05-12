@@ -43,15 +43,6 @@ class RandomGameSeeder extends Seeder
                 $users->push($user);
             }
 
-            $loot = new Collection();
-            for ($x = 0; $x < $amount_of_loot_per_game; $x++) {
-                $loot_item = Loot::create([
-                    'name' => self::LOOT_NAMES[rand(0, count(self::LOOT_NAMES) - 1)],
-                    'location' => $this->getRandLocationNearOss()
-                ]);
-                $loot->push($loot_item);
-            }
-
             $game = Game::create([
                 'id' => $id,
                 'police_station_location' => $this->getRandLocationNearOss()
@@ -61,29 +52,39 @@ class RandomGameSeeder extends Seeder
             $game->police_score = rand(0, 1000);
             $game->save();
 
-            foreach ($loot as $loot_item) {
-                $game->loot()->attach($loot_item->id);
+            for ($i = 0; $i < $amount_of_loot_per_game; $i++) {
+                Loot::create([
+                    'lootable_id' => $game->id,
+                    'lootable_type' => Game::class,
+                    'name' => self::LOOT_NAMES[rand(0, count(self::LOOT_NAMES) - 1)],
+                    'location' => $this->getRandLocationNearOss()
+                ]);
             }
 
             BorderMarker::create([
-                'location' => $this->getRandLocationForMarkersNearOss(1),
-                'game_id' => $game->id
+                'borderable_id' => $game->id,
+                'borderable_type' => Game::class,
+                'location' => $this->getRandLocationForMarkersNearOss(1)
             ]);
             BorderMarker::create([
-                'location' => $this->getRandLocationForMarkersNearOss(2),
-                'game_id' => $game->id
+                'borderable_id' => $game->id,
+                'borderable_type' => Game::class,
+                'location' => $this->getRandLocationForMarkersNearOss(2)
             ]);
             BorderMarker::create([
-                'location' => $this->getRandLocationForMarkersNearOss(3),
-                'game_id' => $game->id
+                'borderable_id' => $game->id,
+                'borderable_type' => Game::class,
+                'location' => $this->getRandLocationForMarkersNearOss(3)
             ]);
             BorderMarker::create([
-                'location' => $this->getRandLocationForMarkersNearOss(4),
-                'game_id' => $game->id
+                'borderable_id' => $game->id,
+                'borderable_type' => Game::class,
+                'location' => $this->getRandLocationForMarkersNearOss(4)
             ]);
             BorderMarker::create([
-                'location' => $this->getRandLocationForMarkersNearOss(5),
-                'game_id' => $game->id
+                'borderable_id' => $game->id,
+                'borderable_type' => Game::class,
+                'location' => $this->getRandLocationForMarkersNearOss(5)
             ]);
 
             $keys = array();

@@ -35,13 +35,13 @@ class WebConfigTest extends TestCase
             'game_id' => $game->id
         ])->create();
         BorderMarker::factory()->count(3)->state([
-            'game_id' => $game->id
+            'borderable_id' => $game->id,
+            'borderable_type' => Game::class
         ])->create();
-        $loot = array();
-        array_push($loot, Loot::factory()->count(4)->create());
-        foreach ($loot as $loot_item) {
-            $game->loot()->attach($loot_item);
-        }
+        Loot::factory()->count(4)->state([
+            'lootable_id' => $game->id,
+            'lootable_type' => Game::class
+        ])->create();
 
         $this->put('/games/' . $game->id, [
             'duration' => '120',
