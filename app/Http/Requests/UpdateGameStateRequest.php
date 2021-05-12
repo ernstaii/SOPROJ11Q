@@ -67,4 +67,11 @@ class UpdateGameStateRequest extends FormRequest
             'state' => ['required', 'string']
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'logo.dimensions' => 'Upload a.u.b. een afbeelding welke maximaal 300x200 pixels groot is.'
+        ];
+    }
 }
