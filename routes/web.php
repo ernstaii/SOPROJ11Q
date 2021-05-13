@@ -21,6 +21,10 @@ Route::get('/', function () {
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
 Route::post('/games', [GameController::class, 'store'])->name('games.store');
 Route::post('/presets', [GameController::class, 'storeGamePreset'])->name('presets.store');
+Route::get('/presets/{preset}/loot', [GameController::class, 'getPresetLoot'])->name('preset.loot');
+Route::delete('/games/{game}/loot', [GameController::class, 'clearExistingLoot'])->name('game.loot.delete');
+Route::get('/presets/{preset}/border-markers', [GameController::class, 'getPresetBorderMarkers'])->name('preset.border-markers');
+Route::delete('/games/{game}/border-markers', [GameController::class, 'clearExistingMarkers'])->name('game.border-markers.delete');
 Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
 Route::put('/games/{game}', [GameController::class, 'update'])->name('games.update');
 Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy');

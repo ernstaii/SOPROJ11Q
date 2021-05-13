@@ -1,10 +1,16 @@
 const presetBox = document.querySelector("#preset-box");
+const presetNameInput = document.querySelector("#preset_name");
+const durationInput = document.querySelector("#duration");
+const intervalInput = document.querySelector("#interval");
+const colourInput = document.querySelector("#colour");
+const logoInput = document.querySelector("#logo");
+const presetSelector = document.querySelector("#presets");
+const savePresetButton = document.querySelector("#save_preset_button");
+
+let presets = [];
 
 async function savePreset() {
     // TODO: Add game theme
-    let presetNameInput = document.querySelector("#preset_name");
-    let durationInput = document.querySelector("#duration");
-    let intervalInput = document.querySelector("#interval");
     let lootLats = [];
     let lootLngs = [];
     let borderLats = [];
@@ -15,6 +21,17 @@ async function savePreset() {
     let intervalInputValid = (intervalInput.value && intervalInput.checkValidity());
     let presetNameValid = (presetNameInput.value && presetNameInput.value.trim() !== "");
 
+    if (presetNameValid) {
+        let passedCheck = true;
+        presets.forEach(preset => {
+            if (preset.name === presetNameInput.value) {
+                showValidationError('De naam ' + preset.name + ' is al in gebruik. Vul a.u.b. een andere naam in.');
+                passedCheck = false;
+            }
+        });
+        if (!passedCheck)
+            return;
+    }
     if (!mapDataValid) {
         showValidationError('Plaats a.u.b. alle pins op de kaart.');
         return;
@@ -59,16 +76,86 @@ async function savePreset() {
             loot_lngs: lootLngs,
             loot_names: lootNames,
             border_lats: borderLats,
-            border_lngs: borderLngs
+            border_lngs: borderLngs,
+            colour: colourInput.value,
+            logo: logoInput.value
+        },
+        success: function () {
+            location.reload();
         },
         error: function (err) {
-            console.log(err);
+            showValidationError(err.responseJSON.message);
         }
     });
 }
 
-function loadPreset() {
+async function loadPreset(game_id) {
+    if (presetSelector.value == -1)
+        return;
 
+    presetSelector.disabled = true;
+    savePresetButton.disabled = true;
+
+    let preset = JSON.parse(presetSelector.value);
+    durationInput.value = preset.duration;
+    intervalInput.value = preset.interval;
+    colourInput.value = preset.colour_theme;
+    logoInput.value = preset.logo;
+
+    createButtons = false;
+    let latLng = preset.police_station_location.split(',');
+    if (policeStationMarker != null) {
+        removePoliceStation();
+    }
+    applyExistingPoliceStation(latLng[0], latLng[1]);
+    savePoliceStation(game_id);
+
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    await $.ajax({
+        url: '/games/' + game_id + '/loot',
+        type: 'DELETE',
+        success: function () {
+            $.ajax({
+                url: '/presets/' + preset.id + '/loot',
+                type: 'GET',
+                success: function (loot) {
+                    removeAllLoot();
+                    loot.forEach(loot_item => {
+                        let latLng = loot_item.location.split(',');
+                        applyExistingLoot(latLng[0], latLng[1], loot_item.name);
+                    });
+                    saveLoot(game_id);
+                }
+            });
+        }
+    });
+
+    await $.ajax({
+        url: '/games/' + game_id + '/border-markers',
+        type: 'DELETE',
+        success: function () {
+            $.ajax({
+                url: '/presets/' + preset.id + '/border-markers',
+                type: 'GET',
+                success: function (borderMarkers) {
+                    removeAllMarkers();
+                    borderMarkers.forEach(marker => {
+                        let latLng = marker.location.split(',');
+                        applyExistingMarker(latLng[0], latLng[1]);
+                    });
+                    drawLinesForExistingMarkers();
+                    saveMarkers(game_id);
+                    presetSelector.disabled = false;
+                    savePresetButton.disabled = false;
+                }
+            });
+        }
+    });
 }
 
 function showValidationError (message) {

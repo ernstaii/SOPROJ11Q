@@ -140,15 +140,28 @@
             </div>
             <div class="item-box">
                 <div class="form-item game-form" id="preset-box">
-                    <label for="preset_name">Naam</label>
-                    <input type="text" id="preset_name" name="name" value="{{ old('name') }}">
-                    <button onclick="savePreset()" class="keys-share-button">Opslaan</button>
+                    <label for="presets">Selecteer een bestaande template</label>
+                    <select id="presets" onchange="loadPreset({{$id}})">
+                            <option value="-1" selected>Kies een template...</option>
+                        @foreach($presets as $preset)
+                            <option value="{{ $preset }}">{{ $preset->name }}</option>
+                        @endforeach
+                    </select>
+                    <label for="preset_name">Maak een nieuwe template aan</label>
+                    <input type="text" id="preset_name" name="name" value="{{ old('name') }}" placeholder="Vul hier de naam van het nieuwe template in...">
+                    <button onclick="savePreset()" class="keys-share-button" id="save_preset_button">Opslaan</button>
                 </div>
             </div>
         </div>
     </div>
     <script>
         window.addEventListener('DOMContentLoaded', function() {
+            @foreach($presets as $preset)
+                presets.push({
+                    id: {{$preset->id}},
+                    name: '{{$preset->name}}'
+                });
+            @endforeach
             @foreach($border_markers as $border_marker)
                 applyExistingMarker({{$border_marker->location}});
             @endforeach
