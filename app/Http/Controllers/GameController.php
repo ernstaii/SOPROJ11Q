@@ -24,7 +24,6 @@ use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\URL;
 
 class GameController extends Controller
 {
@@ -282,14 +281,18 @@ class GameController extends Controller
         $lats = $request->lats;
         $lngs = $request->lngs;
         $names = $request->names;
+
+        $result = array();
         for ($i = 0; $i < count($lats); $i++) {
-            Loot::create([
+            array_push($result, Loot::create([
                 'lootable_id' => $game->id,
                 'lootable_type' => Game::class,
                 'name' => $names[$i],
                 'location' => strval($lats[$i]) . ',' . strval($lngs[$i])
-            ]);
+            ]));
         }
+
+        return $result;
     }
 
     /**

@@ -77,6 +77,8 @@
         <div class="mapbox shadow">
             <div id="map">
             </div>
+            <button id="remove_loot_button" onclick="deletePrompt(selectedLootId)" disabled>Selecteer a.u.b. een buit</button>
+            <input type="text" id="loot_name_input" placeholder="Voer hier de buit naam in...">
         </div>
         <div class="timer-box shadow">
             <div class="center-box">
@@ -103,8 +105,9 @@
     </div>
     <script>
         window.addEventListener('DOMContentLoaded', function () {
+            setGameId({{$id}});
             @foreach($loot as $loot_item)
-            applyLootMarker({{$loot_item->location}}, '{{$loot_item->name}}');
+            applyLootMarker({{$loot_item->location}}, '{{$loot_item->name}}', '{{$loot_item->id}}');
             @endforeach
             @foreach($users as $user)
             @if ($user->location != null)

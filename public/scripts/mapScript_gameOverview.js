@@ -7,13 +7,19 @@ const corner1 = L.latLng(53.828464, 2.871753),
     mapBounds = L.latLngBounds(corner1, corner2);
 const mapBox = document.querySelector('.mapbox');
 const timerElmt = document.querySelector('.timer');
+const remove_loot_button = document.querySelector('#remove_loot_button');
+const lootNameInput = document.querySelector('#loot_name_input');
 
 let markerLatLngs = [];
 let markers = [];
 let lines = [];
 let userMarkers = [];
 let lootMarkers = [];
-let totalSeconds = 0;
+let lootLatLngs = [];
+let lootIds = [];
+
+let selectedLootId = -1;
+let gameId = -1;
 
 const lootIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
@@ -77,16 +83,131 @@ function initMap() {
     const tiles = L.tileLayer(tileURL, { attribution });
 
     tiles.addTo(mymap);
+    mymap.on('click', addLoot);
 }
 
-function applyLootMarker(lat, lng, loot_name) {
+function setGameId(game_id) {
+    gameId = game_id;
+}
+
+function applyLootMarker(lat, lng, loot_name, loot_id) {
     let latlng = L.latLng(lat, lng);
     let newMarker = L.marker(latlng, {icon: lootIcon})
         .bindPopup(L.popup({ maxWidth: maxPopupWidth })
             .setContent('Buit: ' + loot_name))
         .addTo(mymap);
+    newMarker.on('click', function (e) {
+        selectedLootId = loot_id;
+        remove_loot_button.textContent = 'Verwijder buit: ' + loot_name;
+        remove_loot_button.disabled = false;
+    });
     applyEvents(newMarker);
     lootMarkers.push(newMarker);
+    lootLatLngs.push(newMarker.getLatLng());
+    lootIds.push(parseInt(loot_id));
+}
+
+function addLoot(e) {
+    if (!lootNameInput.value || lootNameInput.value.trim() === '') {
+        if (mapBox.children.length > 3) {
+            return;
+        }
+        let errorMsg = document.createElement('p');
+        errorMsg.style.color = 'red';
+        errorMsg.textContent = 'Vul a.u.b. een naam in voor de buit.';
+        mapBox.appendChild(errorMsg);
+
+        setTimeout(() => {
+            if (mapBox.children.length > 3) {
+                mapBox.removeChild(errorMsg);
+            }
+        }, 5000);
+        return;
+    }
+
+    let contains = false;
+    lootLatLngs.forEach(latlng => {
+        if (latlng.equals(e.latlng)) {
+            contains = true;
+        }
+    });
+    if (contains) {
+        return;
+    }
+    let newMarker = L.marker(e.latlng, { icon: lootIcon })
+        .bindPopup(L.popup({ maxWidth: maxPopupWidth})
+            .setContent('Buit: ' + lootNameInput.value.trim()))
+        .addTo(mymap);
+    applyEvents(newMarker);
+    lootMarkers.push(newMarker);
+    lootLatLngs.push(newMarker.getLatLng());
+    saveLoot(gameId, lootNameInput.value.trim());
+}
+
+async function saveLoot(game_id, loot_name) {
+    if (lootMarkers.length < 1) {
+        return;
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    let lats = [];
+    let lngs = [];
+    lats.push(lootLatLngs[lootLatLngs.length - 1].lat);
+    lngs.push(lootLatLngs[lootLatLngs.length - 1].lng);
+
+    let lootNamesArray = [];
+    lootNamesArray.push(loot_name);
+
+    await $.ajax({
+        url: '/games/' + game_id + '/loot',
+        type: 'POST',
+        data: { lats: lats, lngs: lngs, names: lootNamesArray },
+        success: function (data) {
+            lootIds.push(parseInt(data[0].id));
+            lootMarkers[lootMarkers.length - 1].on('click', function (e) {
+                selectedLootId = parseInt(data[0].id);
+                remove_loot_button.textContent = 'Verwijder buit: ' + loot_name;
+                remove_loot_button.disabled = false;
+            });
+        },
+        error: function (err) {
+            console.log(err);
+        },
+    });
+}
+
+async function deletePrompt(loot_id) {
+    if (loot_id === -1) {
+        return;
+    }
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    await $.ajax({
+        url: '/api/loot/' + loot_id,
+        type: 'DELETE',
+        data: {},
+        success: function (data) {
+            let index = lootIds.indexOf(parseInt(loot_id));
+            mymap.removeLayer(lootMarkers[index]);
+            lootMarkers.splice(index, 1);
+            lootLatLngs.splice(index, 1);
+            lootIds.splice(index, 1);
+            selectedLootId = -1;
+            remove_loot_button.textContent = 'Selecteer a.u.b. een buit';
+            remove_loot_button.disabled = true;
+        },
+        error: function (err) {
+            console.log(err);
+        },
+    });
 }
 
 function applyUserMarker(lat, lng, name, role) {
@@ -164,10 +285,12 @@ async function getLatestLoot(game_id) {
             for (let i = originalLastIndex; i >= 0; i--) {
                 mymap.removeLayer(lootMarkers[i]);
                 lootMarkers.pop();
+                lootLatLngs.pop();
+                lootIds.pop();
             }
 
             data.forEach(loot => {
-                applyLootMarker(Number(loot.location.split(',')[0]), Number(loot.location.split(',')[1]), loot.name);
+                applyLootMarker(Number(loot.location.split(',')[0]), Number(loot.location.split(',')[1]), loot.name, loot.id);
             });
         },
         error: function (err) {
