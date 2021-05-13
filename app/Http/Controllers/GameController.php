@@ -63,7 +63,7 @@ class GameController extends Controller
 
     public function getNotifications(Game $game)
     {
-        return $game->notifications()->get();
+        return $game->notifications()->where('user_id', '=', null)->get();
     }
 
     public function postNotification(StoreNotificationRequest $request, Game $game)
