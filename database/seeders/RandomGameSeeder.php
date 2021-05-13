@@ -10,7 +10,6 @@ use App\Models\Loot;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
-use function Sodium\add;
 
 class RandomGameSeeder extends Seeder
 {
@@ -52,7 +51,7 @@ class RandomGameSeeder extends Seeder
             $game->police_score = rand(0, 1000);
             $game->save();
 
-            for ($i = 0; $i < $amount_of_loot_per_game; $i++) {
+            for ($x = 0; $x < $amount_of_loot_per_game; $x++) {
                 Loot::create([
                     'lootable_id' => $game->id,
                     'lootable_type' => Game::class,
