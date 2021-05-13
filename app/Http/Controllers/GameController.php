@@ -20,6 +20,7 @@ use App\Models\BorderMarker;
 use App\Models\Game;
 use App\Models\GamePreset;
 use App\Models\Loot;
+use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -63,6 +64,15 @@ class GameController extends Controller
     public function getNotifications(Game $game)
     {
         return $game->notifications()->get();
+    }
+
+    public function postNotification(StoreNotificationRequest $request, Game $game)
+    {
+        return Notification::create([
+            'game_id' => $game->id,
+            'message' => $request->message,
+            'user_id' => $request->user_id
+        ]);
     }
 
     public function getLogo(Game $game)

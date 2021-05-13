@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $game_id
  * @property string $message
+ * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Game $game
@@ -28,6 +29,7 @@ class Notification extends Model
     protected $fillable = [
         'game_id',
         'message',
+        'user_id',
         'created_at',
         'updated_at'
     ];

@@ -17,10 +17,13 @@ class CreateNotificationsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('game_id');
             $table->string('message');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
 
             $table->foreign('game_id')
                 ->references('id')->on('games');
+            $table->foreign('user_id')
+                ->references('id')->on('users');
         });
     }
 
