@@ -23,6 +23,8 @@ use App\Models\Loot;
 use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\URL;
 
 class GameController extends Controller
 {
@@ -63,6 +65,8 @@ class GameController extends Controller
 
     public function getNotifications(Game $game)
     {
+        if (Request::get('all') === 'true')
+            return $game->notifications()->get();
         return $game->notifications()->where('user_id', '=', null)->get();
     }
 

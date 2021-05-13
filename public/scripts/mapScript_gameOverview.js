@@ -273,7 +273,7 @@ async function getGameNotifications(game_id) {
     });
 
     await $.ajax({
-        url: '/api/games/' + game_id + '/notifications',
+        url: '/api/games/' + game_id + '/notifications?all=true',
         type: 'GET',
         data: {},
         success: function (data) {
