@@ -7,6 +7,7 @@ use App\Enums\UserStatuses;
 use App\Models\BorderMarker;
 use App\Models\Game;
 use App\Models\Loot;
+use App\Models\Notification;
 use App\Models\User;
 use App\Models\InviteKey;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,6 +38,28 @@ class GameAPITest extends TestCase
         $this->get('/api/invite-keys/' . $key->value)
             ->assertStatus(200)
             ->assertExactJson($key->toArray());
+    }
+
+    public function test_can_get_invite_keys()
+    {
+        $game = Game::factory()->create();
+        InviteKey::factory()->count(5)->state([
+            'game_id' => $game->id
+        ])->create();
+
+        $this->get('/api/games/' . $game->id . '/invite-keys')
+            ->assertJsonCount(5);
+    }
+
+    public function test_can_get_notifications()
+    {
+        $game = Game::factory()->create();
+        Notification::factory()->count(5)->state([
+            'game_id' => $game->id
+        ])->create();
+
+        $this->get('/api/games/' . $game->id . '/notifications')
+            ->assertJsonCount(5);
     }
 
     public function test_cannot_get_key_if_game_is_finished()
@@ -137,6 +160,19 @@ class GameAPITest extends TestCase
         $this->get('/api/invite-keys/' . $key->value)
             ->assertStatus(422)
             ->isInvalid();
+    }
+
+    public function test_can_update_score()
+    {
+        $game = Game::factory()->create();
+
+        $this->patch('/api/games/' . $game->id . '/thieves-score/50')
+            ->assertStatus(200);
+        $this->patch('/api/games/' . $game->id . '/police-score/50')
+            ->assertStatus(200);
+
+        $this->assertEquals(50, Game::first()->thieves_score);
+        $this->assertEquals(50, Game::first()->police_score);
     }
 
     public function test_can_catch_thief()

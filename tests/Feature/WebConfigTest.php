@@ -3,10 +3,13 @@
 namespace Tests\Feature;
 
 use App\Enums\Statuses;
+use App\Enums\UserStatuses;
 use App\Events\StartGameEvent;
 use App\Models\BorderMarker;
+use App\Models\GamePreset;
 use App\Models\InviteKey;
 use App\Models\Loot;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Game;
 use Illuminate\Support\Facades\Event;
@@ -26,14 +29,72 @@ class WebConfigTest extends TestCase
             ->assertViewHas(['police_keys', 'thief_keys', 'id']);
     }
 
+    public function test_can_get_preset_loot()
+    {
+        $preset = GamePreset::factory()->create();
+        Loot::factory()->count(5)->state([
+            'lootable_id' => $preset->id,
+            'lootable_type' => GamePreset::class
+        ])->create();
+        BorderMarker::factory()->count(5)->state([
+            'borderable_id' => $preset->id,
+            'borderable_type' => GamePreset::class
+        ])->create();
+
+        $this->get('/presets/' . $preset->id . '/loot')
+            ->assertJsoncount(5);
+    }
+
+    public function test_can_clear_game_loot_and_border_markers()
+    {
+        $game = Game::factory()->inConfig()->create();
+        Loot::factory()->count(5)->state([
+            'lootable_id' => $game->id,
+            'lootable_type' => Game::class
+        ])->create();
+        BorderMarker::factory()->count(5)->state([
+            'borderable_id' => $game->id,
+            'borderable_type' => Game::class
+        ])->create();
+
+        $this->assertDatabaseCount('loot', 5);
+        $this->assertDatabaseCount('border_markers', 5);
+
+        $this->delete('/games/' . $game->id . '/loot');
+        $this->delete('/games/' . $game->id . '/border-markers');
+
+        $this->assertDatabaseCount('loot', 0);
+        $this->assertDatabaseCount('border_markers', 0);
+    }
+
+    public function test_can_get_preset_borders()
+    {
+        $preset = GamePreset::factory()->create();
+        Loot::factory()->count(5)->state([
+            'lootable_id' => $preset->id,
+            'lootable_type' => GamePreset::class
+        ])->create();
+        BorderMarker::factory()->count(5)->state([
+            'borderable_id' => $preset->id,
+            'borderable_type' => GamePreset::class
+        ])->create();
+
+        $this->get('/presets/' . $preset->id . '/border-markers')
+            ->assertJsoncount(5);
+    }
+
     public function test_can_start_game()
     {
         Event::fake();
 
         $game = Game::factory()->create();
-        InviteKey::factory()->count(3)->state([
-            'game_id' => $game->id
-        ])->create();
+        $users = User::factory()->count(5)->create();
+        foreach ($users as $user) {
+            InviteKey::factory()->state([
+                'game_id' => $game->id,
+                'user_id' => $user->id
+            ])->create();
+        }
         BorderMarker::factory()->count(3)->state([
             'borderable_id' => $game->id,
             'borderable_type' => Game::class
@@ -52,6 +113,7 @@ class WebConfigTest extends TestCase
 
         $game->refresh();
         $this->assertEquals(Statuses::Ongoing, $game->status);
+        $this->assertEquals(UserStatuses::Playing, User::first()->status);
         Event::assertDispatched(StartGameEvent::class);
     }
 
