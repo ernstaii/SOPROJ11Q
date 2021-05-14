@@ -32,4 +32,4 @@ Route::post('/games/{game}/invite-keys', [InviteKeyController::class, 'generateK
 Route::post('/games/{game}/border-markers', [GameController::class, 'storeMarkers'])->name('games.border-markers.store');
 Route::post('/games/{game}/loot', [GameController::class, 'storeLoot'])->name('games.loot.store');
 Route::patch('/games/{game}/police-station', [GameController::class, 'setPoliceStationLocation'])->name('games.police-station.update');
-Route::post('/games/{game}/notifcations', [GameController::class, 'sendNotification'])->name('games.sendMessage');
+Route::post('/games/{game}/notifications', [GameController::class, 'sendNotification'])->name('games.sendMessage');
