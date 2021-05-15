@@ -169,7 +169,7 @@ class GameController extends Controller
         $game = Game::create([
             'password' => Hash::make($request->password)
         ]);
-        return redirect()->route('games.show', [$game]);
+        return redirect()->route('games.show', [$game, 'password' => $request->password]);
     }
 
     public function update(UpdateGameStateRequest $request, Game $game)
