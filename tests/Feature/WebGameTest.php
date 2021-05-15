@@ -37,7 +37,7 @@ class WebGameTest extends TestCase
     {
         $this->post('/games?password=password')
             ->assertStatus(302)
-            ->assertRedirect('/games/' . Game::first()->id);
+            ->assertRedirect('/games/' . Game::first()->id . '?password=password');
 
         $this->assertDatabaseCount('games', 1);
     }
