@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Game
  *
  * @property int $id
+ * @property string $password
  * @property string $status
  * @property int $duration
  * @property int $interval
@@ -55,6 +56,7 @@ class Game extends Model
 
     protected $fillable = [
         'id',
+        'password',
         'status',
         'duration',
         'interval',

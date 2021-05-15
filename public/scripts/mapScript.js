@@ -375,6 +375,7 @@ function applyExistingLoot(lat, lng, loot_name) {
 }
 
 function checkLootState(game_id) {
+    window.history.pushState({}, document.title, '/games/' + game_id);
     if (loot_markers.length > 0) {
         if (saveLootButton != null) {
             mymap.off('click');

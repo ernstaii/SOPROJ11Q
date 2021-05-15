@@ -23,7 +23,7 @@ class WebConfigTest extends TestCase
     {
         $game = Game::factory()->create();
 
-        $this->get('/games/' . $game->id)
+        $this->get('/games/' . $game->id . '?password=password')
             ->assertStatus(200)
             ->assertViewIs('config.main')
             ->assertViewHas(['police_keys', 'thief_keys', 'id']);

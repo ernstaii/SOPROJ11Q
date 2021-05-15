@@ -30,12 +30,12 @@ class WebGameTest extends TestCase
 
         $this->get('/games')
             ->assertStatus(200)
-            ->assertViewHas('games');
+            ->assertViewHas('gameIds');
     }
 
     public function test_can_store_game()
     {
-        $this->post('/games')
+        $this->post('/games?password=password')
             ->assertStatus(302)
             ->assertRedirect('/games/' . Game::first()->id);
 
@@ -46,7 +46,7 @@ class WebGameTest extends TestCase
     {
         $game = Game::factory()->ongoing()->create();
 
-        $this->get('/games/' . $game->id)
+        $this->get('/games/' . $game->id . '?password=password')
             ->assertStatus(200)
             ->assertViewIs('game.main')
             ->assertViewHas(['id', 'users']);
@@ -199,7 +199,7 @@ class WebGameTest extends TestCase
             'lootable_type' => Game::class
         ])->create();
 
-        $this->delete('/games/' . $game->id)
+        $this->delete('/games/' . $game->id . '?password=password')
             ->assertStatus(302)
             ->assertRedirect('/games');
 

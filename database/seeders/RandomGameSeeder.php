@@ -10,6 +10,7 @@ use App\Models\Loot;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
 
 class RandomGameSeeder extends Seeder
 {
@@ -44,6 +45,7 @@ class RandomGameSeeder extends Seeder
 
             $game = Game::create([
                 'id' => $id,
+                'password' => Hash::make('password'),
                 'police_station_location' => $this->getRandLocationNearOss()
             ]);
 

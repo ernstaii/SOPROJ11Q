@@ -11,6 +11,7 @@ use App\Events\ResumeGameEvent;
 use App\Events\SendNotificationEvent;
 use App\Events\StartGameEvent;
 use App\Http\Requests\StoreBorderMarkerRequest;
+use App\Http\Requests\StoreGameRequest;
 use App\Http\Requests\StoreLootRequest;
 use App\Http\Requests\StorePresetRequest;
 use App\Http\Requests\StoreNotificationRequest;
@@ -23,13 +24,17 @@ use App\Models\Loot;
 use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
 
 class GameController extends Controller
 {
     public function index()
     {
-        return view('game.index', ['games' => Game::all()]);
+        $gameIds = array();
+        foreach (Game::all() as $game)
+            array_push($gameIds, $game->id);
+        return view('game.index', ['gameIds' => $gameIds]);
     }
 
     public function get(Game $game)
@@ -97,8 +102,18 @@ class GameController extends Controller
         return $preset->border_markers()->get();
     }
 
+    public function checkPassword(Game $game)
+    {
+        if (Hash::check(Request::get('password'), $game->password))
+            return true;
+        return false;
+    }
+
     public function show(Game $game)
     {
+        if (!Hash::check(Request::get('password'), $game->password))
+            return redirect()->route('games.index');
+
         switch ($game->status) {
             case Statuses::Config:
                 return view('config.main', [
@@ -148,9 +163,11 @@ class GameController extends Controller
         }
     }
 
-    public function store()
+    public function store(StoreGameRequest $request)
     {
-        $game = Game::create();
+        $game = Game::create([
+            'password' => Hash::make($request->password)
+        ]);
         return redirect()->route('games.show', [$game]);
     }
 
@@ -216,6 +233,9 @@ class GameController extends Controller
 
     public function destroy(Game $game)
     {
+        if (!Hash::check(Request::get('password'), $game->password))
+            return redirect()->route('games.index');
+
         $invite_keys = $game->invite_keys();
         $border_markers = $game->border_markers();
         $notifications = $game->notifications();

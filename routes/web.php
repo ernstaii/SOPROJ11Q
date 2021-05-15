@@ -33,3 +33,4 @@ Route::post('/games/{game}/border-markers', [GameController::class, 'storeMarker
 Route::post('/games/{game}/loot', [GameController::class, 'storeLoot'])->name('games.loot.store');
 Route::patch('/games/{game}/police-station', [GameController::class, 'setPoliceStationLocation'])->name('games.police-station.update');
 Route::post('/games/{game}/notifications', [GameController::class, 'sendNotification'])->name('games.sendMessage');
+Route::get('/games/{game}/password', [GameController::class, 'checkPassword'])->name('games.checkPassword');

@@ -63,6 +63,13 @@ button
     width:                      10vw;
 }
 
+#game_create_form
+{
+    align-items:                center;
+    display:                    flex;
+    flex-direction:             column;
+}
+
 #get_game_input
 {
     margin:                     0 2vw 2vh 2vw;
@@ -87,6 +94,27 @@ button
     width:                      75%;
 }
 
+.password-box
+{
+    display:                    flex;
+    flex-direction:             column;
+}
+
+#password_check_box_div
+{
+    margin-bottom:              2vh;
+}
+
+#password_create_input
+{
+    width:                      225px;
+}
+
+#password_create_label
+{
+    margin-top:                 3vh;
+}
+
 .side-bar-elem1
 {
     background:                 #C6002A;
@@ -105,7 +133,7 @@ button
     font-size:                  1.5rem;
     font-weight:                600;
     height:                     70px;
-    margin:                     4vh;
+    margin:                     1.5vh 4vh 4vh 4vh;
     outline:                    none;
     width:                      400px;
 }
