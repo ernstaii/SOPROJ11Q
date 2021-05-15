@@ -27,7 +27,7 @@
                 <h2>Spel Status Beheren</h2>
             </div>
             <div class="button-1">
-                <form action="{{route('games.update', ['game' => $id])}}" method="post">
+                <form id="form_1" action="{{route('games.update', ['game' => $id])}}" method="post">
                     <div class="form-item game-form">
                         @csrf
                         @method('PUT')
@@ -40,7 +40,7 @@
                 </form>
             </div>
             <div class="button-2">
-                <form action="{{route('games.update', ['game' => $id])}}" method="post">
+                <form id="form_2" action="{{route('games.update', ['game' => $id])}}" method="post">
                     <div class="form-item game-form">
                         @csrf
                         @method('PUT')
@@ -53,7 +53,7 @@
                 </form>
             </div>
             <div class="button-3">
-                <form action="{{route('games.update', ['game' => $id])}}" method="post">
+                <form id="form_3" action="{{route('games.update', ['game' => $id])}}" method="post">
                     <div class="form-item game-form">
                         @csrf
                         @method('PUT')
@@ -64,7 +64,7 @@
                 </form>
             </div>
             <div class="button-4">
-                <form action="{{route('games.sendMessage', ['game' => $id])}}" method="post">
+                <form id="form_4" action="{{route('games.sendMessage', ['game' => $id])}}" method="post">
                     <div class="form-item game-form">
                         @csrf
                         <label for="message">Stuur een bericht naar de spelers</label>

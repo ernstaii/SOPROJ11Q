@@ -86,6 +86,12 @@ function initMap() {
     mymap.on('click', addLoot);
 }
 
+function passwordFromURL(game_id) {
+    let url_string = window.location.href;
+    let url = new URL(url_string);
+    return url.searchParams.get('password');
+}
+
 function setGameId(game_id) {
     gameId = game_id;
 }
@@ -363,6 +369,14 @@ function callGameDetails(game_id) {
         getGameDetails(game_id);
         getGameNotifications(game_id);
     }, 5000);
+    let form_1 = document.querySelector('#form_1');
+    form_1.action = form_1.action + '?password=' + passwordFromURL(game_id);
+    let form_2 = document.querySelector('#form_2');
+    form_2.action = form_2.action + '?password=' + passwordFromURL(game_id);
+    let form_3 = document.querySelector('#form_3');
+    form_3.action = form_3.action + '?password=' + passwordFromURL(game_id);
+    let form_4 = document.querySelector('#form_4');
+    form_4.action = form_4.action + '?password=' + passwordFromURL(game_id);
 }
 
 async function getGameDetails(game_id) {

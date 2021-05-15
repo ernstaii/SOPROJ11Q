@@ -280,7 +280,7 @@ class GameController extends Controller
 	public function sendNotification(StoreNotificationRequest $request, Game $game)
     {
         event(new SendNotificationEvent($game->id, $request->message));
-        return redirect()->route('games.show', [$game]);
+        return redirect()->route('games.show', [$game, 'password' => Request::get('password')]);
     }
 
     /**
