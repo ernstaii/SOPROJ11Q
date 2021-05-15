@@ -9,19 +9,20 @@ a
 {
     background-color:           #C6002A;
     border:                     none;
-    border-radius:              1vw;
+    border-radius:              1.5vw;
     color:                      white;
     cursor:                     auto;
     font-size:                  16px;
-    margin-bottom:              1vh;
-    margin-left:                25%;
+    margin:                     0 3vw 1vh 3vw;
+    padding:                    8px 3px;
+    text-align:                 center;
     text-decoration:            none;
     width:                      10vw;
 }
 
 button
 {
-    background-color:           #4CAF50;
+    background-color:           #C6002A;
     border:                     none;
     border-radius:              4.5vw;
     color:                      white;
@@ -47,7 +48,7 @@ button
     margin:                     40px auto;
     position:                   relative;
     text-align:                 center;
-    width:                      70%;
+    width:                      50vw;
 }
 
 .config-delete-button
@@ -60,6 +61,11 @@ button
     padding:                    5px;
     text-decoration:            none;
     width:                      10vw;
+}
+
+#get_game_input
+{
+    margin:                     0 2vw 2vh 2vw;
 }
 
 .main-screen
@@ -75,10 +81,16 @@ button
 .mini-box
 {
     background:                 #fff;
-    margin:                     40px auto;
+    margin:                     30px auto;
     position:                   relative;
     text-align:                 center;
-    width:                      30%;
+    width:                      75%;
+}
+
+.side-bar-elem1
+{
+    background:                 #C6002A;
+    color:                      white;
 }
 
 .start-button
@@ -109,8 +121,10 @@ button
 
 .text-box
 {
+    align-items:                center;
     display:                    flex;
     flex-direction:             column;
+    justify-content:            center;
     margin-top:                 2vh;
     padding-bottom:             2vh;
 }

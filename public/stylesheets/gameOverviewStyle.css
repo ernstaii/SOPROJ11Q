@@ -42,6 +42,18 @@
     font-size:                  2vh;
 }
 
+.side-bar-elem2
+{
+    background:                 dimgrey;
+    color:                      gray;
+}
+
+.side-bar-elem3
+{
+    background:                 #C6002A;
+    color:                      white;
+}
+
 .timer
 {
     font-size:                  3vw;

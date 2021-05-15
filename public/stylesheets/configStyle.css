@@ -40,6 +40,12 @@ label
     text-align:                 left;
 }
 
+.horizontal-body-box
+{
+    display:                    flex;
+    flex-direction:             row;
+}
+
 .page-top-bar
 {
     align-items:                center;
@@ -60,4 +66,29 @@ label
     -webkit-box-shadow:         1px 3px 20px 5px darkgray;
     -moz-box-shadow:            1px 3px 20px 5px darkgray;
     box-shadow:                 1px 3px 20px 5px darkgray;
+}
+
+.side-bar
+{
+    display:                    flex;
+    flex-direction:             column;
+    height:                     50vh;
+    justify-content:            center;
+    margin-right:               3vw;
+}
+
+.side-bar-item
+{
+    align-items:                center;
+    background:                 dimgrey;
+    border:                     black 1px solid;
+    border-radius:              0 10px 10px 0;
+    color:                      gray;
+    display:                    flex;
+    font-size:                  1vw;
+    height:                     7vh;
+    justify-content:            center;
+    margin:                     2vh 0 2vh 0;
+    text-align:                 center;
+    width:                      8vw;
 }
