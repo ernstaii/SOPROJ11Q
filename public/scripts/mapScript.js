@@ -9,6 +9,7 @@ const removeMarkerButton = document.querySelector('#button_remove_markers');
 const mapBox = document.querySelector('.mapbox');
 const tab_2 = document.querySelector('#tab_2');
 const tab_3 = document.querySelector('#tab_3');
+const startGameForm = document.querySelector('#start_game_form');
 
 const lootIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
@@ -375,7 +376,6 @@ function applyExistingLoot(lat, lng, loot_name) {
 }
 
 function checkLootState(game_id) {
-    window.history.pushState({}, document.title, '/games/' + game_id);
     if (loot_markers.length > 0) {
         if (saveLootButton != null) {
             mymap.off('click');
@@ -499,4 +499,11 @@ function applyEvents(marker) {
     marker.on('mouseout', function (e) {
         this.closePopup();
     });
+}
+
+function passwordFromURL(game_id) {
+    let url_string = window.location.href;
+    let url = new URL(url_string);
+    let password = url.searchParams.get('password');
+    startGameForm.action = '/games/' + game_id + '?password=' + password;
 }

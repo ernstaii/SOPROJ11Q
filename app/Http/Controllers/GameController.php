@@ -122,6 +122,7 @@ class GameController extends Controller
                     'border_markers' => $game->border_markers,
                     'id' => $game->id,
                     'loot' => $game->loot,
+                    'password' => $game->password,
                     'police_station_location' => $game->police_station_location,
                     'presets' => GamePreset::all()
                 ]);
@@ -228,7 +229,7 @@ class GameController extends Controller
         }
         $game->save();
 
-        return redirect()->route('games.show', [$game]);
+        return redirect()->route('games.show', [$game, 'password' => Request::get('password')]);
     }
 
     public function destroy(Game $game)
