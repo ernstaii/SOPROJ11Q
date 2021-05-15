@@ -167,9 +167,14 @@ h2
     display:                    none;
 }
 
+#presets
+{
+    margin-bottom:              3vh;
+}
+
 #preset_name
 {
-    margin-bottom:              3px;
+    margin-bottom:              1vh;
 }
 
 .slider-labels
