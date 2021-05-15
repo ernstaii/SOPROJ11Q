@@ -70,11 +70,6 @@ button
     flex-direction:             column;
 }
 
-#get_game_input
-{
-    margin:                     0 2vw 2vh 2vw;
-}
-
 .main-screen
 {
     height:                     auto;
@@ -113,6 +108,11 @@ button
 #password_create_label
 {
     margin-top:                 3vh;
+}
+
+#password_label
+{
+    margin-top:                 2vh;
 }
 
 .side-bar-elem1

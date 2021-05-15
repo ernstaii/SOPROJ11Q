@@ -28,10 +28,16 @@
                     <h2>Vind een bestaand spel</h2>
                     <div class="text-box" id="buttons_box">
                         <label for="get_game_input">Spel ID</label>
-                        <input type="number" id="get_game_input" name="id" onchange="changeNumberInputs({{json_encode($gameIds, JSON_HEX_TAG)}})" placeholder="Vul ID in">
-                        <label for="password_get_input">Spel wachtwoord</label>
+                        <div class="tooltip">
+                            <span class="tooltiptext"><b class="big-question-mark">?</b>Druk op enter of klik ergens anders op het scherm om naar een specifiek spel te zoeken.</span>
+                            <input type="number" id="get_game_input" name="id" onchange="changeNumberInputs({{json_encode($gameIds, JSON_HEX_TAG)}})" placeholder="Vul ID in">
+                        </div>
+                        <label id="password_label" for="password_get_input">Spel wachtwoord</label>
                         <div class="password-box">
-                            <input type="password" id="password_get_input" name="password" onchange="changeNumberInputs({{json_encode($gameIds, JSON_HEX_TAG)}})" placeholder="Vul wachtwoord in">
+                            <div class="tooltip">
+                                <span class="tooltiptext"><b class="big-question-mark">?</b>Druk op enter of klik ergens anders op het scherm om het wachtwoord te laten controleren.</span>
+                                <input type="password" id="password_get_input" name="password" onchange="changeNumberInputs({{json_encode($gameIds, JSON_HEX_TAG)}})" placeholder="Vul wachtwoord in">
+                            </div>
                             <div id="password_check_box_div">
                                 <input type="checkbox" onclick="showPassword('get')">Wachtwoord weergeven
                             </div>
