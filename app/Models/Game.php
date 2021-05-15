@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $status
- * @property int $durations
+ * @property int $duration
  * @property int $interval
  * @property int $time_left
  * @property string|null $police_station_location
@@ -79,7 +79,7 @@ class Game extends Model
 
     public function loot()
     {
-        return $this->belongsToMany(Loot::class, 'game_loot');
+        return $this->morphMany(Loot::class, 'lootable');
     }
 
     public function notifications()
@@ -94,7 +94,7 @@ class Game extends Model
 
     public function border_markers()
     {
-        return $this->hasMany(BorderMarker::class);
+        return $this->morphMany(BorderMarker::class, 'borderable');
     }
 
     public function get_users()

@@ -15,6 +15,7 @@
     <script src="{{asset('scripts/keyGen.js')}}" defer></script>
     <script src="{{asset('scripts/resizeScript.js')}}" defer></script>
     <script src="{{asset('scripts/mapScript.js')}}" defer></script>
+    <script src="{{asset('scripts/presetScript.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -22,7 +23,7 @@
 @endsection
 
 @section('content')
-    <div class="background-box">
+    <div class="config-main-screen">
         <div class="box shadow">
             <div class="item-header">
                 <h2>SPEL CONFIGURATIE</h2>
@@ -133,6 +134,18 @@
                 <button onclick="saveMarkers({{$id}})" id="button_save_markers" title="Er zijn minstens 3 markers nodig voordat het veld opgeslagen kan worden.">Sla speelveld op</button>
             </div>
         </div>
+        <div class="bottom-box shadow">
+            <div class="item-header">
+                <h2>TEMPLATES</h2>
+            </div>
+            <div class="item-box">
+                <div class="form-item game-form" id="preset-box">
+                    <label for="preset_name">Naam</label>
+                    <input type="text" id="preset_name" name="name" value="{{ old('name') }}">
+                    <button onclick="savePreset()" class="keys-share-button">Opslaan</button>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         window.addEventListener('DOMContentLoaded', function() {
@@ -150,3 +163,4 @@
         });
     </script>
 @endsection
+

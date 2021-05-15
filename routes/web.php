@@ -20,6 +20,7 @@ Route::get('/', function () {
 
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
 Route::post('/games', [GameController::class, 'store'])->name('games.store');
+Route::post('/presets', [GameController::class, 'storeGamePreset'])->name('presets.store');
 Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
 Route::put('/games/{game}', [GameController::class, 'update'])->name('games.update');
 Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy');

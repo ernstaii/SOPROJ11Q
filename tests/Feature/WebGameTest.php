@@ -58,7 +58,8 @@ class WebGameTest extends TestCase
             'game_id' => $game->id
         ])->create();
         BorderMarker::factory()->count(3)->state([
-            'game_id' => $game->id
+            'borderable_id' => $game->id,
+            'borderable_type' => Game::class
         ])->create();
 
         // ==================== Ongoing -> Finished ====================
@@ -185,8 +186,10 @@ class WebGameTest extends TestCase
             'game_id' => $game->id,
             'user_id' => $user->id
         ])->create();
-        $loot = Loot::factory()->create();
-        $game->loot()->attach($loot->id);
+        Loot::factory()->state([
+            'lootable_id' => $game->id,
+            'lootable_type' => Game::class
+        ])->create();
 
         $this->delete('/games/' . $game->id)
             ->assertStatus(302)
@@ -196,5 +199,6 @@ class WebGameTest extends TestCase
         $this->assertDatabaseCount('users', 0);
         $this->assertDatabaseCount('invite_keys', 0);
         $this->assertDatabaseCount('loot', 0);
+        $this->assertDatabaseCount('border_markers', 0);
     }
 }

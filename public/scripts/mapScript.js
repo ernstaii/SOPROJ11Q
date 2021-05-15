@@ -242,12 +242,18 @@ function createLootButtons(game_id) {
 
 function addLoot(e) {
     if (!lootNameInput.value || lootNameInput.value.trim() === '') {
+        if (mapBox.children.length > 4) {
+            return;
+        }
         let errorMsg = document.createElement('p');
         errorMsg.style.color = 'red';
         errorMsg.textContent = 'Vul a.u.b. een naam in voor de buit.';
         mapBox.appendChild(errorMsg);
+
         setTimeout(() => {
-            mapBox.removeChild(errorMsg);
+            if (mapBox.children.length > 4) {
+                mapBox.removeChild(errorMsg);
+            }
         }, 5000);
         return;
     }

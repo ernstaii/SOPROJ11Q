@@ -9,17 +9,19 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\BorderMarker
  *
  * @property int $id
+ * @property int $borderable_id
+ * @property string $borderable_type
  * @property string $location
- * @property int $game_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Game $game
+ * @property-read Model|\Eloquent $borderable
  * @method static \Database\Factories\BorderMarkerFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker query()
+ * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereBorderableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereBorderableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereGameId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BorderMarker whereUpdatedAt($value)
@@ -31,14 +33,16 @@ class BorderMarker extends Model
 
     protected $fillable = [
         'id',
+        'borderable_id',
+        'borderable_type',
         'location',
         'game_id',
         'created_at',
         'updated_at'
     ];
 
-    public function game()
+    public function borderable()
     {
-        return $this->belongsTo(Game::class, 'game_id', 'id');
+        return $this->morphTo();
     }
 }

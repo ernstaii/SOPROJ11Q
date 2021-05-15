@@ -98,8 +98,10 @@ class GameAPITest extends TestCase
     public function test_can_get_loot_attached_to_game()
     {
         $game = Game::factory()->create();
-        $loot_item = Loot::factory()->create();
-        $game->loot()->attach($loot_item->id);
+        Loot::factory()->state([
+            'lootable_id' => $game->id,
+            'lootable_type' => Game::class
+        ])->create();
 
         $this->get('/api/games/' . $game->id . '/loot')
             ->assertStatus(200)
@@ -109,11 +111,11 @@ class GameAPITest extends TestCase
      public function test_can_get_border_markers_of_game()
      {
          $game = Game::factory()->create();
-         BorderMarker::factory()->state(['game_id' => $game->id])->isFirstMarker()->create();
-         BorderMarker::factory()->state(['game_id' => $game->id])->isSecondMarker()->create();
-         BorderMarker::factory()->state(['game_id' => $game->id])->isThirdMarker()->create();
-         BorderMarker::factory()->state(['game_id' => $game->id])->isFourthMarker()->create();
-         BorderMarker::factory()->state(['game_id' => $game->id])->isFifthMarker()->create();
+         BorderMarker::factory()->state(['borderable_id' => $game->id, 'borderable_type' => Game::class])->isFirstMarker()->create();
+         BorderMarker::factory()->state(['borderable_id' => $game->id, 'borderable_type' => Game::class])->isSecondMarker()->create();
+         BorderMarker::factory()->state(['borderable_id' => $game->id, 'borderable_type' => Game::class])->isThirdMarker()->create();
+         BorderMarker::factory()->state(['borderable_id' => $game->id, 'borderable_type' => Game::class])->isFourthMarker()->create();
+         BorderMarker::factory()->state(['borderable_id' => $game->id, 'borderable_type' => Game::class])->isFifthMarker()->create();
 
          $this->get('/api/games/' . $game->id . '/border-markers')
              ->assertStatus(200)

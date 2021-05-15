@@ -27,26 +27,24 @@ class ConstantGameSeeder extends Seeder
             'location' => $this->getRandLocationNearOss()
         ]);
 
-        $loot = new Collection();
-        for ($i = 0; $i < rand(3, 10); $i++) {
-            $loot->push(Loot::create([
-                'name' => self::LOOT_NAMES[rand(0, count(self::LOOT_NAMES) - 1)],
-                'location' => $this->getRandLocationNearOss()
-            ]));
-        }
-
         $game = Game::create([
             'police_station_location' => $this->getRandLocationNearOss()
         ]);
 
-        foreach ($loot as $loot_item) {
-            $game->loot()->attach($loot_item->id);
+        for ($i = 0; $i < rand(3, 10); $i++) {
+            Loot::create([
+                'lootable_id' => $game->id,
+                'lootable_type' => Game::class,
+                'name' => self::LOOT_NAMES[rand(0, count(self::LOOT_NAMES) - 1)],
+                'location' => $this->getRandLocationNearOss()
+            ]);
         }
 
         for ($i = 1; $i < 6; $i++) {
             BorderMarker::create([
-                'location' => $this->getRandLocationForMarkersNearOss($i),
-                'game_id' => $game->id
+                'borderable_id' => $game->id,
+                'borderable_type' => Game::class,
+                'location' => $this->getRandLocationForMarkersNearOss($i)
             ]);
         }
 
@@ -106,26 +104,24 @@ class ConstantGameSeeder extends Seeder
             'location' => $this->getRandLocationNearOss()
         ]);
 
-        $loot = new Collection();
-        for ($i = 0; $i < rand(3, 10); $i++) {
-            $loot->push(Loot::create([
-                'name' => self::LOOT_NAMES[rand(0, count(self::LOOT_NAMES) - 1)],
-                'location' => $this->getRandLocationNearOss()
-            ]));
-        }
-
         $game = Game::create([
             'police_station_location' => $this->getRandLocationNearOss()
         ]);
 
-        foreach ($loot as $loot_item) {
-            $game->loot()->attach($loot_item->id);
+        for ($i = 0; $i < rand(3, 10); $i++) {
+            Loot::create([
+                'lootable_id' => $game->id,
+                'lootable_type' => Game::class,
+                'name' => self::LOOT_NAMES[rand(0, count(self::LOOT_NAMES) - 1)],
+                'location' => $this->getRandLocationNearOss()
+            ]);
         }
 
         for ($i = 1; $i < 6; $i++) {
             BorderMarker::create([
-                'location' => $this->getRandLocationForMarkersNearOss($i),
-                'game_id' => $game->id
+                'borderable_id' => $game->id,
+                'borderable_type' => Game::class,
+                'location' => $this->getRandLocationForMarkersNearOss($i)
             ]);
         }
 
