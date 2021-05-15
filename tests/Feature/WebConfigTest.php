@@ -83,6 +83,68 @@ class WebConfigTest extends TestCase
             ->assertJsoncount(5);
     }
 
+    public function test_can_store_loot()
+    {
+        $game = Game::factory()->create();
+
+        $this->post('/games/' . $game->id . '/loot', [
+            'lats' => [
+                0.000
+            ],
+            'lngs' => [
+                0.000
+            ],
+            'names' => [
+                'loot_item'
+            ]
+        ])->assertStatus(200);
+
+        $this->assertDatabaseCount('loot', 1);
+    }
+
+    public function test_can_store_preset()
+    {
+        $preset = [
+            'name' => 'test',
+            'duration' => 30,
+            'interval' => 30,
+            'police_station_lat' => '0.001',
+            'police_station_lng' => '0.002',
+            'loot_lats' => [
+                '0.001'
+            ],
+            'loot_lngs' => [
+                '0.002'
+            ],
+            'loot_names' => [
+                'loot_item'
+            ],
+            'border_lats' => [
+                '0.001', '0.002', '0.003'
+            ],
+            'border_lngs' => [
+                '0.004', '0.005', '0.006'
+            ]
+        ];
+
+        $this->post('/presets', $preset)
+            ->assertStatus(200);
+
+        $this->assertDatabaseCount('game_presets', 1);
+    }
+
+    public function test_can_set_police_station()
+    {
+        $game = Game::factory()->create();
+
+        $this->patch('/games/' . $game->id . '/police-station', [
+            'lat' => 0.001,
+            'lng' => 0.002
+        ]);
+
+        $this->assertEquals('0.001,0.002', Game::first()->police_station_location);
+    }
+
     public function test_can_start_game()
     {
         Event::fake();
@@ -174,5 +236,57 @@ class WebConfigTest extends TestCase
 
         $game->refresh();
         $this->assertEquals(Statuses::Config, $game->status);
+    }
+
+    public function test_cannot_start_game_without_police_station()
+    {
+        $game = Game::factory()->state([
+            'police_station_location' => null
+        ])->create();
+
+        $this->put('/games/' . $game->id, [
+            'duration' => '120',
+            'interval' => '30',
+            'state' => Statuses::Ongoing
+        ])->assertStatus(302)
+            ->isInvalid();
+
+        $this->assertEquals(Statuses::Config, Game::first()->status);
+    }
+
+    public function test_cannot_start_game_without_loot()
+    {
+        $game = Game::factory()->create();
+        BorderMarker::factory()->count(3)->state([
+            'borderable_id' => $game->id,
+            'borderable_type' => Game::class
+        ])->create();
+
+        $this->put('/games/' . $game->id, [
+            'duration' => '120',
+            'interval' => '30',
+            'state' => Statuses::Ongoing
+        ])->assertStatus(302)
+            ->isInvalid();
+
+        $this->assertEquals(Statuses::Config, Game::first()->status);
+    }
+
+    public function test_cannot_start_game_without_borders()
+    {
+        $game = Game::factory()->create();
+        Loot::factory()->count(3)->state([
+            'lootable_id' => $game->id,
+            'lootable_type' => Game::class
+        ])->create();
+
+        $this->put('/games/' . $game->id, [
+            'duration' => '120',
+            'interval' => '30',
+            'state' => Statuses::Ongoing
+        ])->assertStatus(302)
+            ->isInvalid();
+
+        $this->assertEquals(Statuses::Config, Game::first()->status);
     }
 }

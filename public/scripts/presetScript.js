@@ -10,7 +10,6 @@ const savePresetButton = document.querySelector("#save_preset_button");
 let presets = [];
 
 async function savePreset() {
-    // TODO: Add game theme
     let lootLats = [];
     let lootLngs = [];
     let borderLats = [];
@@ -25,7 +24,7 @@ async function savePreset() {
         let passedCheck = true;
         presets.forEach(preset => {
             if (preset.name === presetNameInput.value) {
-                showValidationError('De naam ' + preset.name + ' is al in gebruik. Vul a.u.b. een andere naam in.');
+                showMessage('De naam ' + preset.name + ' is al in gebruik. Vul a.u.b. een andere naam in.', 'red');
                 passedCheck = false;
             }
         });
@@ -33,19 +32,19 @@ async function savePreset() {
             return;
     }
     if (!mapDataValid) {
-        showValidationError('Plaats a.u.b. alle pins op de kaart.');
+        showMessage('Plaats a.u.b. alle pins op de kaart.', 'red');
         return;
     }
     if (!durationInputValid) {
-        showValidationError('Vul a.u.b. een valide speelduur in.');
+        showMessage('Vul a.u.b. een valide speelduur in.', 'red');
         return;
     }
     if (!intervalInputValid) {
-        showValidationError('Vul a.u.b. een valide interval in tussen locatieupdates.');
+        showMessage('Vul a.u.b. een valide interval in tussen locatieupdates.', 'red');
         return;
     }
     if (!presetNameValid) {
-        showValidationError('Vul a.u.b. een naam in voor het template.');
+        showMessage('Vul a.u.b. een naam in voor het template.', 'red');
         return;
     }
 
@@ -82,9 +81,10 @@ async function savePreset() {
         },
         success: function () {
             location.reload();
+            showMessage('Het nieuwe template is succesvol aangemaakt.', 'green');
         },
         error: function (err) {
-            showValidationError(err.responseJSON.message);
+            showMessage(err.responseJSON.message, 'red');
         }
     });
 }
@@ -158,7 +158,7 @@ async function loadPreset(game_id) {
     });
 }
 
-function showValidationError (message) {
+function showMessage (message, colour) {
     let validationBox = document.querySelector('#template_validation_msg');
 
     if (validationBox == null) {
@@ -170,7 +170,7 @@ function showValidationError (message) {
 
     let errorMsgElem = document.createElement('p');
     errorMsgElem.id = 'validation_msg';
-    errorMsgElem.style.color = 'red';
+    errorMsgElem.style.color = colour;
     errorMsgElem.textContent = message;
     validationBox.appendChild(errorMsgElem);
 
