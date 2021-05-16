@@ -124,7 +124,8 @@ class WebConfigTest extends TestCase
             ],
             'border_lngs' => [
                 '0.004', '0.005', '0.006'
-            ]
+            ],
+            'colour_theme' => '#000000'
         ];
 
         $this->post('/presets', $preset)
