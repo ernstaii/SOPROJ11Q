@@ -34,6 +34,7 @@ button
     display:                    flex;
     flex-direction:             row;
     margin:                     40px auto;
+    min-width:                  725px;
     position:                   relative;
     text-align:                 center;
     width:                      50vw;
@@ -73,6 +74,7 @@ button
 {
     background:                 #fff;
     margin:                     30px auto;
+    min-width:                  185px;
     position:                   relative;
     text-align:                 center;
     width:                      75%;
