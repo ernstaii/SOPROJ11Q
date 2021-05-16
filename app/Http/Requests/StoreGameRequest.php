@@ -14,7 +14,7 @@ class StoreGameRequest extends FormRequest
     public function rules()
     {
         return [
-            'password' => ['required', 'string']
+            'password' => ['required', 'string', 'min:5']
         ];
     }
 }
