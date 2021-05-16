@@ -3,7 +3,6 @@ const presetNameInput = document.querySelector("#preset_name");
 const durationInput = document.querySelector("#duration");
 const intervalInput = document.querySelector("#interval");
 const colourInput = document.querySelector("#colour");
-const logoInput = document.querySelector("#logo");
 const presetSelector = document.querySelector("#presets");
 const savePresetButton = document.querySelector("#save_preset_button");
 
@@ -76,8 +75,7 @@ async function savePreset() {
             loot_names: lootNames,
             border_lats: borderLats,
             border_lngs: borderLngs,
-            colour: colourInput.value,
-            logo: logoInput.value
+            colour_theme: colourInput.value,
         },
         success: function () {
             location.reload();
@@ -100,7 +98,6 @@ async function loadPreset(game_id) {
     durationInput.value = preset.duration;
     intervalInput.value = preset.interval;
     colourInput.value = preset.colour_theme;
-    logoInput.value = preset.logo;
 
     createButtons = false;
     let latLng = preset.police_station_location.split(',');
@@ -109,7 +106,6 @@ async function loadPreset(game_id) {
     }
     applyExistingPoliceStation(latLng[0], latLng[1]);
     savePoliceStation(game_id);
-
 
     $.ajaxSetup({
         headers: {

@@ -343,6 +343,7 @@ class GameController extends Controller
             'duration' => $request->duration,
             'interval' => $request->interval,
             'police_station_location' => $request->police_station_lat . ',' . $request->police_station_lng,
+            'colour_theme' => $request->colour_theme
         ]);
 
         for ($i = 0; $i < count($loot_lats); $i++) {

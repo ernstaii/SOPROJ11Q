@@ -19,7 +19,6 @@ class CreateGamePresetsTable extends Migration
             $table->string('duration');
             $table->string('interval');
             $table->string('police_station_location', 255)->nullable();
-            $table->longText('logo')->nullable();
             $table->string('colour_theme')->default('#0099ff');
             $table->timestamps();
         });
