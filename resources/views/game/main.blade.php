@@ -102,6 +102,15 @@
             <div class="messages">
             </div>
         </div>
+        <div class="bottom-box shadow">
+            <div class="item-header">
+                <h2>SPEL ID</h2>
+            </div>
+            <div class="item-box" id="id_box">
+                <p>Het ID van het huidige spel is:</p>
+                <h1>{{$id}}</h1>
+            </div>
+        </div>
     </div>
     <script>
         window.addEventListener('DOMContentLoaded', function () {
