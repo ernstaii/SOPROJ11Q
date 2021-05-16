@@ -9,6 +9,8 @@ const mapBox = document.querySelector('.mapbox');
 const timerElmt = document.querySelector('.timer');
 const remove_loot_button = document.querySelector('#remove_loot_button');
 const lootNameInput = document.querySelector('#loot_name_input');
+const sideBarItem2 = document.querySelector('#side_bar_link2');
+const sideBarItem3 = document.querySelector('#side_bar_link3');
 
 let markerLatLngs = [];
 let markers = [];
@@ -377,6 +379,9 @@ function callGameDetails(game_id) {
     form_3.action = form_3.action + '?password=' + passwordFromURL(game_id);
     let form_4 = document.querySelector('#form_4');
     form_4.action = form_4.action + '?password=' + passwordFromURL(game_id);
+
+    sideBarItem2.href = '/games/' + game_id + '?password=' + passwordFromURL(game_id);
+    sideBarItem3.href = '/games/' + game_id + '?password=' + passwordFromURL(game_id);
 }
 
 async function getGameDetails(game_id) {

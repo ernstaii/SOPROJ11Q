@@ -22,9 +22,9 @@
 @endif
 <div class="horizontal-body-box">
     <div class="side-bar">
-        <div class="side-bar-item side-bar-elem1">Spelcreatie</div>
-        <div class="side-bar-item side-bar-elem2">Spelconfiguratie</div>
-        <div class="side-bar-item side-bar-elem3">Speloverzicht</div>
+        <a id="side_bar_link1" href="{{route('games.index')}}"><div class="side-bar-item side-bar-elem1">Spelselectie</div></a>
+        <a id="side_bar_link2" href="{{route('games.index')}}"><div class="side-bar-item side-bar-elem2">Spelconfiguratie</div></a>
+        <a id="side_bar_link3" href="{{route('games.index')}}"><div class="side-bar-item side-bar-elem3">Speloverzicht</div></a>
     </div>
     @yield('content')
 </div>

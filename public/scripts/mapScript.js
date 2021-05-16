@@ -10,6 +10,8 @@ const mapBox = document.querySelector('.mapbox');
 const tab_2 = document.querySelector('#tab_2');
 const tab_3 = document.querySelector('#tab_3');
 const startGameForm = document.querySelector('#start_game_form');
+const sideBarItem2 = document.querySelector('#side_bar_link2');
+const sideBarItem3 = document.querySelector('#side_bar_link3');
 
 const lootIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
@@ -506,4 +508,7 @@ function passwordFromURL(game_id) {
     let url = new URL(url_string);
     let password = url.searchParams.get('password');
     startGameForm.action = '/games/' + game_id + '?password=' + password;
+
+    sideBarItem2.href = '/games/' + game_id + '?password=' + password;
+    sideBarItem3.href = '/games/' + game_id + '?password=' + password;
 }

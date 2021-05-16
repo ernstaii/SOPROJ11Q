@@ -5,21 +5,6 @@
     --text:                     darkred;
 }
 
-a
-{
-    background-color:           #C6002A;
-    border:                     none;
-    border-radius:              1.5vw;
-    color:                      white;
-    cursor:                     auto;
-    font-size:                  16px;
-    margin:                     0 3vw 1vh 3vw;
-    padding:                    8px 3px;
-    text-align:                 center;
-    text-decoration:            none;
-    width:                      10vw;
-}
-
 button
 {
     background-color:           #C6002A;
@@ -89,6 +74,21 @@ button
     width:                      75%;
 }
 
+#open_game_button
+{
+    background-color:           #C6002A;
+    border:                     none;
+    border-radius:              1.5vw;
+    color:                      white;
+    cursor:                     auto;
+    font-size:                  16px;
+    margin:                     0 3vw 1vh 3vw;
+    padding:                    8px 3px;
+    text-align:                 center;
+    text-decoration:            none;
+    width:                      10vw;
+}
+
 .password-box
 {
     display:                    flex;
@@ -118,6 +118,10 @@ button
 .side-bar-elem1
 {
     background:                 #C6002A;
+}
+
+#side_bar_link1
+{
     color:                      white;
 }
 

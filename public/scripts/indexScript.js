@@ -2,6 +2,8 @@ const gameInput = document.querySelector('#get_game_input');
 const deleteGameForm = document.querySelector('#delete_game_form');
 const buttonsBox = document.querySelector('#buttons_box');
 const passwordFieldGet = document.querySelector('#password_get_input');
+const sideBarItem2 = document.querySelector('#side_bar_link2');
+const sideBarItem3 = document.querySelector('#side_bar_link3');
 
 let password_correct;
 
@@ -51,6 +53,9 @@ async function changeNumberInputs(gameIds) {
         buttonsBox.insertBefore(openButtonElem, deleteGameForm);
         deleteGameForm.appendChild(deleteButtonElem);
         deleteGameForm.action = '/games/' + gameInput.value + '?password=' + passwordFieldGet.value;
+
+        sideBarItem2.href = '/games/' + gameInput.value + '?password=' + passwordFieldGet.value;
+        sideBarItem3.href = '/games/' + gameInput.value + '?password=' + passwordFieldGet.value;
     }
 }
 

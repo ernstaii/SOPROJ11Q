@@ -90,7 +90,6 @@ label
     background:                 dimgrey;
     border:                     black 1px solid;
     border-radius:              0 10px 10px 0;
-    color:                      gray;
     display:                    flex;
     font-size:                  1vw;
     height:                     7vh;
@@ -98,6 +97,12 @@ label
     margin:                     2vh 0 2vh 0;
     text-align:                 center;
     width:                      8vw;
+}
+
+.side-bar a
+{
+    color:                      gray;
+    text-decoration:            none;
 }
 
 .tooltip

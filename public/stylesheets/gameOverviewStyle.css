@@ -45,12 +45,20 @@
 .side-bar-elem2
 {
     background:                 dimgrey;
+}
+
+#side_bar_link2
+{
     color:                      gray;
 }
 
 .side-bar-elem3
 {
     background:                 #C6002A;
+}
+
+#side_bar_link3
+{
     color:                      white;
 }
 
