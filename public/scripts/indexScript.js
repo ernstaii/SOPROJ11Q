@@ -17,6 +17,8 @@ async function changeNumberInputs(gameIds) {
         buttonsBox.removeChild(openGameButton);
         deleteGameForm.removeChild(deleteGameButton);
         deleteGameForm.action = '';
+        sideBarItem2.href = '/games';
+        sideBarItem3.href = '/games';
     }
 
     if (gameInput.value && gameInput.value > 0) {
