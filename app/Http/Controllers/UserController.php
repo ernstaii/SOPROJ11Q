@@ -53,6 +53,7 @@ class UserController extends Controller
     public function update(UpdateLocationRequest $request, User $user)
     {
         $user->location = $request->location;
+        $user->last_verified_at = Carbon::now();
         $user->save();
 
         return $user;
