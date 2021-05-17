@@ -34,6 +34,7 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->post('/games/{game}/notifications', [GameController::class, 'postNotification']);
     $router->patch('/games/{game}/thieves-score/{score}', [GameController::class, 'updateThievesScore']);
     $router->patch('/games/{game}/police-score/{score}', [GameController::class, 'updatePoliceScore']);
+
     $router->patch('/users/{user}/catch', [UserController::class, 'catchThief']);
     $router->delete('/loot/{loot}', [LootController::class, 'destroy']);
 });

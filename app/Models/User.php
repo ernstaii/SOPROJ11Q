@@ -38,7 +38,8 @@ class User extends Authenticatable
         'username',
         'location',
         'status',
-        'caught_at'
+        'caught_at',
+        'last_verified_at',
     ];
 
     public function inviteKey()
