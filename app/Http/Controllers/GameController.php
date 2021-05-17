@@ -21,6 +21,7 @@ use App\Models\Game;
 use App\Models\GamePreset;
 use App\Models\Loot;
 use App\Models\Notification;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Request;
@@ -44,7 +45,7 @@ class GameController extends Controller
 
     public function getUsersWithRole(Game $game)
     {
-        return $game->get_users_with_role();
+        return $game->get_users_filtered_on_last_verified();
     }
 
     public function getLoot(Game $game)
