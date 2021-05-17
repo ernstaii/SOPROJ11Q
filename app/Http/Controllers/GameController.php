@@ -45,7 +45,17 @@ class GameController extends Controller
 
     public function getUsersWithRole(Game $game)
     {
-        return $game->get_users_filtered_on_last_verified();
+        $filtered_users = $game->get_users_filtered_on_last_verified();
+        $diff = $game->get_users()->diffKeys($filtered_users);
+
+        foreach ($diff as $missing_user){
+            Notification::create([
+                'game_id' => $game->id,
+                'message' => "Gebruiker ".$missing_user->username." heeft het spel verlaten"
+            ]);
+        }
+
+        return $filtered_users;
     }
 
     public function getLoot(Game $game)
