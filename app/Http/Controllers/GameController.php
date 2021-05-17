@@ -7,7 +7,9 @@ use App\Enums\Statuses;
 use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
 use App\Events\PauseGameEvent;
+use App\Events\PlayerJoinedGameEvent;
 use App\Events\ResumeGameEvent;
+use App\Events\ScoreUpdatedEvent;
 use App\Events\SendNotificationEvent;
 use App\Events\StartGameEvent;
 use App\Http\Requests\StoreBorderMarkerRequest;
@@ -231,18 +233,22 @@ class GameController extends Controller
 
     public function updateThievesScore(Game $game, int $score)
     {
-        $game->thieves_score = $score;
+        $game->thieves_score += $score;
         $game->save();
 
-        return $game;
+        event(new ScoreUpdatedEvent($game->id, $game->police_score, $game->thieves_score ));
+
+        return $game->thieves_score;
     }
 
     public function updatePoliceScore(Game $game, int $score)
     {
-        $game->police_score = $score;
+        $game->police_score += $score;
         $game->save();
 
-        return $game;
+        event(new ScoreUpdatedEvent($game->id, $game->police_score, $game->thieves_score ));
+
+        return $game->police_score;
     }
 
 	public function sendNotification(StoreNotificationRequest $request, Game $game)
