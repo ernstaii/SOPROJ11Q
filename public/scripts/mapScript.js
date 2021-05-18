@@ -6,7 +6,6 @@ const corner1 = L.latLng(53.828464, 2.871753),
     corner2 = L.latLng(50.559772, 7.521491),
     mapBounds = L.latLngBounds(corner1, corner2);
 const removeMarkerButton = document.querySelector('#button_remove_markers');
-const saveMarkerButton = document.querySelector('#button_save_markers');
 const mapBox = document.querySelector('.mapbox');
 const tab_2 = document.querySelector('#tab_2');
 const tab_3 = document.querySelector('#tab_3');
@@ -44,6 +43,8 @@ let removeLootButton;
 let removePoliceStationButton;
 let savePoliceStationButton;
 
+let saveMarkerButton = document.querySelector('#button_save_markers');
+let createButtons = true;
 let markerLatLngs = [];
 let markers = [];
 let lines = [];
@@ -69,7 +70,7 @@ function initMap() {
     mymap.addControl(new L.Control.Fullscreen());
     const attribution = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
     const tileURL = 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    const tiles = L.tileLayer(tileURL, { attribution });
+    const tiles = L.tileLayer(tileURL, {attribution});
 
     tiles.addTo(mymap);
     mymap.on('click', addMarker);
@@ -87,8 +88,8 @@ function addMarker(e) {
     if (contains) {
         return;
     }
-    let newMarker = L.marker(e.latlng, { icon: borderIcon })
-        .bindPopup(L.popup({ maxWidth: maxPopupWidth})
+    let newMarker = L.marker(e.latlng, {icon: borderIcon})
+        .bindPopup(L.popup({maxWidth: maxPopupWidth})
             .setContent('Border marker ' + (markers.length + 1)))
         .addTo(mymap);
     applyEvents(newMarker);
@@ -110,6 +111,17 @@ function addMarker(e) {
         saveMarkerButton.title = '';
     }
 }
+function removeAllMarkers() {
+    markers.forEach(item => {
+        mymap.removeLayer(item);
+    });
+    lines.forEach(line => {
+        mymap.removeLayer(line);
+    });
+    markers = [];
+    markerLatLngs = [];
+    lines = [];
+}
 
 function removeLastMarker() {
     if (markers.length > 0) {
@@ -125,8 +137,7 @@ function removeLastMarker() {
                     lines.pop();
                 }
             }
-        }
-        else {
+        } else {
             mymap.removeLayer(lines[lines.length - 1]);
             lines.pop();
         }
@@ -135,7 +146,7 @@ function removeLastMarker() {
         addNewLineBetweenFirstAndLast();
     }
 
-    if (markers.length < 3) {
+    if (markers.length < 3 && saveMarkerButton != null) {
         saveMarkerButton.disabled = true;
         saveMarkerButton.title = 'Er zijn minstens 3 markers nodig voordat het veld opgeslagen kan worden.';
     }
@@ -166,13 +177,17 @@ async function saveMarkers(id) {
     await $.ajax({
         url: '/games/' + id + '/border-markers',
         type: 'POST',
-        data: { lats: lats, lngs: lngs },
+        data: {lats: lats, lngs: lngs},
         success: function (data) {
-            mymap.off('click');
-            mapBox.removeChild(saveMarkerButton);
-            mapBox.removeChild(removeMarkerButton);
-            createLootButtons(id);
-            mymap.on('click', addLoot);
+            if (!createButtons)
+                saveMarkerButton = null;
+            if (saveMarkerButton != null) {
+                mymap.off('click');
+                mapBox.removeChild(saveMarkerButton);
+                mapBox.removeChild(removeMarkerButton);
+                createLootButtons(id);
+                mymap.on('click', addLoot);
+            }
         },
         error: function (err) {
             console.log(err);
@@ -182,8 +197,8 @@ async function saveMarkers(id) {
 
 function applyExistingMarker(lat, lng) {
     let latlng = L.latLng(lat, lng);
-    let newMarker = L.marker(latlng, { icon: borderIcon })
-        .bindPopup(L.popup({ maxWidth: maxPopupWidth })
+    let newMarker = L.marker(latlng, {icon: borderIcon})
+        .bindPopup(L.popup({maxWidth: maxPopupWidth})
             .setContent('Border marker ' + (markers.length + 1)))
         .addTo(mymap);
     applyEvents(newMarker);
@@ -192,18 +207,18 @@ function applyExistingMarker(lat, lng) {
 }
 
 function drawLinesForExistingMarkers(game_id) {
-    if (markers.length > 0) {
-        mymap.off('click');
-        mapBox.removeChild(saveMarkerButton);
-        mapBox.removeChild(removeMarkerButton);
-        createLootButtons(game_id);
-        mymap.on('click', addLoot);
-    }
-    for(let i = 0; i < markerLatLngs.length - 1; i++) {
+    if (createButtons)
+        if (markers.length > 0) {
+            mymap.off('click');
+            mapBox.removeChild(saveMarkerButton);
+            mapBox.removeChild(removeMarkerButton);
+            createLootButtons(game_id);
+            mymap.on('click', addLoot);
+        }
+    for (let i = 0; i < markerLatLngs.length - 1; i++) {
         if (i < markerLatLngs.length - 2) {
             lines.push(L.polyline(markerLatLngs, {color: 'black', dashArray: '30, 30', dashOffset: '0'}).addTo(mymap));
-        }
-        else {
+        } else {
             addNewLineBetweenFirstAndLast();
         }
     }
@@ -267,8 +282,8 @@ function addLoot(e) {
     if (contains) {
         return;
     }
-    let newMarker = L.marker(e.latlng, { icon: lootIcon })
-        .bindPopup(L.popup({ maxWidth: maxPopupWidth})
+    let newMarker = L.marker(e.latlng, {icon: lootIcon})
+        .bindPopup(L.popup({maxWidth: maxPopupWidth})
             .setContent('Buit: ' + lootNameInput.value.trim()))
         .addTo(mymap);
     applyEvents(newMarker);
@@ -281,6 +296,15 @@ function addLoot(e) {
     }
 
     lootNames.push(lootNameInput.value.trim());
+}
+
+function removeAllLoot() {
+    loot_markers.forEach(item => {
+        mymap.removeLayer(item);
+    });
+    loot_markers = [];
+    lootLatLngs = [];
+    lootNames = [];
 }
 
 function removeLoot() {
@@ -319,14 +343,18 @@ async function saveLoot(id) {
     await $.ajax({
         url: '/games/' + id + '/loot',
         type: 'POST',
-        data: { lats: lats, lngs: lngs, names: lootNames },
+        data: {lats: lats, lngs: lngs, names: lootNames},
         success: function (data) {
-            mymap.off('click');
-            mapBox.removeChild(saveLootButton);
-            mapBox.removeChild(removeLootButton);
-            mapBox.removeChild(lootNameInput);
-            createPoliceStationButton(id);
-            mymap.on('click', addPoliceStation);
+            if (!createButtons)
+                saveLootButton = null;
+            if (saveLootButton != null) {
+                mymap.off('click');
+                mapBox.removeChild(saveLootButton);
+                mapBox.removeChild(removeLootButton);
+                mapBox.removeChild(lootNameInput);
+                createPoliceStationButton(id);
+                mymap.on('click', addPoliceStation);
+            }
         },
         error: function (err) {
             console.log(err);
@@ -336,8 +364,8 @@ async function saveLoot(id) {
 
 function applyExistingLoot(lat, lng, loot_name) {
     let latlng = L.latLng(lat, lng);
-    let newMarker = L.marker(latlng, { icon: lootIcon })
-        .bindPopup(L.popup({ maxWidth: maxPopupWidth })
+    let newMarker = L.marker(latlng, {icon: lootIcon})
+        .bindPopup(L.popup({maxWidth: maxPopupWidth})
             .setContent('Buit: ' + loot_name))
         .addTo(mymap);
     applyEvents(newMarker);
@@ -348,12 +376,14 @@ function applyExistingLoot(lat, lng, loot_name) {
 
 function checkLootState(game_id) {
     if (loot_markers.length > 0) {
-        mymap.off('click');
-        mapBox.removeChild(saveLootButton);
-        mapBox.removeChild(removeLootButton);
-        mapBox.removeChild(lootNameInput);
-        createPoliceStationButton(game_id);
-        mymap.on('click', addPoliceStation);
+        if (saveLootButton != null) {
+            mymap.off('click');
+            mapBox.removeChild(saveLootButton);
+            mapBox.removeChild(removeLootButton);
+            mapBox.removeChild(lootNameInput);
+            createPoliceStationButton(game_id);
+            mymap.on('click', addPoliceStation);
+        }
     }
 }
 
@@ -386,8 +416,8 @@ function addPoliceStation(e) {
         return;
     }
 
-    let newMarker = L.marker(e.latlng, { icon: policeStationIcon })
-        .bindPopup(L.popup({ maxWidth: maxPopupWidth})
+    let newMarker = L.marker(e.latlng, {icon: policeStationIcon})
+        .bindPopup(L.popup({maxWidth: maxPopupWidth})
             .setContent('Politiebureau'))
         .addTo(mymap);
     applyEvents(newMarker);
@@ -407,8 +437,10 @@ function removePoliceStation() {
         policeStationLatLng = null;
     }
 
-    savePoliceStationButton.disabled = true;
-    savePoliceStationButton.title = 'Plaats eerst een politiebureau op de kaart.';
+    if (savePoliceStationButton != null) {
+        savePoliceStationButton.disabled = true;
+        savePoliceStationButton.title = 'Plaats eerst een politiebureau op de kaart.';
+    }
 }
 
 async function savePoliceStation(id) {
@@ -424,11 +456,13 @@ async function savePoliceStation(id) {
     await $.ajax({
         url: '/games/' + id + '/police-station',
         type: 'PATCH',
-        data: { lat: policeStationLatLng.lat, lng: policeStationLatLng.lng },
+        data: {lat: policeStationLatLng.lat, lng: policeStationLatLng.lng},
         success: function (data) {
             mymap.off('click');
-            mapBox.removeChild(savePoliceStationButton);
-            mapBox.removeChild(removePoliceStationButton);
+            if (savePoliceStationButton != null) {
+                mapBox.removeChild(savePoliceStationButton);
+                mapBox.removeChild(removePoliceStationButton);
+            }
         },
         error: function (err) {
             console.log(err);
@@ -438,8 +472,8 @@ async function savePoliceStation(id) {
 
 function applyExistingPoliceStation(lat, lng) {
     let latlng = L.latLng(lat, lng);
-    let newMarker = L.marker(latlng, { icon: policeStationIcon })
-        .bindPopup(L.popup({ maxWidth: maxPopupWidth })
+    let newMarker = L.marker(latlng, {icon: policeStationIcon})
+        .bindPopup(L.popup({maxWidth: maxPopupWidth})
             .setContent('Politiebureau'))
         .addTo(mymap);
     applyEvents(newMarker);
@@ -448,8 +482,12 @@ function applyExistingPoliceStation(lat, lng) {
 
     if (policeStationMarker !== null) {
         mymap.off('click');
-        mapBox.removeChild(savePoliceStationButton);
-        mapBox.removeChild(removePoliceStationButton);
+        if (!createButtons)
+            savePoliceStationButton = null;
+        if (savePoliceStationButton != null) {
+            mapBox.removeChild(savePoliceStationButton);
+            mapBox.removeChild(removePoliceStationButton);
+        }
     }
 }
 

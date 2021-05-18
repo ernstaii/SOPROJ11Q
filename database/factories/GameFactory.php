@@ -20,6 +20,7 @@ class GameFactory extends Factory
             'police_station_location' => '51.763965, 5.529218',
             'thieves_score' => 0,
             'police_score' => 0,
+            'colour_theme' => '#000000'
         ];
     }
 

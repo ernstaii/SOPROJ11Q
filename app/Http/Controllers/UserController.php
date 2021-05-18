@@ -44,9 +44,12 @@ class UserController extends Controller
         $inviteKey->user_id = $user->id;
         $inviteKey->save();
 
-        if (in_array($inviteKey->game->status, [Statuses::Ongoing, Statuses::Paused]))
+        if (in_array($inviteKey->game->status, [Statuses::Ongoing, Statuses::Paused])) {
+            $user->status = UserStatuses::Playing;
             event(new PlayerJoinedGameEvent($inviteKey->game->id, $user));
+        }
 
+        $user->save();
         return $user;
     }
 

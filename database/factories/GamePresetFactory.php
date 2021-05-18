@@ -15,7 +15,7 @@ class GamePresetFactory extends Factory
             'name' => $this->faker->word,
             'duration' => 120,
             'interval' => 60,
-            'police_station_location' => '51.763965, 5.529218',
+            'police_station_location' => '51.763965,5.529218',
         ];
     }
 }

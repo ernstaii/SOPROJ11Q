@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $duration
  * @property string $interval
  * @property string|null $police_station_location
+ * @property string $colour_theme
+ * @property string|null $logo
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BorderMarker[] $border_markers
@@ -41,6 +43,8 @@ class GamePreset extends Model
         'duration',
         'interval',
         'police_station_location',
+        'colour_theme',
+        'logo',
         'created_at',
         'updated_at'
     ];
