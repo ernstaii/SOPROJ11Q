@@ -342,13 +342,17 @@ class GameController extends Controller
         $border_lats = $request->border_lats;
         $border_lngs = $request->border_lngs;
 
+        $logo_value = null;
+        if (isset($request->logo_upload))
+            $logo_value = base64_encode(file_get_contents($request->logo));
+
         $preset = GamePreset::create([
             'name' => $request->name,
             'duration' => $request->duration,
             'interval' => $request->interval,
             'police_station_location' => $request->police_station_lat . ',' . $request->police_station_lng,
             'colour_theme' => $request->colour_theme,
-            'logo' => base64_encode(file_get_contents($request->logo))
+            'logo' => $logo_value
         ]);
 
         for ($i = 0; $i < count($loot_lats); $i++) {

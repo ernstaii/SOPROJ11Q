@@ -49,8 +49,30 @@ async function savePreset() {
         return;
     }
 
-    let logoBase64 = imageElementBox.children[0].src;
+    let logoBase64 = null;
+    if (imageElementBox.children.length > 0)
+        logoBase64 = imageElementBox.children[0].src;
 
+    if (logoBase64 != null) {
+        let imageElem = new Image();
+
+        imageElem.onload = function() {
+            if (imageElem.width > 300 || imageElem.height > 200) {
+                showMessage('Upload a.u.b. een foto met een maximale grootte van 300x200 pixels.', 'red');
+                return;
+            }
+
+            savePresetToDB(lootLats, lootLngs, borderLats, borderLngs, logoBase64); //やばい
+        };
+
+        imageElem.src = logoBase64;
+    }
+    else {
+        await savePresetToDB(lootLats, lootLngs, borderLats, borderLngs, logoBase64);
+    }
+}
+
+async function savePresetToDB(lootLats, lootLngs, borderLats, borderLngs, logoBase64) {
     lootLatLngs.forEach(lootItem => {
         lootLats.push(lootItem.lat);
         lootLngs.push(lootItem.lng);
@@ -104,10 +126,11 @@ async function loadPreset(game_id) {
     intervalInput.value = preset.interval;
     colourInput.value = preset.colour_theme;
 
+    if (imageElementBox.children.length > 0) {
+        imageElementBox.innerHTML = '';
+    }
+
     if (preset.logo != null) {
-        if (imageElementBox.children.length > 0) {
-            imageElementBox.innerHTML = '';
-        }
         let newImageElement = document.createElement('img');
         newImageElement.id = 'logo_image';
         newImageElement.src = 'data:image/png;base64,' + preset.logo;
