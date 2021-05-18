@@ -15,10 +15,12 @@ class CreateGamePresetsTable extends Migration
     {
         Schema::create('game_presets', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('duration');
             $table->string('interval');
             $table->string('police_station_location', 255)->nullable();
+            $table->string('colour_theme')->default('#0099ff');
+            $table->longText('logo')->nullable();
             $table->timestamps();
         });
     }
