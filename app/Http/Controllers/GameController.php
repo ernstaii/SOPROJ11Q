@@ -177,10 +177,14 @@ class GameController extends Controller
         if ($game->status === Statuses::Config) {
             $game->duration = $request->duration;
             $game->interval = $request->interval;
-            if (isset($request->logo))
-                $game->logo = base64_encode(file_get_contents($request->logo));
+            if (isset($request->logo_upload)) {
+                if (str_contains($request->logo_upload, 'data:image/png;base64,'))
+                    $game->logo = base64_encode(file_get_contents($request->logo_upload));
+                else
+                    $game->logo = $request->logo_upload;
+            }
             if (isset($request->colour))
-            $game->colour_theme = $request->colour;
+                $game->colour_theme = $request->colour;
         }
 
         switch ($request->state) {
@@ -376,11 +380,17 @@ class GameController extends Controller
         $border_lats = $request->border_lats;
         $border_lngs = $request->border_lngs;
 
+        $logo_value = null;
+        if (isset($request->logo_upload))
+            $logo_value = base64_encode(file_get_contents($request->logo));
+
         $preset = GamePreset::create([
             'name' => $request->name,
             'duration' => $request->duration,
             'interval' => $request->interval,
             'police_station_location' => $request->police_station_lat . ',' . $request->police_station_lng,
+            'colour_theme' => $request->colour_theme,
+            'logo' => $logo_value
         ]);
 
         for ($i = 0; $i < count($loot_lats); $i++) {

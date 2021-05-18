@@ -3,9 +3,10 @@ const presetNameInput = document.querySelector("#preset_name");
 const durationInput = document.querySelector("#duration");
 const intervalInput = document.querySelector("#interval");
 const colourInput = document.querySelector("#colour");
-const logoInput = document.querySelector("#logo");
 const presetSelector = document.querySelector("#presets");
 const savePresetButton = document.querySelector("#save_preset_button");
+const imageElementBox = document.querySelector('#img_element_box');
+const logoInput = document.querySelector("#logo");
 
 let presets = [];
 
@@ -48,6 +49,30 @@ async function savePreset() {
         return;
     }
 
+    let logoBase64 = null;
+    if (imageElementBox.children.length > 0)
+        logoBase64 = imageElementBox.children[0].src;
+
+    if (logoBase64 != null) {
+        let imageElem = new Image();
+
+        imageElem.onload = function() {
+            if (imageElem.width > 300 || imageElem.height > 200) {
+                showMessage('Upload a.u.b. een foto met een maximale grootte van 300x200 pixels.', 'red');
+                return;
+            }
+
+            savePresetToDB(lootLats, lootLngs, borderLats, borderLngs, logoBase64); //やばい
+        };
+
+        imageElem.src = logoBase64;
+    }
+    else {
+        await savePresetToDB(lootLats, lootLngs, borderLats, borderLngs, logoBase64);
+    }
+}
+
+async function savePresetToDB(lootLats, lootLngs, borderLats, borderLngs, logoBase64) {
     lootLatLngs.forEach(lootItem => {
         lootLats.push(lootItem.lat);
         lootLngs.push(lootItem.lng);
@@ -76,8 +101,8 @@ async function savePreset() {
             loot_names: lootNames,
             border_lats: borderLats,
             border_lngs: borderLngs,
-            colour: colourInput.value,
-            logo: logoInput.value
+            colour_theme: colourInput.value,
+            logo: logoBase64
         },
         success: function () {
             location.reload();
@@ -100,7 +125,24 @@ async function loadPreset(game_id) {
     durationInput.value = preset.duration;
     intervalInput.value = preset.interval;
     colourInput.value = preset.colour_theme;
-    logoInput.value = preset.logo;
+
+    if (imageElementBox.children.length > 0) {
+        imageElementBox.innerHTML = '';
+    }
+
+    if (preset.logo != null) {
+        let newImageElement = document.createElement('img');
+        newImageElement.id = 'logo_image';
+        newImageElement.src = 'data:image/png;base64,' + preset.logo;
+        newImageElement.name = 'logo_upload';
+        let hiddenInput = document.createElement('input');
+        hiddenInput.id = 'logo_image_input';
+        hiddenInput.type = 'hidden';
+        hiddenInput.value = preset.logo;
+        hiddenInput.name = 'logo_upload';
+        imageElementBox.appendChild(newImageElement);
+        imageElementBox.appendChild(hiddenInput);
+    }
 
     createButtons = false;
     let latLng = preset.police_station_location.split(',');
@@ -109,7 +151,6 @@ async function loadPreset(game_id) {
     }
     applyExistingPoliceStation(latLng[0], latLng[1]);
     savePoliceStation(game_id);
-
 
     $.ajaxSetup({
         headers: {
@@ -183,4 +224,27 @@ function showMessage (message, colour) {
             validationBox.removeChild(validationBox.children[0]);
         }
     }, 7500);
+}
+
+function changeImageElement() {
+    let files = logoInput.files;
+    if (FileReader && files && files.length) {
+        let fr = new FileReader();
+        fr.onload = function () {
+            if (imageElementBox.children.length > 0) {
+                imageElementBox.innerHTML = '';
+            }
+            let newImageElement = document.createElement('img');
+            newImageElement.id = 'logo_image';
+            newImageElement.src = fr.result;
+            let hiddenInput = document.createElement('input');
+            hiddenInput.id = 'logo_image_input';
+            hiddenInput.type = 'hidden';
+            hiddenInput.value = fr.result;
+            hiddenInput.name = 'logo_upload';
+            imageElementBox.appendChild(newImageElement);
+            imageElementBox.appendChild(hiddenInput);
+        };
+        fr.readAsDataURL(files[0]);
+    }
 }

@@ -24,8 +24,8 @@ class StorePresetRequest extends FormRequest
             'loot_names' => ['required', 'array'],
             'border_lats' => ['required', 'array', 'min:3'],
             'border_lngs' => ['required', 'array', 'min:3'],
-            'colour' => ['nullable', 'string'],
-            'logo' => ['nullable', 'image', 'dimensions:max_width=300,max_height=200']
+            'colour_theme' => ['nullable', 'string'],
+            'logo' => ['nullable', 'string']
         ];
     }
 }

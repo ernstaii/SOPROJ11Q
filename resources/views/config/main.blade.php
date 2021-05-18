@@ -49,7 +49,9 @@
                             </div>
                             <div class="form-item" id="upload_box">
                                 <label class="form-label-0" for="logo">Logo (app)</label>
-                                <input name="logo" class="input-numeric-0" id="logo" type="file" accept="image/*">
+                                <input name="logo" class="input-numeric-0" id="logo" type="file" accept="image/*" onchange="changeImageElement()">
+                            </div>
+                            <div class="form-item" id="img_element_box">
                             </div>
                             <div class="form-item">
                                 <button type="input" class="keys-share-button" type="submit" name="state"
