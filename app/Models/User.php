@@ -8,11 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 /**
  * App\Models\User
  *
- * @property int $id
- * @property string $username
- * @property string|null $location
- * @property string $status
- * @property string|null $caught_at
+ * @property int                             $id
+ * @property string                          $username
+ * @property string|null                     $location
+ * @property string                          $status
+ * @property string|null                     $caught_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InviteKey|null $inviteKey
@@ -51,4 +51,9 @@ class User extends Authenticatable
     {
         return $this->inviteKey->game;
     }
+
+    /*public function get_role()
+    {
+        return $this->inviteKey()->role;
+    }*/
 }

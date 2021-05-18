@@ -16,6 +16,12 @@ class UserController extends Controller
 {
     public function get(User $user)
     {
+        $inviteKey = $user->inviteKey;
+
+        if(isset($inviteKey)) {
+            $user->role = $inviteKey->role;
+        }
+
         return $user;
     }
 
