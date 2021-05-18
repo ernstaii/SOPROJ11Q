@@ -381,7 +381,7 @@ class GameController extends Controller
         $border_lngs = $request->border_lngs;
 
         $logo_value = null;
-        if (isset($request->logo_upload))
+        if (isset($request->logo))
             $logo_value = base64_encode(file_get_contents($request->logo));
 
         $preset = GamePreset::create([
