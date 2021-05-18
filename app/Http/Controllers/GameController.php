@@ -49,10 +49,14 @@ class GameController extends Controller
         $diff = $game->get_users()->diffKeys($filtered_users);
 
         foreach ($diff as $missing_user){
-            Notification::create([
-                'game_id' => $game->id,
-                'message' => "Gebruiker ".$missing_user->username." heeft het spel verlaten"
-            ]);
+            if ($missing_user->status != UserStatuses::Disconnected){
+                Notification::create([
+                    'game_id' => $game->id,
+                    'message' => "Gebruiker ".$missing_user->username." heeft het spel verlaten"
+                ]);
+                $missing_user->status = UserStatuses::Disconnected;
+                $missing_user->save();
+            }
         }
 
         return $filtered_users;
