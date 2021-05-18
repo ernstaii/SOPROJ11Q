@@ -311,7 +311,7 @@ function applyExistingMarker(lat, lng) {
     let latlng = L.latLng(lat, lng);
     let newMarker = L.marker(latlng, {icon: borderIcon})
         .bindPopup(L.popup({ maxWidth: maxPopupWidth })
-            .setContent('Border marker ' + (markers.length + 1)))
+            .setContent('Grens-pin ' + (markers.length + 1)))
         .addTo(mymap);
     applyEvents(newMarker);
     markers.push(newMarker);
@@ -327,6 +327,18 @@ function drawLinesForExistingMarkers() {
             addNewLineBetweenFirstAndLast();
         }
     }
+    if (markerLatLngs.length > 0) {
+        fitMapToLocation();
+    }
+}
+
+function fitMapToLocation() {
+    let fieldBounds = new L.LatLngBounds(markerLatLngs);
+    mymap.setMaxBounds(fieldBounds);
+    mymap.fitBounds(fieldBounds);
+    setTimeout(() => {
+        mymap.options.minZoom = mymap.getZoom();
+    }, 400);
 }
 
 function addNewLineBetweenFirstAndLast() {

@@ -93,7 +93,7 @@ function addMarker(e) {
     }
     let newMarker = L.marker(e.latlng, {icon: borderIcon})
         .bindPopup(L.popup({maxWidth: maxPopupWidth})
-            .setContent('Border marker ' + (markers.length + 1)))
+            .setContent('Grens-pin ' + (markers.length + 1)))
         .addTo(mymap);
     applyEvents(newMarker);
     markers.push(newMarker);
@@ -191,6 +191,9 @@ async function saveMarkers(id) {
                 createLootButtons(id);
                 mymap.on('click', addLoot);
             }
+            if (markerLatLngs.length > 0) {
+                fitMapToLocation();
+            }
         },
         error: function (err) {
             console.log(err);
@@ -202,7 +205,7 @@ function applyExistingMarker(lat, lng) {
     let latlng = L.latLng(lat, lng);
     let newMarker = L.marker(latlng, {icon: borderIcon})
         .bindPopup(L.popup({maxWidth: maxPopupWidth})
-            .setContent('Border marker ' + (markers.length + 1)))
+            .setContent('Grens-pin ' + (markers.length + 1)))
         .addTo(mymap);
     applyEvents(newMarker);
     markers.push(newMarker);
@@ -225,6 +228,18 @@ function drawLinesForExistingMarkers(game_id) {
             addNewLineBetweenFirstAndLast();
         }
     }
+    if (markerLatLngs.length > 0) {
+        fitMapToLocation();
+    }
+}
+
+function fitMapToLocation() {
+    let fieldBounds = new L.LatLngBounds(markerLatLngs);
+    mymap.setMaxBounds(fieldBounds);
+    mymap.fitBounds(fieldBounds);
+    setTimeout(() => {
+        mymap.options.minZoom = mymap.getZoom();
+    }, 400);
 }
 
 function createLootButtons(game_id) {
