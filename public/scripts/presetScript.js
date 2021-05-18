@@ -49,6 +49,8 @@ async function savePreset() {
         return;
     }
 
+    let logoBase64 = imageElementBox.children[0].src;
+
     lootLatLngs.forEach(lootItem => {
         lootLats.push(lootItem.lat);
         lootLngs.push(lootItem.lng);
@@ -78,6 +80,7 @@ async function savePreset() {
             border_lats: borderLats,
             border_lngs: borderLngs,
             colour_theme: colourInput.value,
+            logo: logoBase64
         },
         success: function () {
             location.reload();
@@ -100,6 +103,23 @@ async function loadPreset(game_id) {
     durationInput.value = preset.duration;
     intervalInput.value = preset.interval;
     colourInput.value = preset.colour_theme;
+
+    if (preset.logo != null) {
+        if (imageElementBox.children.length > 0) {
+            imageElementBox.innerHTML = '';
+        }
+        let newImageElement = document.createElement('img');
+        newImageElement.id = 'logo_image';
+        newImageElement.src = 'data:image/png;base64,' + preset.logo;
+        newImageElement.name = 'logo_upload';
+        let hiddenInput = document.createElement('input');
+        hiddenInput.id = 'logo_image_input';
+        hiddenInput.type = 'hidden';
+        hiddenInput.value = preset.logo;
+        hiddenInput.name = 'logo_upload';
+        imageElementBox.appendChild(newImageElement);
+        imageElementBox.appendChild(hiddenInput);
+    }
 
     createButtons = false;
     let latLng = preset.police_station_location.split(',');
@@ -194,7 +214,13 @@ function changeImageElement() {
             let newImageElement = document.createElement('img');
             newImageElement.id = 'logo_image';
             newImageElement.src = fr.result;
+            let hiddenInput = document.createElement('input');
+            hiddenInput.id = 'logo_image_input';
+            hiddenInput.type = 'hidden';
+            hiddenInput.value = fr.result;
+            hiddenInput.name = 'logo_upload';
             imageElementBox.appendChild(newImageElement);
+            imageElementBox.appendChild(hiddenInput);
         };
         fr.readAsDataURL(files[0]);
     }
