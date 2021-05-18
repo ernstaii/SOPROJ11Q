@@ -234,6 +234,7 @@ function drawLinesForExistingMarkers(game_id) {
 }
 
 function fitMapToLocation() {
+    mymap.options.minZoom = minZoomLevel;
     let fieldBounds = new L.LatLngBounds(markerLatLngs);
     mymap.setMaxBounds(fieldBounds);
     mymap.fitBounds(fieldBounds);
