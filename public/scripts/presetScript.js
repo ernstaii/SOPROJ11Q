@@ -5,6 +5,8 @@ const intervalInput = document.querySelector("#interval");
 const colourInput = document.querySelector("#colour");
 const presetSelector = document.querySelector("#presets");
 const savePresetButton = document.querySelector("#save_preset_button");
+const imageElementBox = document.querySelector('#img_element_box');
+const logoInput = document.querySelector("#logo");
 
 let presets = [];
 
@@ -179,4 +181,21 @@ function showMessage (message, colour) {
             validationBox.removeChild(validationBox.children[0]);
         }
     }, 7500);
+}
+
+function changeImageElement() {
+    let files = logoInput.files;
+    if (FileReader && files && files.length) {
+        let fr = new FileReader();
+        fr.onload = function () {
+            if (imageElementBox.children.length > 0) {
+                imageElementBox.innerHTML = '';
+            }
+            let newImageElement = document.createElement('img');
+            newImageElement.id = 'logo_image';
+            newImageElement.src = fr.result;
+            imageElementBox.appendChild(newImageElement);
+        };
+        fr.readAsDataURL(files[0]);
+    }
 }
