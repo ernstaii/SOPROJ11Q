@@ -11,4 +11,5 @@ final class UserStatuses extends Enum
     const Caught = "caught";
     const InLobby = "in-lobby";
     const Retired = "retired";
+    const Disconnected = "disconnected";
 }
