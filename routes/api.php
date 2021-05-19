@@ -19,9 +19,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('users', UserController::class)->only(['store', 'update']);
-Route::get('/users/{user}', [UserController::class, 'get']);
 
 Route::group(['middleware' => ['api']], function (Router $router) {
+    $router->get('/users/{user}', [UserController::class, 'get']);
     $router->get('/invite-keys/{key}', [InviteKeyController::class, 'get']);
     $router->get('/games/{game}', [GameController::class, 'get']);
     $router->get('/games/{game}/users', [GameController::class, 'getUsers']);

@@ -31,6 +31,7 @@ class GameIntervalCommand extends Command
 
         try {
             $games = Game::where('status', '=', Statuses::Ongoing)->get();
+
             foreach ($games as $game) {
                 $this->log('  Interval game ' . $game->id);
                 $game_ended = $this->hasGameTimeElapsed($game, $now);
@@ -42,7 +43,7 @@ class GameIntervalCommand extends Command
 
                     if ($difference >= $game->interval) {
                         $this->log('    Invoking interval event');
-                        event(new GameIntervalEvent($game->id, $game->get_users_with_role(), $game->loot));
+                        event(new GameIntervalEvent($game->id, $game->get_users_filtered_on_last_verified(), $game->loot));
                         $game->last_interval_at = $now;
                     }
                 } else {

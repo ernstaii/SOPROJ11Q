@@ -25,13 +25,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\App\Models\BorderMarker[] $border_markers
- * @property-read int|null $border_markers_count
- * @property-read Collection|\App\Models\InviteKey[] $invite_keys
- * @property-read int|null $invite_keys_count
- * @property-read Collection|\App\Models\Loot[] $loot
- * @property-read int|null $loot_count
+ * @property-read int|null                              $border_markers_count
+ * @property-read Collection|\App\Models\InviteKey[]    $invite_keys
+ * @property-read int|null                              $invite_keys_count
+ * @property-read Collection|\App\Models\Loot[]         $loot
+ * @property-read int|null                              $loot_count
  * @property-read Collection|\App\Models\Notification[] $notifications
- * @property-read int|null $notifications_count
+ * @property-read int|null                              $notifications_count
  * @method static \Database\Factories\GameFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Game newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Game newQuery()
@@ -69,7 +69,7 @@ class Game extends Model
         'logo',
         'colour_theme',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     public $timestamps = true;
@@ -111,9 +111,15 @@ class Game extends Model
         return $users;
     }
 
+    public function get_users_filtered_on_last_verified()
+    {
+        return $this->get_users_with_role()
+            ->where('last_verified_at', '>=', $this->last_interval_at)
+            ->all();
+    }
+
     public function get_users_with_role()
     {
-
         $keys = $this->invite_keys()->get();
 
         $users = new Collection();

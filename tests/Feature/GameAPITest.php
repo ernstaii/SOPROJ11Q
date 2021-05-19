@@ -6,10 +6,11 @@ use App\Enums\Roles;
 use App\Enums\UserStatuses;
 use App\Models\BorderMarker;
 use App\Models\Game;
+use App\Models\InviteKey;
 use App\Models\Loot;
 use App\Models\Notification;
 use App\Models\User;
-use App\Models\InviteKey;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -31,7 +32,7 @@ class GameAPITest extends TestCase
     {
         $game = Game::factory()->create();
         $key = InviteKey::factory()->state([
-            'game_id' => $game->id
+            'game_id' => $game->id,
         ])->create();
         $key->refresh();
 
@@ -77,7 +78,7 @@ class GameAPITest extends TestCase
     {
         $game = Game::factory()->finished()->create();
         $key = InviteKey::factory()->state([
-            'game_id' => $game->id
+            'game_id' => $game->id,
         ])->create();
         $key->refresh();
 
@@ -92,7 +93,7 @@ class GameAPITest extends TestCase
         $user = User::factory()->create();
         InviteKey::factory()->state([
             'game_id' => $game->id,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ])->create();
 
         // ==================== Without Role ====================
@@ -109,16 +110,43 @@ class GameAPITest extends TestCase
         $this->assertObjectHasAttribute('role', $content_array[0]);
     }
 
+    public function test_can_get_users_that_have_been_verified()
+    {
+        $game = Game::factory()->state([
+            'last_interval_at' => Carbon::now(),
+        ])->create();
+        $user = User::factory()->state([
+            'last_verified_at' => Carbon::now()->addSeconds(-5),
+        ])->create();
+        InviteKey::factory()->state([
+            'game_id' => $game->id,
+            'user_id' => $user->id,
+        ])->create();
+
+        // ==================== User verification hasn't been up to date, so there are no results ====================
+        $this->get('/api/games/' . $game->id . '/users-with-role')
+            ->assertStatus(200)
+            ->assertJsonCount(0);
+
+        // ==================== User verification is up to date, so there are results ====================
+        $user->last_verified_at = Carbon::now()->addSeconds(10);
+        $user->save();
+
+        $this->get('/api/games/' . $game->id . '/users-with-role')
+            ->assertStatus(200)
+            ->assertJsonCount(1);
+    }
+
     public function test_users_with_role_only_returns_keys_with_user()
     {
         $game = Game::factory()->create();
         $user = User::factory()->create();
         InviteKey::factory()->state([
             'game_id' => $game->id,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ])->create();
         InviteKey::factory(4)->state([
-            'game_id' => $game->id
+            'game_id' => $game->id,
         ])->create();
 
         $res = $this->get('/api/games/' . $game->id . '/users-with-role')
@@ -133,27 +161,13 @@ class GameAPITest extends TestCase
     {
         $game = Game::factory()->create();
         Loot::factory()->state([
-            'lootable_id' => $game->id,
-            'lootable_type' => Game::class
+            'lootable_id'   => $game->id,
+            'lootable_type' => Game::class,
         ])->create();
 
         $this->get('/api/games/' . $game->id . '/loot')
             ->assertStatus(200)
             ->assertJsonCount(1);
-    }
-
-    public function test_can_destroy_loot()
-    {
-        $game = Game::factory()->create();
-        $loot_item = Loot::factory()->state([
-            'lootable_id' => $game->id,
-            'lootable_type' => Game::class
-        ])->create();
-
-        $this->delete('/api/loot/' . $loot_item->id)
-            ->assertStatus(200);
-
-        $this->assertDatabaseCount('loot', 0);
     }
 
     public function test_can_get_border_markers_of_game()
@@ -172,13 +186,27 @@ class GameAPITest extends TestCase
         $this->assertDatabaseCount('border_markers', 5);
     }
 
+    public function test_can_destroy_loot()
+    {
+        $game = Game::factory()->create();
+        $loot_item = Loot::factory()->state([
+            'lootable_id' => $game->id,
+            'lootable_type' => Game::class
+        ])->create();
+
+        $this->delete('/api/loot/' . $loot_item->id)
+            ->assertStatus(200);
+
+        $this->assertDatabaseCount('loot', 0);
+    }
+
     public function test_cannot_get_used_key()
     {
         $game = Game::factory()->create();
         $user = User::factory()->create();
         $key = InviteKey::factory()->state([
             'game_id' => $game->id,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ])->create();
         $key->refresh();
 
@@ -207,7 +235,7 @@ class GameAPITest extends TestCase
         InviteKey::factory()->state([
             'game_id' => $game->id,
             'user_id' => $user->id,
-            'role' => Roles::Thief
+            'role'    => Roles::Thief,
         ])->create();
 
         $this->patch('/api/users/' . $user->id . '/catch')
@@ -221,12 +249,12 @@ class GameAPITest extends TestCase
     {
         $game = Game::factory()->create();
         $user = User::factory()->state([
-            'status' => UserStatuses::InLobby
+            'status' => UserStatuses::InLobby,
         ])->create();
         InviteKey::factory()->state([
             'game_id' => $game->id,
             'user_id' => $user->id,
-            'role' => Roles::Thief
+            'role'    => Roles::Thief,
         ])->create();
 
         $this->patch('/api/users/' . $user->id . '/catch')
@@ -243,7 +271,7 @@ class GameAPITest extends TestCase
 
         $this->post('/games/' . $game->id . '/invite-keys', [
             'input' => 10,
-            'ratio' => 25
+            'ratio' => 25,
         ])->assertStatus(200)
             ->assertJsonCount(10);
         $this->assertDatabaseCount('invite_keys', 10);
@@ -253,12 +281,12 @@ class GameAPITest extends TestCase
     {
         $game = Game::factory()->create();
         InviteKey::factory()->state([
-            'game_id' => $game->id
+            'game_id' => $game->id,
         ])->create();
 
         $this->post('/games/' . $game->id . '/invite-keys', [
             'input' => 10,
-            'ratio' => 25
+            'ratio' => 25,
         ])->assertStatus(422)
             ->isInvalid();
 
@@ -269,11 +297,11 @@ class GameAPITest extends TestCase
     {
         $game = Game::factory()->create();
         InviteKey::factory()->state([
-            'game_id' => $game->id
+            'game_id' => $game->id,
         ])->create();
 
         $this->post('/games/' . $game->id . '/invite-keys', [
-            'input' => 10
+            'input' => 10,
         ])->assertStatus(422)
             ->isInvalid();
     }
@@ -285,5 +313,47 @@ class GameAPITest extends TestCase
 
         $this->patch('/api/users/1/catch')
             ->assertStatus(404);
+    }
+
+    public function test_update_police_score()
+    {
+        $game = Game::factory()->create();
+        $currentScore = $game->getAttribute('police_score');
+        $scoreIncreaseValue = 40;
+
+        $response = $this->patch('/api/games/' . $game->id . '/police-score/' . $scoreIncreaseValue)
+            ->assertStatus(200)
+            ->content();
+
+        $this->assertTrue(is_int((int) $response));
+        $this->assertEquals(($currentScore += $scoreIncreaseValue), intval($response));
+
+        $response = $this->patch('/api/games/' . $game->id . '/police-score/' . $scoreIncreaseValue)
+            ->assertStatus(200)
+            ->content();
+
+        $this->assertTrue(is_int((int) $response));
+        $this->assertEquals(($currentScore + $scoreIncreaseValue), intval($response));
+    }
+
+    public function test_update_thief_score()
+    {
+        $game = Game::factory()->create();
+        $currentScore = $game->getAttribute('police_score');
+        $scoreIncreaseValue = 40;
+
+        $response = $this->patch('/api/games/' . $game->id . '/thieves-score/' . $scoreIncreaseValue)
+            ->assertStatus(200)
+            ->content();
+
+        $this->assertTrue(is_int((int) $response));
+        $this->assertEquals(($currentScore += $scoreIncreaseValue), intval($response));
+
+        $response = $this->patch('/api/games/' . $game->id . '/thieves-score/' . $scoreIncreaseValue)
+            ->assertStatus(200)
+            ->content();
+
+        $this->assertTrue(is_int((int) $response));
+        $this->assertEquals(($currentScore + $scoreIncreaseValue), intval($response));
     }
 }
