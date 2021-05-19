@@ -23,6 +23,7 @@
     box-shadow:                 rgba(128, 128, 128, 0.56) 0px 3px 2px;
     display:                    block;
     height:                     40vh;
+    max-height:                 400px;
     text-align:                 left;
     width:                      30vw;
 }
