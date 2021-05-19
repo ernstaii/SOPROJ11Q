@@ -51,9 +51,4 @@ class User extends Authenticatable
     {
         return $this->inviteKey->game;
     }
-
-    /*public function get_role()
-    {
-        return $this->inviteKey()->role;
-    }*/
 }
