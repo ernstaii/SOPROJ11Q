@@ -25,6 +25,7 @@ h2
     border-radius:              1vw;
     margin-left:                2vw;
     margin-right:               1vw;
+    max-height:                 575px;
     min-width:                  375px;
     text-align:                 center;
     width:                      20vw;
@@ -139,6 +140,7 @@ h2
     flex-direction:             row;
     flex-wrap:                  wrap;
     justify-content:            center;
+    min-height:                 116px;
     padding:                    1.7vh 0 0.5vh 0;
 }
 
@@ -190,6 +192,16 @@ h2
     margin-bottom:              1vh;
 }
 
+.side-bar-elem2
+{
+    background:                 #C6002A;
+}
+
+#side_bar_link2
+{
+    color:                      white;
+}
+
 .slider-labels
 {
     display:                    flex;
@@ -217,4 +229,12 @@ h2
 .vert-keys-box .key-item
 {
     width:                      99%;
+}
+
+@media only screen and (max-width: 1474px)
+{
+    .total-map-box
+    {
+        margin-top:             2.5vh;
+    }
 }

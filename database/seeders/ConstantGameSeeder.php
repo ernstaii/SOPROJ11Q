@@ -10,6 +10,7 @@ use App\Models\Loot;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
 
 class ConstantGameSeeder extends Seeder
 {
@@ -28,6 +29,7 @@ class ConstantGameSeeder extends Seeder
         ]);
 
         $game = Game::create([
+            'password' => Hash::make('password'),
             'police_station_location' => $this->getRandLocationNearOss()
         ]);
 
@@ -105,6 +107,7 @@ class ConstantGameSeeder extends Seeder
         ]);
 
         $game = Game::create([
+            'password' => Hash::make('password'),
             'police_station_location' => $this->getRandLocationNearOss()
         ]);
 

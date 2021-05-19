@@ -5,23 +5,9 @@
     --text:                     darkred;
 }
 
-a
-{
-    background-color:           #C6002A;
-    border:                     none;
-    border-radius:              1vw;
-    color:                      white;
-    cursor:                     auto;
-    font-size:                  16px;
-    margin-bottom:              1vh;
-    margin-left:                25%;
-    text-decoration:            none;
-    width:                      10vw;
-}
-
 button
 {
-    background-color:           #4CAF50;
+    background-color:           #C6002A;
     border:                     none;
     border-radius:              4.5vw;
     color:                      white;
@@ -39,15 +25,19 @@ button
     flex-wrap:                  wrap;
     padding-bottom:             3vh;
     padding-top:                1.2vh;
+    width:                      25vw;
 }
 
 .box
 {
     background:                 #fff;
+    display:                    flex;
+    flex-direction:             row;
     margin:                     40px auto;
+    min-width:                  725px;
     position:                   relative;
     text-align:                 center;
-    width:                      70%;
+    width:                      50vw;
 }
 
 .config-delete-button
@@ -60,6 +50,14 @@ button
     padding:                    5px;
     text-decoration:            none;
     width:                      10vw;
+}
+
+#game_create_form
+{
+    align-items:                center;
+    display:                    flex;
+    flex-direction:             column;
+    justify-content:            center;
 }
 
 .main-screen
@@ -75,10 +73,62 @@ button
 .mini-box
 {
     background:                 #fff;
-    margin:                     40px auto;
+    margin:                     30px auto;
+    min-width:                  185px;
     position:                   relative;
     text-align:                 center;
-    width:                      30%;
+    width:                      75%;
+}
+
+#open_game_button
+{
+    background-color:           #C6002A;
+    border:                     none;
+    border-radius:              1.5vw;
+    color:                      white;
+    cursor:                     auto;
+    font-size:                  16px;
+    margin:                     0 3vw 1vh 3vw;
+    padding:                    8px 3px;
+    text-align:                 center;
+    text-decoration:            none;
+    width:                      10vw;
+}
+
+.password-box
+{
+    display:                    flex;
+    flex-direction:             column;
+}
+
+#password_check_box_div
+{
+    margin-bottom:              2vh;
+}
+
+#password_create_input
+{
+    width:                      225px;
+}
+
+#password_create_label
+{
+    margin-top:                 3vh;
+}
+
+#password_label
+{
+    margin-top:                 2vh;
+}
+
+.side-bar-elem1
+{
+    background:                 #C6002A;
+}
+
+#side_bar_link1
+{
+    color:                      white;
 }
 
 .start-button
@@ -93,7 +143,7 @@ button
     font-size:                  1.5rem;
     font-weight:                600;
     height:                     70px;
-    margin:                     4vh;
+    margin:                     1.5vh 4vh 4vh 4vh;
     outline:                    none;
     width:                      400px;
 }
@@ -109,8 +159,10 @@ button
 
 .text-box
 {
+    align-items:                center;
     display:                    flex;
     flex-direction:             column;
+    justify-content:            center;
     margin-top:                 2vh;
     padding-bottom:             2vh;
 }

@@ -31,17 +31,17 @@
             <div class="item-box">
                 <div id="form_box">
                     <div class="config-form">
-                        <form class="form-col-1" action="{{route('games.update', ['game' => $id])}}}" method="post"
+                        <form id="start_game_form" class="form-col-1" action="{{route('games.update', ['game' => $id])}}?password={{$password}}" method="post"
                               enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="form-item">
                                 <label class="form-label-0" for="duration">Speelduur (min)</label>
-                                <input name="duration" class="input-numeric-0" id="duration" type="number" min="10" max="1440">
+                                <input name="duration" class="input-numeric-0" id="duration" type="number" min="10" max="1440" value="120">
                             </div>
                             <div class="form-item">
                                 <label class="form-label-0" for="interval">Locatieupdate interval (sec)</label>
-                                <input name="interval" class="input-numeric-0" id="interval" type="number" min="30" max="300">
+                                <input name="interval" class="input-numeric-0" id="interval" type="number" min="30" max="300" value="30">
                             </div>
                             <div class="form-item">
                                 <label class="form-label-0" for="colour">Kleurthema (app)</label>
@@ -63,7 +63,7 @@
                             <div class="form-item" id="code_input">
                                 <label class="form-label-0" for="num_participants">Aantal spelers</label>
                                 <input min="1" max="50" name="num_participants" class="input-numeric-0"
-                                       id="participants_number" type="number">
+                                       id="participants_number" type="number" value="20">
                             </div>
                             <div class="form-item" id="code_button">
                                 <button class="submit-button-0" id="send_number" onclick="generateKey({{$id}})">Genereer
@@ -155,6 +155,15 @@
                 </div>
             </div>
         </div>
+        <div class="bottom-box shadow">
+            <div class="item-header">
+                <h2>SPEL ID</h2>
+            </div>
+            <div class="item-box" id="id_box">
+                <p>Het ID van het huidige spel is:</p>
+                <h1>{{$id}}</h1>
+            </div>
+        </div>
     </div>
     <script>
         window.addEventListener('DOMContentLoaded', function() {
@@ -175,6 +184,7 @@
             @if (isset($police_station_location))
                 applyExistingPoliceStation({{$police_station_location}});
             @endif
+            passwordFromURL({{$id}});
         });
     </script>
 @endsection

@@ -9,6 +9,9 @@ const removeMarkerButton = document.querySelector('#button_remove_markers');
 const mapBox = document.querySelector('.mapbox');
 const tab_2 = document.querySelector('#tab_2');
 const tab_3 = document.querySelector('#tab_3');
+const startGameForm = document.querySelector('#start_game_form');
+const sideBarItem2 = document.querySelector('#side_bar_link2');
+const sideBarItem3 = document.querySelector('#side_bar_link3');
 
 const lootIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
@@ -90,7 +93,7 @@ function addMarker(e) {
     }
     let newMarker = L.marker(e.latlng, {icon: borderIcon})
         .bindPopup(L.popup({maxWidth: maxPopupWidth})
-            .setContent('Border marker ' + (markers.length + 1)))
+            .setContent('Grens-pin ' + (markers.length + 1)))
         .addTo(mymap);
     applyEvents(newMarker);
     markers.push(newMarker);
@@ -188,6 +191,9 @@ async function saveMarkers(id) {
                 createLootButtons(id);
                 mymap.on('click', addLoot);
             }
+            if (markerLatLngs.length > 0) {
+                fitMapToLocation();
+            }
         },
         error: function (err) {
             console.log(err);
@@ -199,7 +205,7 @@ function applyExistingMarker(lat, lng) {
     let latlng = L.latLng(lat, lng);
     let newMarker = L.marker(latlng, {icon: borderIcon})
         .bindPopup(L.popup({maxWidth: maxPopupWidth})
-            .setContent('Border marker ' + (markers.length + 1)))
+            .setContent('Grens-pin ' + (markers.length + 1)))
         .addTo(mymap);
     applyEvents(newMarker);
     markers.push(newMarker);
@@ -222,6 +228,19 @@ function drawLinesForExistingMarkers(game_id) {
             addNewLineBetweenFirstAndLast();
         }
     }
+    if (markerLatLngs.length > 0) {
+        fitMapToLocation();
+    }
+}
+
+function fitMapToLocation() {
+    mymap.options.minZoom = minZoomLevel;
+    let fieldBounds = new L.LatLngBounds(markerLatLngs);
+    mymap.setMaxBounds(fieldBounds);
+    mymap.fitBounds(fieldBounds);
+    setTimeout(() => {
+        mymap.options.minZoom = mymap.getZoom();
+    }, 400);
 }
 
 function createLootButtons(game_id) {
@@ -498,4 +517,14 @@ function applyEvents(marker) {
     marker.on('mouseout', function (e) {
         this.closePopup();
     });
+}
+
+function passwordFromURL(game_id) {
+    let url_string = window.location.href;
+    let url = new URL(url_string);
+    let password = url.searchParams.get('password');
+    startGameForm.action = '/games/' + game_id + '?password=' + password;
+
+    sideBarItem2.href = '/games/' + game_id + '?password=' + password;
+    sideBarItem3.href = '/games/' + game_id + '?password=' + password;
 }

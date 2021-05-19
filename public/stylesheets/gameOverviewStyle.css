@@ -42,6 +42,26 @@
     font-size:                  2vh;
 }
 
+.side-bar-elem2
+{
+    background:                 grey;
+}
+
+#side_bar_link2
+{
+    color:                      black;
+}
+
+.side-bar-elem3
+{
+    background:                 #C6002A;
+}
+
+#side_bar_link3
+{
+    color:                      white;
+}
+
 .timer
 {
     font-size:                  3vw;
@@ -60,4 +80,12 @@
     min-width:                  375px;
     text-align:                 center;
     width:                      20vw;
+}
+
+@media only screen and (max-width: 1511px)
+{
+    .timer-box
+    {
+        margin-top:             2.5vh;
+    }
 }

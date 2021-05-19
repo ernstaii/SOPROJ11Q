@@ -13,6 +13,7 @@ use App\Events\ScoreUpdatedEvent;
 use App\Events\SendNotificationEvent;
 use App\Events\StartGameEvent;
 use App\Http\Requests\StoreBorderMarkerRequest;
+use App\Http\Requests\StoreGameRequest;
 use App\Http\Requests\StoreLootRequest;
 use App\Http\Requests\StorePresetRequest;
 use App\Http\Requests\StoreNotificationRequest;
@@ -26,13 +27,17 @@ use App\Models\Notification;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
 
 class GameController extends Controller
 {
     public function index()
     {
-        return view('game.index', ['games' => Game::all()]);
+        $gameIds = array();
+        foreach (Game::all() as $game)
+            array_push($gameIds, $game->id);
+        return view('game.index', ['gameIds' => $gameIds]);
     }
 
     public function get(Game $game)
@@ -114,8 +119,18 @@ class GameController extends Controller
         return $preset->border_markers()->get();
     }
 
+    public function checkPassword(Game $game)
+    {
+        if (Hash::check(Request::get('password'), $game->password))
+            return true;
+        return false;
+    }
+
     public function show(Game $game)
     {
+        if (!Hash::check(Request::get('password'), $game->password))
+            return redirect()->route('games.index');
+
         switch ($game->status) {
             case Statuses::Config:
                 return view('config.main', [
@@ -124,6 +139,7 @@ class GameController extends Controller
                     'border_markers' => $game->border_markers,
                     'id' => $game->id,
                     'loot' => $game->loot,
+                    'password' => $game->password,
                     'police_station_location' => $game->police_station_location,
                     'presets' => GamePreset::all()
                 ]);
@@ -165,10 +181,12 @@ class GameController extends Controller
         }
     }
 
-    public function store()
+    public function store(StoreGameRequest $request)
     {
-        $game = Game::create();
-        return redirect()->route('games.show', [$game]);
+        $game = Game::create([
+            'password' => Hash::make($request->password)
+        ]);
+        return redirect()->route('games.show', [$game, 'password' => $request->password]);
     }
 
     public function update(UpdateGameStateRequest $request, Game $game)
@@ -232,11 +250,14 @@ class GameController extends Controller
         }
         $game->save();
 
-        return redirect()->route('games.show', [$game]);
+        return redirect()->route('games.show', [$game, 'password' => Request::get('password')]);
     }
 
     public function destroy(Game $game)
     {
+        if (!Hash::check(Request::get('password'), $game->password))
+            return redirect()->route('games.index');
+
         $invite_keys = $game->invite_keys();
         $border_markers = $game->border_markers();
         $notifications = $game->notifications();
@@ -284,7 +305,7 @@ class GameController extends Controller
 	public function sendNotification(StoreNotificationRequest $request, Game $game)
     {
         event(new SendNotificationEvent($game->id, $request->message));
-        return redirect()->route('games.show', [$game]);
+        return redirect()->route('games.show', [$game, 'password' => Request::get('password')]);
     }
 
     /**
@@ -381,7 +402,7 @@ class GameController extends Controller
         $border_lngs = $request->border_lngs;
 
         $logo_value = null;
-        if (isset($request->logo_upload))
+        if (isset($request->logo))
             $logo_value = base64_encode(file_get_contents($request->logo));
 
         $preset = GamePreset::create([

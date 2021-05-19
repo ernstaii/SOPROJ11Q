@@ -9,6 +9,8 @@ const mapBox = document.querySelector('.mapbox');
 const timerElmt = document.querySelector('.timer');
 const remove_loot_button = document.querySelector('#remove_loot_button');
 const lootNameInput = document.querySelector('#loot_name_input');
+const sideBarItem2 = document.querySelector('#side_bar_link2');
+const sideBarItem3 = document.querySelector('#side_bar_link3');
 
 let markerLatLngs = [];
 let markers = [];
@@ -84,6 +86,12 @@ function initMap() {
 
     tiles.addTo(mymap);
     mymap.on('click', addLoot);
+}
+
+function passwordFromURL(game_id) {
+    let url_string = window.location.href;
+    let url = new URL(url_string);
+    return url.searchParams.get('password');
 }
 
 function setGameId(game_id) {
@@ -303,7 +311,7 @@ function applyExistingMarker(lat, lng) {
     let latlng = L.latLng(lat, lng);
     let newMarker = L.marker(latlng, {icon: borderIcon})
         .bindPopup(L.popup({ maxWidth: maxPopupWidth })
-            .setContent('Border marker ' + (markers.length + 1)))
+            .setContent('Grens-pin ' + (markers.length + 1)))
         .addTo(mymap);
     applyEvents(newMarker);
     markers.push(newMarker);
@@ -319,6 +327,18 @@ function drawLinesForExistingMarkers() {
             addNewLineBetweenFirstAndLast();
         }
     }
+    if (markerLatLngs.length > 0) {
+        fitMapToLocation();
+    }
+}
+
+function fitMapToLocation() {
+    let fieldBounds = new L.LatLngBounds(markerLatLngs);
+    mymap.setMaxBounds(fieldBounds);
+    mymap.fitBounds(fieldBounds);
+    setTimeout(() => {
+        mymap.options.minZoom = mymap.getZoom();
+    }, 400);
 }
 
 function addNewLineBetweenFirstAndLast() {
@@ -363,6 +383,17 @@ function callGameDetails(game_id) {
         getGameDetails(game_id);
         getGameNotifications(game_id);
     }, 5000);
+    let form_1 = document.querySelector('#form_1');
+    form_1.action = form_1.action + '?password=' + passwordFromURL(game_id);
+    let form_2 = document.querySelector('#form_2');
+    form_2.action = form_2.action + '?password=' + passwordFromURL(game_id);
+    let form_3 = document.querySelector('#form_3');
+    form_3.action = form_3.action + '?password=' + passwordFromURL(game_id);
+    let form_4 = document.querySelector('#form_4');
+    form_4.action = form_4.action + '?password=' + passwordFromURL(game_id);
+
+    sideBarItem2.href = '/games/' + game_id + '?password=' + passwordFromURL(game_id);
+    sideBarItem3.href = '/games/' + game_id + '?password=' + passwordFromURL(game_id);
 }
 
 async function getGameDetails(game_id) {

@@ -9,20 +9,21 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Game
  *
- * @property int                                        $id
- * @property string                                     $status
- * @property int                                        $duration
- * @property int                                        $interval
- * @property int                                        $time_left
- * @property string|null                                $police_station_location
- * @property int                                        $thieves_score
- * @property int                                        $police_score
- * @property string|null                                $last_interval_at
- * @property string|null                                $started_at
- * @property string|null                                $logo
- * @property string                                     $colour_theme
- * @property \Illuminate\Support\Carbon|null            $created_at
- * @property \Illuminate\Support\Carbon|null            $updated_at
+ * @property int $id
+ * @property string $password
+ * @property string $status
+ * @property int $duration
+ * @property int $interval
+ * @property int $time_left
+ * @property string|null $police_station_location
+ * @property int $thieves_score
+ * @property int $police_score
+ * @property string|null $last_interval_at
+ * @property string|null $started_at
+ * @property string|null $logo
+ * @property string $colour_theme
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\App\Models\BorderMarker[] $border_markers
  * @property-read int|null                              $border_markers_count
  * @property-read Collection|\App\Models\InviteKey[]    $invite_keys
@@ -55,6 +56,7 @@ class Game extends Model
 
     protected $fillable = [
         'id',
+        'password',
         'status',
         'duration',
         'interval',
