@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-    @yield('head')
     <link rel="stylesheet" href="{{ asset('stylesheets/error.css') }}">
     <link rel="stylesheet" href="{{asset('stylesheets/configStyle.css')}}">
+    <script src="{{asset('scripts/errorRemovalScript.js')}}" defer></script>
+    @yield('head')
 </head>
 <body>
 <div class="page-top-bar">
@@ -20,6 +21,13 @@
         </ul>
     </div>
 @endif
-@yield('content')
+<div class="horizontal-body-box">
+    <div class="side-bar">
+        <a id="side_bar_link1" href="{{route('games.index')}}"><div class="side-bar-item side-bar-elem1">Spelselectie</div></a>
+        <a id="side_bar_link2" href="{{route('games.index')}}"><div class="side-bar-item side-bar-elem2">Spelconfiguratie</div></a>
+        <a id="side_bar_link3" href="{{route('games.index')}}"><div class="side-bar-item side-bar-elem3">Speloverzicht</div></a>
+    </div>
+    @yield('content')
+</div>
 </body>
 </html>

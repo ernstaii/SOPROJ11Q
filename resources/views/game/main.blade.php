@@ -7,10 +7,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
           integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
           crossorigin=""/>
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""></script>
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
     <script src="{{asset('scripts/mapScript_gameOverview.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
@@ -25,7 +27,7 @@
                 <h2>Spel Status Beheren</h2>
             </div>
             <div class="button-1">
-                <form action="{{route('games.update', ['game' => $id])}}" method="post">
+                <form id="form_1" action="{{route('games.update', ['game' => $id])}}" method="post">
                     <div class="form-item game-form">
                         @csrf
                         @method('PUT')
@@ -38,7 +40,7 @@
                 </form>
             </div>
             <div class="button-2">
-                <form action="{{route('games.update', ['game' => $id])}}" method="post">
+                <form id="form_2" action="{{route('games.update', ['game' => $id])}}" method="post">
                     <div class="form-item game-form">
                         @csrf
                         @method('PUT')
@@ -51,7 +53,7 @@
                 </form>
             </div>
             <div class="button-3">
-                <form action="{{route('games.update', ['game' => $id])}}" method="post">
+                <form id="form_3" action="{{route('games.update', ['game' => $id])}}" method="post">
                     <div class="form-item game-form">
                         @csrf
                         @method('PUT')
@@ -61,10 +63,22 @@
                     </div>
                 </form>
             </div>
+            <div class="button-4">
+                <form id="form_4" action="{{route('games.sendMessage', ['game' => $id])}}" method="post">
+                    <div class="form-item game-form">
+                        @csrf
+                        <label for="message">Stuur een bericht naar de spelers</label>
+                        <input type="text" id="message" name="message">
+                        <button type="input" class="keys-share-button" type="submit" name="state">Stuur bericht</button>
+                    </div>
+                </form>
+            </div>
         </div>
         <div class="mapbox shadow">
             <div id="map">
             </div>
+            <button id="remove_loot_button" onclick="deletePrompt(selectedLootId)" disabled>Selecteer a.u.b. een buit</button>
+            <input type="text" id="loot_name_input" placeholder="Voer hier de buit naam in...">
         </div>
         <div class="timer-box shadow">
             <div class="center-box">
@@ -88,11 +102,21 @@
             <div class="messages">
             </div>
         </div>
+        <div class="bottom-box shadow">
+            <div class="item-header">
+                <h2>SPEL ID</h2>
+            </div>
+            <div class="item-box" id="id_box">
+                <p>Het ID van het huidige spel is:</p>
+                <h1>{{$id}}</h1>
+            </div>
+        </div>
     </div>
     <script>
         window.addEventListener('DOMContentLoaded', function () {
+            setGameId({{$id}});
             @foreach($loot as $loot_item)
-            applyLootMarker({{$loot_item->location}}, '{{$loot_item->name}}');
+            applyLootMarker({{$loot_item->location}}, '{{$loot_item->name}}', '{{$loot_item->id}}');
             @endforeach
             @foreach($users as $user)
             @if ($user->location != null)

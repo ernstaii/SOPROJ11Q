@@ -7,23 +7,37 @@ use App\Enums\Statuses;
 use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
 use App\Events\PauseGameEvent;
+use App\Events\PlayerJoinedGameEvent;
 use App\Events\ResumeGameEvent;
+use App\Events\ScoreUpdatedEvent;
+use App\Events\SendNotificationEvent;
 use App\Events\StartGameEvent;
 use App\Http\Requests\StoreBorderMarkerRequest;
+use App\Http\Requests\StoreGameRequest;
 use App\Http\Requests\StoreLootRequest;
+use App\Http\Requests\StorePresetRequest;
+use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Requests\UpdateGameStateRequest;
 use App\Http\Requests\UpdatePoliceStationLocationRequest;
 use App\Models\BorderMarker;
 use App\Models\Game;
+use App\Models\GamePreset;
 use App\Models\Loot;
+use App\Models\Notification;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Request;
 
 class GameController extends Controller
 {
     public function index()
     {
-        return view('game.index', ['games' => Game::all()]);
+        $gameIds = array();
+        foreach (Game::all() as $game)
+            array_push($gameIds, $game->id);
+        return view('game.index', ['gameIds' => $gameIds]);
     }
 
     public function get(Game $game)
@@ -38,7 +52,21 @@ class GameController extends Controller
 
     public function getUsersWithRole(Game $game)
     {
-        return $game->get_users_with_role();
+        $filtered_users = $game->get_users_filtered_on_last_verified();
+        $diff = $game->get_users()->diffKeys($filtered_users);
+
+        foreach ($diff as $missing_user){
+            if ($missing_user->status != UserStatuses::Disconnected){
+                Notification::create([
+                    'game_id' => $game->id,
+                    'message' => "Gebruiker ".$missing_user->username." heeft het spel verlaten"
+                ]);
+                $missing_user->status = UserStatuses::Disconnected;
+                $missing_user->save();
+            }
+        }
+
+        return $filtered_users;
     }
 
     public function getLoot(Game $game)
@@ -49,7 +77,7 @@ class GameController extends Controller
     public function getInviteKeys(Game $game)
     {
         return $game->invite_keys()->get();
-	}
+    }
 
     public function getBorderMarkers(Game $game)
     {
@@ -58,11 +86,51 @@ class GameController extends Controller
 
     public function getNotifications(Game $game)
     {
-        return $game->notifications()->get();
+        if (Request::get('all') === 'true')
+            return $game->notifications()->get();
+        return $game->notifications()->where('user_id', '=', null)->get();
+    }
+
+    public function postNotification(StoreNotificationRequest $request, Game $game)
+    {
+        return Notification::create([
+            'game_id' => $game->id,
+            'message' => $request->message,
+            'user_id' => $request->user_id
+        ]);
+    }
+
+    public function getLogo(Game $game)
+    {
+        $headers = [
+            'Content-Type' => 'image/png'
+        ];
+
+        return response(base64_decode($game->logo), 200, $headers);
+    }
+
+    public function getPresetLoot(GamePreset $preset)
+    {
+       return $preset->loot()->get();
+    }
+
+    public function getPresetBorderMarkers(GamePreset $preset)
+    {
+        return $preset->border_markers()->get();
+    }
+
+    public function checkPassword(Game $game)
+    {
+        if (Hash::check(Request::get('password'), $game->password))
+            return true;
+        return false;
     }
 
     public function show(Game $game)
     {
+        if (!Hash::check(Request::get('password'), $game->password))
+            return redirect()->route('games.index');
+
         switch ($game->status) {
             case Statuses::Config:
                 return view('config.main', [
@@ -71,7 +139,9 @@ class GameController extends Controller
                     'border_markers' => $game->border_markers,
                     'id' => $game->id,
                     'loot' => $game->loot,
-                    'police_station_location' => $game->police_station_location
+                    'password' => $game->password,
+                    'police_station_location' => $game->police_station_location,
+                    'presets' => GamePreset::all()
                 ]);
             default:
                 $status_text = '';
@@ -79,7 +149,7 @@ class GameController extends Controller
                     $game->time_left -= Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
                     $game->save();
                 }
-                switch($game->status) {
+                switch ($game->status) {
                     case Statuses::Finished:
                         $status_text = 'Beëindigd';
                         break;
@@ -111,10 +181,12 @@ class GameController extends Controller
         }
     }
 
-    public function store()
+    public function store(StoreGameRequest $request)
     {
-        $game = Game::create();
-        return redirect()->route('games.show', [$game]);
+        $game = Game::create([
+            'password' => Hash::make($request->password)
+        ]);
+        return redirect()->route('games.show', [$game, 'password' => $request->password]);
     }
 
     public function update(UpdateGameStateRequest $request, Game $game)
@@ -122,7 +194,14 @@ class GameController extends Controller
         if ($game->status === Statuses::Config) {
             $game->duration = $request->duration;
             $game->interval = $request->interval;
-            $game->jail_time = $request->jail_time;
+            if (isset($request->logo_upload)) {
+                if (str_contains($request->logo_upload, 'data:image/png;base64,'))
+                    $game->logo = base64_encode(file_get_contents($request->logo_upload));
+                else
+                    $game->logo = $request->logo_upload;
+            }
+            if (isset($request->colour))
+                $game->colour_theme = $request->colour;
         }
 
         switch ($request->state) {
@@ -171,14 +250,18 @@ class GameController extends Controller
         }
         $game->save();
 
-        return redirect()->route('games.show', [$game]);
+        return redirect()->route('games.show', [$game, 'password' => Request::get('password')]);
     }
 
     public function destroy(Game $game)
     {
+        if (!Hash::check(Request::get('password'), $game->password))
+            return redirect()->route('games.index');
+
         $invite_keys = $game->invite_keys();
         $border_markers = $game->border_markers();
         $notifications = $game->notifications();
+        $loot = $game->loot();
 
         $users = new Collection();
         foreach ($invite_keys->get() as $key) {
@@ -188,15 +271,10 @@ class GameController extends Controller
         $invite_keys->delete();
         $border_markers->delete();
         $notifications->delete();
+        $loot->delete();
 
         foreach ($users as $user) {
             $user->delete();
-        }
-
-        $old_loot = $game->loot()->get();
-        $game->loot()->detach();
-        foreach ($old_loot as $loot_item) {
-            $loot_item->delete();
         }
 
         $game->delete();
@@ -205,20 +283,40 @@ class GameController extends Controller
     }
 
     public function updateThievesScore(Game $game, int $score)
-	{
-        $game->thieves_score = $score;
+    {
+        $game->thieves_score += $score;
         $game->save();
 
-        return $game;
+        event(new ScoreUpdatedEvent($game->id, $game->police_score, $game->thieves_score ));
+
+        return $game->thieves_score;
     }
 
     public function updatePoliceScore(Game $game, int $score)
-	{
-        $game->police_score = $score;
+    {
+        $game->police_score += $score;
         $game->save();
 
-        return $game;
-	}
+        event(new ScoreUpdatedEvent($game->id, $game->police_score, $game->thieves_score ));
+
+        return $game->police_score;
+    }
+
+	public function sendNotification(StoreNotificationRequest $request, Game $game)
+    {
+        event(new SendNotificationEvent($game->id, $request->message));
+        return redirect()->route('games.show', [$game, 'password' => Request::get('password')]);
+    }
+
+    /**
+     * AJAX function. Not to be called via manual routing.
+     *
+     * @param Game $game
+     */
+    public function clearExistingMarkers(Game $game)
+    {
+        $game->border_markers()->delete();
+    }
 
     /**
      * AJAX function. Not to be called via manual routing.
@@ -232,10 +330,21 @@ class GameController extends Controller
         $lngs = $request->lngs;
         for ($i = 0; $i < count($lats); $i++) {
             BorderMarker::create([
-                'location' => strval($lats[$i]) . ',' . strval($lngs[$i]),
-                'game_id' => $game->id
+                'borderable_id' => $game->id,
+                'borderable_type' => Game::class,
+                'location' => strval($lats[$i]) . ',' . strval($lngs[$i])
             ]);
         }
+    }
+
+    /**
+     * AJAX function. Not to be called via manual routing.
+     *
+     * @param Game $game
+     */
+    public function clearExistingLoot(Game $game)
+    {
+        $game->loot()->delete();
     }
 
     /**
@@ -249,13 +358,18 @@ class GameController extends Controller
         $lats = $request->lats;
         $lngs = $request->lngs;
         $names = $request->names;
+
+        $result = array();
         for ($i = 0; $i < count($lats); $i++) {
-            $newLoot = Loot::create([
+            array_push($result, Loot::create([
+                'lootable_id' => $game->id,
+                'lootable_type' => Game::class,
                 'name' => $names[$i],
                 'location' => strval($lats[$i]) . ',' . strval($lngs[$i])
-            ]);
-            $game->loot()->attach($newLoot);
+            ]));
         }
+
+        return $result;
     }
 
     /**
@@ -271,5 +385,49 @@ class GameController extends Controller
 
         $game->police_station_location = strval($lat) . ',' . strval($lng);
         $game->save();
+    }
+
+
+    /**
+     * AJAX function. Not to be called via manual routing.
+     *
+     * @param StorePresetRequest $request
+     */
+    public function storeGamePreset(StorePresetRequest $request)
+    {
+        $loot_lats = $request->loot_lats;
+        $loot_lngs = $request->loot_lngs;
+        $loot_names = $request->loot_names;
+        $border_lats = $request->border_lats;
+        $border_lngs = $request->border_lngs;
+
+        $logo_value = null;
+        if (isset($request->logo))
+            $logo_value = base64_encode(file_get_contents($request->logo));
+
+        $preset = GamePreset::create([
+            'name' => $request->name,
+            'duration' => $request->duration,
+            'interval' => $request->interval,
+            'police_station_location' => $request->police_station_lat . ',' . $request->police_station_lng,
+            'colour_theme' => $request->colour_theme,
+            'logo' => $logo_value
+        ]);
+
+        for ($i = 0; $i < count($loot_lats); $i++) {
+            Loot::create([
+                'lootable_id' => $preset->id,
+                'lootable_type' => GamePreset::class,
+                'name' => $loot_names[$i],
+                'location' => strval($loot_lats[$i]) . ',' . strval($loot_lngs[$i])
+            ]);
+        }
+        for ($i = 0; $i < count($border_lats); $i++) {
+            BorderMarker::create([
+                'borderable_id' => $preset->id,
+                'borderable_type' => GamePreset::class,
+                'location' => strval($border_lats[$i]) . ',' . strval($border_lngs[$i])
+            ]);
+        }
     }
 }

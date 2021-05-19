@@ -6,7 +6,6 @@ use App\Enums\Statuses;
 use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
 use App\Events\GameIntervalEvent;
-use App\Events\ThiefReleasedEvent;
 use App\Models\Game;
 use App\Models\User;
 use Carbon\Carbon;
@@ -32,6 +31,7 @@ class GameIntervalCommand extends Command
 
         try {
             $games = Game::where('status', '=', Statuses::Ongoing)->get();
+
             foreach ($games as $game) {
                 $this->log('  Interval game ' . $game->id);
                 $game_ended = $this->hasGameTimeElapsed($game, $now);
@@ -46,11 +46,9 @@ class GameIntervalCommand extends Command
 
                     $this->log('    ' . $difference . ' seconds have elapsed since last interval');
 
-                    $this->releasePlayersIfTimeHasElapsed($game, $now);
-
                     if ($difference >= $game->interval) {
                         $this->log('    Invoking interval event');
-                        event(new GameIntervalEvent($game->id, $game->get_users_with_role(), $game->loot));
+                        event(new GameIntervalEvent($game->id, $game->get_users_filtered_on_last_verified(), $game->loot));
                         $game->last_interval_at = $now;
                     }
                 } else {
@@ -74,21 +72,6 @@ class GameIntervalCommand extends Command
         }
         $this->log('Interval ended');
         return 0;
-    }
-
-    private function releasePlayersIfTimeHasElapsed(Game $game, Carbon $now)
-    {
-        $caught_users = $game->get_users()->where('status', '=', UserStatuses::Caught);
-
-        foreach ($caught_users as $user) {
-            if (Carbon::parse($user->caught_at)->diffInMinutes($now) >= $game->jail_time) {
-                $user->status = UserStatuses::Playing;
-                $user->caught_at = null;
-                $user->save();
-                event(new ThiefReleasedEvent($user));
-                $this->log("    Releasing player " . $user->id . " of game " . $game->id);
-            }
-        }
     }
 
     private function hasGameTimeElapsed(Game $game, Carbon $now)

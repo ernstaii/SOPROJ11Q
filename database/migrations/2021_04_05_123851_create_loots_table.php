@@ -16,6 +16,8 @@ class CreateLootsTable extends Migration
     {
         Schema::create('loot', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('lootable_id');
+            $table->string('lootable_type');
             $table->string('name', 255);
             $table->string('location', 255);
             $table->timestamps();

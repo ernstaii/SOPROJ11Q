@@ -17,6 +17,7 @@ class CreateGamesTable extends Migration
     {
         Schema::create('games', function (Blueprint $table) {
             $table->id();
+            $table->string('password');
             $table->string('status', 20)->default(Statuses::Config);
             $table->integer('duration')->default(120);
             $table->integer('interval')->default(60);
@@ -24,9 +25,10 @@ class CreateGamesTable extends Migration
             $table->string('police_station_location', 255)->nullable();
             $table->integer('thieves_score')->default(0);
             $table->integer('police_score')->default(0);
-            $table->integer('jail_time')->default(10);
             $table->timestamp('last_interval_at')->nullable();
             $table->timestamp('started_at')->nullable();
+            $table->longText('logo')->nullable();
+            $table->string('colour_theme')->default('#0099ff');
             $table->timestamps();
         });
     }

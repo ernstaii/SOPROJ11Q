@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Enums\Statuses;
 use App\Models\Game;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 
 class GameFactory extends Factory
 {
@@ -13,6 +14,7 @@ class GameFactory extends Factory
     public function definition()
     {
         return [
+            'password' => Hash::make('password'),
             'status' => Statuses::Config,
             'duration' => 120,
             'interval' => 60,
@@ -20,6 +22,7 @@ class GameFactory extends Factory
             'police_station_location' => '51.763965, 5.529218',
             'thieves_score' => 0,
             'police_score' => 0,
+            'colour_theme' => '#000000'
         ];
     }
 

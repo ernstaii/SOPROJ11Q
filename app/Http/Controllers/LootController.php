@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 class LootController extends Controller
 {
     public function destroy(Loot $loot){
-        $loot->games()->detach();
         $loot->delete();
     }
 }

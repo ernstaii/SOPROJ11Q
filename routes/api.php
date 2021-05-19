@@ -19,9 +19,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('users', UserController::class)->only(['store', 'update']);
-Route::get('/users/{user}', [UserController::class, 'get']);
 
 Route::group(['middleware' => ['api']], function (Router $router) {
+    $router->get('/users/{user}', [UserController::class, 'get']);
     $router->get('/invite-keys/{key}', [InviteKeyController::class, 'get']);
     $router->get('/games/{game}', [GameController::class, 'get']);
     $router->get('/games/{game}/users', [GameController::class, 'getUsers']);
@@ -30,6 +30,8 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/games/{game}/invite-keys', [GameController::class, 'getInviteKeys']);
     $router->get('/games/{game}/border-markers', [GameController::class, 'getBorderMarkers']);
     $router->get('/games/{game}/notifications', [GameController::class, 'getNotifications']);
+    $router->get('/games/{game}/logo', [GameController::class, 'getLogo']);
+    $router->post('/games/{game}/notifications', [GameController::class, 'postNotification']);
     $router->patch('/games/{game}/thieves-score/{score}', [GameController::class, 'updateThievesScore']);
     $router->patch('/games/{game}/police-score/{score}', [GameController::class, 'updatePoliceScore']);
     $router->patch('/users/{user}/catch', [UserController::class, 'catchThief']);

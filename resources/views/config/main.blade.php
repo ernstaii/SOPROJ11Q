@@ -6,13 +6,16 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
           integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
           crossorigin=""/>
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""></script>
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
     <script src="{{asset('scripts/keyGen.js')}}" defer></script>
     <script src="{{asset('scripts/resizeScript.js')}}" defer></script>
     <script src="{{asset('scripts/mapScript.js')}}" defer></script>
+    <script src="{{asset('scripts/presetScript.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -20,7 +23,7 @@
 @endsection
 
 @section('content')
-    <div class="background-box">
+    <div class="config-main-screen">
         <div class="box shadow">
             <div class="item-header">
                 <h2>SPEL CONFIGURATIE</h2>
@@ -28,20 +31,27 @@
             <div class="item-box">
                 <div id="form_box">
                     <div class="config-form">
-                        <form class="form-col-1" action="{{route('games.update', ['game' => $id])}}}" method="post">
+                        <form id="start_game_form" class="form-col-1" action="{{route('games.update', ['game' => $id])}}?password={{$password}}" method="post"
+                              enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="form-item">
-                                <label class="form-label-0" for="duration">Spelduratie (min)</label>
-                                <input name="duration" class="input-numeric-0" id="duration" type="number" min="10" max="1440">
+                                <label class="form-label-0" for="duration">Speelduur (min)</label>
+                                <input name="duration" class="input-numeric-0" id="duration" type="number" min="10" max="1440" value="120">
                             </div>
                             <div class="form-item">
                                 <label class="form-label-0" for="interval">Locatieupdate interval (sec)</label>
-                                <input name="interval" class="input-numeric-0" id="interval" type="number" min="30" max="300">
+                                <input name="interval" class="input-numeric-0" id="interval" type="number" min="30" max="300" value="30">
                             </div>
                             <div class="form-item">
-                                <label class="form-label-0" for="jail_time">Gevangenis tijd (min)</label>
-                                <input name="jail_time" class="input-numeric-0" id="jail_time" type="number" min="3" max="30">
+                                <label class="form-label-0" for="colour">Kleurthema (app)</label>
+                                <input name="colour" class="input-numeric-0" id="colour" type="color" value="#0099ff">
+                            </div>
+                            <div class="form-item" id="upload_box">
+                                <label class="form-label-0" for="logo">Logo (app)</label>
+                                <input name="logo" class="input-numeric-0" id="logo" type="file" accept="image/*" onchange="changeImageElement()">
+                            </div>
+                            <div class="form-item" id="img_element_box">
                             </div>
                             <div class="form-item">
                                 <button type="input" class="keys-share-button" type="submit" name="state"
@@ -53,7 +63,7 @@
                             <div class="form-item" id="code_input">
                                 <label class="form-label-0" for="num_participants">Aantal spelers</label>
                                 <input min="1" max="50" name="num_participants" class="input-numeric-0"
-                                       id="participants_number" type="number">
+                                       id="participants_number" type="number" value="20">
                             </div>
                             <div class="form-item" id="code_button">
                                 <button class="submit-button-0" id="send_number" onclick="generateKey({{$id}})">Genereer
@@ -117,7 +127,7 @@
         <div class="total-map-box">
             <div class="map-top-tabs">
                 <div class="map-top-tab" id="tab_1"><p>Spelgrenzen</p></div>
-                <div class="map-top-tab" id="tab_2"><p>Buiten</p></div>
+                <div class="map-top-tab" id="tab_2"><p>Buit</p></div>
                 <div class="map-top-tab" id="tab_3"><p>Politiebureau</p></div>
             </div>
             <div class="mapbox shadow">
@@ -126,9 +136,43 @@
                 <button onclick="saveMarkers({{$id}})" id="button_save_markers" title="Er zijn minstens 3 markers nodig voordat het veld opgeslagen kan worden.">Sla speelveld op</button>
             </div>
         </div>
+        <div class="bottom-box shadow">
+            <div class="item-header">
+                <h2>TEMPLATES</h2>
+            </div>
+            <div class="item-box">
+                <div class="form-item game-form" id="preset-box">
+                    <label for="presets">Selecteer een bestaande template</label>
+                    <select id="presets" onchange="loadPreset({{$id}})">
+                            <option value="-1" selected>Kies een template...</option>
+                        @foreach($presets as $preset)
+                            <option value="{{ $preset }}">{{ $preset->name }}</option>
+                        @endforeach
+                    </select>
+                    <label for="preset_name">Maak een nieuwe template aan</label>
+                    <input type="text" id="preset_name" name="name" value="{{ old('name') }}" placeholder="Vul hier de naam van het nieuwe template in...">
+                    <button onclick="savePreset()" class="keys-share-button" id="save_preset_button">Opslaan</button>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-box shadow">
+            <div class="item-header">
+                <h2>SPEL ID</h2>
+            </div>
+            <div class="item-box" id="id_box">
+                <p>Het ID van het huidige spel is:</p>
+                <h1>{{$id}}</h1>
+            </div>
+        </div>
     </div>
     <script>
         window.addEventListener('DOMContentLoaded', function() {
+            @foreach($presets as $preset)
+                presets.push({
+                    id: {{$preset->id}},
+                    name: '{{$preset->name}}'
+                });
+            @endforeach
             @foreach($border_markers as $border_marker)
                 applyExistingMarker({{$border_marker->location}});
             @endforeach
@@ -140,6 +184,8 @@
             @if (isset($police_station_location))
                 applyExistingPoliceStation({{$police_station_location}});
             @endif
+            passwordFromURL({{$id}});
         });
     </script>
 @endsection
+

@@ -6,10 +6,12 @@ const corner1 = L.latLng(53.828464, 2.871753),
     corner2 = L.latLng(50.559772, 7.521491),
     mapBounds = L.latLngBounds(corner1, corner2);
 const removeMarkerButton = document.querySelector('#button_remove_markers');
-const saveMarkerButton = document.querySelector('#button_save_markers');
 const mapBox = document.querySelector('.mapbox');
 const tab_2 = document.querySelector('#tab_2');
 const tab_3 = document.querySelector('#tab_3');
+const startGameForm = document.querySelector('#start_game_form');
+const sideBarItem2 = document.querySelector('#side_bar_link2');
+const sideBarItem3 = document.querySelector('#side_bar_link3');
 
 const lootIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
@@ -44,6 +46,8 @@ let removeLootButton;
 let removePoliceStationButton;
 let savePoliceStationButton;
 
+let saveMarkerButton = document.querySelector('#button_save_markers');
+let createButtons = true;
 let markerLatLngs = [];
 let markers = [];
 let lines = [];
@@ -66,9 +70,10 @@ function initMap() {
     mymap = L.map(document.getElementById('map')).setView(mapCenter, zoomLevel);
     mymap.options.minZoom = minZoomLevel;
     mymap.setMaxBounds(mapBounds);
+    mymap.addControl(new L.Control.Fullscreen());
     const attribution = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
     const tileURL = 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    const tiles = L.tileLayer(tileURL, { attribution });
+    const tiles = L.tileLayer(tileURL, {attribution});
 
     tiles.addTo(mymap);
     mymap.on('click', addMarker);
@@ -86,9 +91,9 @@ function addMarker(e) {
     if (contains) {
         return;
     }
-    let newMarker = L.marker(e.latlng, { icon: borderIcon })
-        .bindPopup(L.popup({ maxWidth: maxPopupWidth})
-            .setContent('Border marker ' + (markers.length + 1)))
+    let newMarker = L.marker(e.latlng, {icon: borderIcon})
+        .bindPopup(L.popup({maxWidth: maxPopupWidth})
+            .setContent('Grens-pin ' + (markers.length + 1)))
         .addTo(mymap);
     applyEvents(newMarker);
     markers.push(newMarker);
@@ -109,6 +114,17 @@ function addMarker(e) {
         saveMarkerButton.title = '';
     }
 }
+function removeAllMarkers() {
+    markers.forEach(item => {
+        mymap.removeLayer(item);
+    });
+    lines.forEach(line => {
+        mymap.removeLayer(line);
+    });
+    markers = [];
+    markerLatLngs = [];
+    lines = [];
+}
 
 function removeLastMarker() {
     if (markers.length > 0) {
@@ -124,8 +140,7 @@ function removeLastMarker() {
                     lines.pop();
                 }
             }
-        }
-        else {
+        } else {
             mymap.removeLayer(lines[lines.length - 1]);
             lines.pop();
         }
@@ -134,7 +149,7 @@ function removeLastMarker() {
         addNewLineBetweenFirstAndLast();
     }
 
-    if (markers.length < 3) {
+    if (markers.length < 3 && saveMarkerButton != null) {
         saveMarkerButton.disabled = true;
         saveMarkerButton.title = 'Er zijn minstens 3 markers nodig voordat het veld opgeslagen kan worden.';
     }
@@ -165,13 +180,20 @@ async function saveMarkers(id) {
     await $.ajax({
         url: '/games/' + id + '/border-markers',
         type: 'POST',
-        data: { lats: lats, lngs: lngs },
+        data: {lats: lats, lngs: lngs},
         success: function (data) {
-            mymap.off('click');
-            mapBox.removeChild(saveMarkerButton);
-            mapBox.removeChild(removeMarkerButton);
-            createLootButtons(id);
-            mymap.on('click', addLoot);
+            if (!createButtons)
+                saveMarkerButton = null;
+            if (saveMarkerButton != null) {
+                mymap.off('click');
+                mapBox.removeChild(saveMarkerButton);
+                mapBox.removeChild(removeMarkerButton);
+                createLootButtons(id);
+                mymap.on('click', addLoot);
+            }
+            if (markerLatLngs.length > 0) {
+                fitMapToLocation();
+            }
         },
         error: function (err) {
             console.log(err);
@@ -181,9 +203,9 @@ async function saveMarkers(id) {
 
 function applyExistingMarker(lat, lng) {
     let latlng = L.latLng(lat, lng);
-    let newMarker = L.marker(latlng, { icon: borderIcon })
-        .bindPopup(L.popup({ maxWidth: maxPopupWidth })
-            .setContent('Border marker ' + (markers.length + 1)))
+    let newMarker = L.marker(latlng, {icon: borderIcon})
+        .bindPopup(L.popup({maxWidth: maxPopupWidth})
+            .setContent('Grens-pin ' + (markers.length + 1)))
         .addTo(mymap);
     applyEvents(newMarker);
     markers.push(newMarker);
@@ -191,21 +213,34 @@ function applyExistingMarker(lat, lng) {
 }
 
 function drawLinesForExistingMarkers(game_id) {
-    if (markers.length > 0) {
-        mymap.off('click');
-        mapBox.removeChild(saveMarkerButton);
-        mapBox.removeChild(removeMarkerButton);
-        createLootButtons(game_id);
-        mymap.on('click', addLoot);
-    }
-    for(let i = 0; i < markerLatLngs.length - 1; i++) {
+    if (createButtons)
+        if (markers.length > 0) {
+            mymap.off('click');
+            mapBox.removeChild(saveMarkerButton);
+            mapBox.removeChild(removeMarkerButton);
+            createLootButtons(game_id);
+            mymap.on('click', addLoot);
+        }
+    for (let i = 0; i < markerLatLngs.length - 1; i++) {
         if (i < markerLatLngs.length - 2) {
             lines.push(L.polyline(markerLatLngs, {color: 'black', dashArray: '30, 30', dashOffset: '0'}).addTo(mymap));
-        }
-        else {
+        } else {
             addNewLineBetweenFirstAndLast();
         }
     }
+    if (markerLatLngs.length > 0) {
+        fitMapToLocation();
+    }
+}
+
+function fitMapToLocation() {
+    mymap.options.minZoom = minZoomLevel;
+    let fieldBounds = new L.LatLngBounds(markerLatLngs);
+    mymap.setMaxBounds(fieldBounds);
+    mymap.fitBounds(fieldBounds);
+    setTimeout(() => {
+        mymap.options.minZoom = mymap.getZoom();
+    }, 400);
 }
 
 function createLootButtons(game_id) {
@@ -215,7 +250,7 @@ function createLootButtons(game_id) {
     button_remove_last.id = 'button_remove_loot';
 
     let button_save_loot = document.createElement('button');
-    button_save_loot.textContent = 'Sla buiten op';
+    button_save_loot.textContent = 'Sla buit op';
     button_save_loot.onclick = () => saveLoot(game_id);
     button_save_loot.id = 'button_save_loot';
 
@@ -233,7 +268,7 @@ function createLootButtons(game_id) {
     lootNameInput = document.querySelector('#input_loot_name');
 
     saveLootButton.disabled = true;
-    saveLootButton.title = 'Er is minstens 1 buit nodig voordat de buiten opgeslagen mogen worden.';
+    saveLootButton.title = 'Er is minstens 1 buit pin nodig voordat de buit opgeslagen kan worden.';
 
     tab_2.style.background = 'white';
     tab_2.style.color = '#888';
@@ -241,12 +276,18 @@ function createLootButtons(game_id) {
 
 function addLoot(e) {
     if (!lootNameInput.value || lootNameInput.value.trim() === '') {
+        if (mapBox.children.length > 4) {
+            return;
+        }
         let errorMsg = document.createElement('p');
         errorMsg.style.color = 'red';
         errorMsg.textContent = 'Vul a.u.b. een naam in voor de buit.';
         mapBox.appendChild(errorMsg);
+
         setTimeout(() => {
-            mapBox.removeChild(errorMsg);
+            if (mapBox.children.length > 4) {
+                mapBox.removeChild(errorMsg);
+            }
         }, 5000);
         return;
     }
@@ -260,8 +301,8 @@ function addLoot(e) {
     if (contains) {
         return;
     }
-    let newMarker = L.marker(e.latlng, { icon: lootIcon })
-        .bindPopup(L.popup({ maxWidth: maxPopupWidth})
+    let newMarker = L.marker(e.latlng, {icon: lootIcon})
+        .bindPopup(L.popup({maxWidth: maxPopupWidth})
             .setContent('Buit: ' + lootNameInput.value.trim()))
         .addTo(mymap);
     applyEvents(newMarker);
@@ -276,6 +317,15 @@ function addLoot(e) {
     lootNames.push(lootNameInput.value.trim());
 }
 
+function removeAllLoot() {
+    loot_markers.forEach(item => {
+        mymap.removeLayer(item);
+    });
+    loot_markers = [];
+    lootLatLngs = [];
+    lootNames = [];
+}
+
 function removeLoot() {
     if (loot_markers.length > 0) {
         mymap.removeLayer(loot_markers[loot_markers.length - 1]);
@@ -285,7 +335,7 @@ function removeLoot() {
 
     if (loot_markers.length < 1) {
         saveLootButton.disabled = true;
-        saveLootButton.title = 'Er is minstens 1 buit nodig voordat de buiten opgeslagen mogen worden.';
+        saveLootButton.title = 'Er is minstens 1 buit pin nodig voordat de buit opgeslagen kan worden.';
     }
 
     if (lootNames.length > 0) {
@@ -312,14 +362,18 @@ async function saveLoot(id) {
     await $.ajax({
         url: '/games/' + id + '/loot',
         type: 'POST',
-        data: { lats: lats, lngs: lngs, names: lootNames },
+        data: {lats: lats, lngs: lngs, names: lootNames},
         success: function (data) {
-            mymap.off('click');
-            mapBox.removeChild(saveLootButton);
-            mapBox.removeChild(removeLootButton);
-            mapBox.removeChild(lootNameInput);
-            createPoliceStationButton(id);
-            mymap.on('click', addPoliceStation);
+            if (!createButtons)
+                saveLootButton = null;
+            if (saveLootButton != null) {
+                mymap.off('click');
+                mapBox.removeChild(saveLootButton);
+                mapBox.removeChild(removeLootButton);
+                mapBox.removeChild(lootNameInput);
+                createPoliceStationButton(id);
+                mymap.on('click', addPoliceStation);
+            }
         },
         error: function (err) {
             console.log(err);
@@ -329,8 +383,8 @@ async function saveLoot(id) {
 
 function applyExistingLoot(lat, lng, loot_name) {
     let latlng = L.latLng(lat, lng);
-    let newMarker = L.marker(latlng, { icon: lootIcon })
-        .bindPopup(L.popup({ maxWidth: maxPopupWidth })
+    let newMarker = L.marker(latlng, {icon: lootIcon})
+        .bindPopup(L.popup({maxWidth: maxPopupWidth})
             .setContent('Buit: ' + loot_name))
         .addTo(mymap);
     applyEvents(newMarker);
@@ -341,12 +395,14 @@ function applyExistingLoot(lat, lng, loot_name) {
 
 function checkLootState(game_id) {
     if (loot_markers.length > 0) {
-        mymap.off('click');
-        mapBox.removeChild(saveLootButton);
-        mapBox.removeChild(removeLootButton);
-        mapBox.removeChild(lootNameInput);
-        createPoliceStationButton(game_id);
-        mymap.on('click', addPoliceStation);
+        if (saveLootButton != null) {
+            mymap.off('click');
+            mapBox.removeChild(saveLootButton);
+            mapBox.removeChild(removeLootButton);
+            mapBox.removeChild(lootNameInput);
+            createPoliceStationButton(game_id);
+            mymap.on('click', addPoliceStation);
+        }
     }
 }
 
@@ -379,8 +435,8 @@ function addPoliceStation(e) {
         return;
     }
 
-    let newMarker = L.marker(e.latlng, { icon: policeStationIcon })
-        .bindPopup(L.popup({ maxWidth: maxPopupWidth})
+    let newMarker = L.marker(e.latlng, {icon: policeStationIcon})
+        .bindPopup(L.popup({maxWidth: maxPopupWidth})
             .setContent('Politiebureau'))
         .addTo(mymap);
     applyEvents(newMarker);
@@ -400,8 +456,10 @@ function removePoliceStation() {
         policeStationLatLng = null;
     }
 
-    savePoliceStationButton.disabled = true;
-    savePoliceStationButton.title = 'Plaats eerst een politiebureau op de kaart.';
+    if (savePoliceStationButton != null) {
+        savePoliceStationButton.disabled = true;
+        savePoliceStationButton.title = 'Plaats eerst een politiebureau op de kaart.';
+    }
 }
 
 async function savePoliceStation(id) {
@@ -417,11 +475,13 @@ async function savePoliceStation(id) {
     await $.ajax({
         url: '/games/' + id + '/police-station',
         type: 'PATCH',
-        data: { lat: policeStationLatLng.lat, lng: policeStationLatLng.lng },
+        data: {lat: policeStationLatLng.lat, lng: policeStationLatLng.lng},
         success: function (data) {
             mymap.off('click');
-            mapBox.removeChild(savePoliceStationButton);
-            mapBox.removeChild(removePoliceStationButton);
+            if (savePoliceStationButton != null) {
+                mapBox.removeChild(savePoliceStationButton);
+                mapBox.removeChild(removePoliceStationButton);
+            }
         },
         error: function (err) {
             console.log(err);
@@ -431,8 +491,8 @@ async function savePoliceStation(id) {
 
 function applyExistingPoliceStation(lat, lng) {
     let latlng = L.latLng(lat, lng);
-    let newMarker = L.marker(latlng, { icon: policeStationIcon })
-        .bindPopup(L.popup({ maxWidth: maxPopupWidth })
+    let newMarker = L.marker(latlng, {icon: policeStationIcon})
+        .bindPopup(L.popup({maxWidth: maxPopupWidth})
             .setContent('Politiebureau'))
         .addTo(mymap);
     applyEvents(newMarker);
@@ -441,8 +501,12 @@ function applyExistingPoliceStation(lat, lng) {
 
     if (policeStationMarker !== null) {
         mymap.off('click');
-        mapBox.removeChild(savePoliceStationButton);
-        mapBox.removeChild(removePoliceStationButton);
+        if (!createButtons)
+            savePoliceStationButton = null;
+        if (savePoliceStationButton != null) {
+            mapBox.removeChild(savePoliceStationButton);
+            mapBox.removeChild(removePoliceStationButton);
+        }
     }
 }
 
@@ -453,4 +517,14 @@ function applyEvents(marker) {
     marker.on('mouseout', function (e) {
         this.closePopup();
     });
+}
+
+function passwordFromURL(game_id) {
+    let url_string = window.location.href;
+    let url = new URL(url_string);
+    let password = url.searchParams.get('password');
+    startGameForm.action = '/games/' + game_id + '?password=' + password;
+
+    sideBarItem2.href = '/games/' + game_id + '?password=' + password;
+    sideBarItem3.href = '/games/' + game_id + '?password=' + password;
 }

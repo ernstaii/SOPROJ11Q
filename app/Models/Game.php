@@ -10,26 +10,28 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Game
  *
  * @property int $id
+ * @property string $password
  * @property string $status
- * @property int $durations
+ * @property int $duration
  * @property int $interval
  * @property int $time_left
  * @property string|null $police_station_location
  * @property int $thieves_score
  * @property int $police_score
- * @property int $jail_time
  * @property string|null $last_interval_at
  * @property string|null $started_at
+ * @property string|null $logo
+ * @property string $colour_theme
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\App\Models\BorderMarker[] $border_markers
- * @property-read int|null $border_markers_count
- * @property-read Collection|\App\Models\InviteKey[] $invite_keys
- * @property-read int|null $invite_keys_count
- * @property-read Collection|\App\Models\Loot[] $loot
- * @property-read int|null $loot_count
+ * @property-read int|null                              $border_markers_count
+ * @property-read Collection|\App\Models\InviteKey[]    $invite_keys
+ * @property-read int|null                              $invite_keys_count
+ * @property-read Collection|\App\Models\Loot[]         $loot
+ * @property-read int|null                              $loot_count
  * @property-read Collection|\App\Models\Notification[] $notifications
- * @property-read int|null $notifications_count
+ * @property-read int|null                              $notifications_count
  * @method static \Database\Factories\GameFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Game newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Game newQuery()
@@ -38,7 +40,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereDuration($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereInterval($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Game whereJailTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereLastIntervalAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game wherePoliceScore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game wherePoliceStationLocation($value)
@@ -55,6 +56,7 @@ class Game extends Model
 
     protected $fillable = [
         'id',
+        'password',
         'status',
         'duration',
         'interval',
@@ -62,11 +64,12 @@ class Game extends Model
         'police_station_location',
         'thieves_score',
         'police_score',
-        'jail_time',
         'last_interval_at',
         'started_at',
+        'logo',
+        'colour_theme',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     public $timestamps = true;
@@ -78,7 +81,7 @@ class Game extends Model
 
     public function loot()
     {
-        return $this->belongsToMany(Loot::class, 'game_loot');
+        return $this->morphMany(Loot::class, 'lootable');
     }
 
     public function notifications()
@@ -93,7 +96,7 @@ class Game extends Model
 
     public function border_markers()
     {
-        return $this->hasMany(BorderMarker::class);
+        return $this->morphMany(BorderMarker::class, 'borderable');
     }
 
     public function get_users()
@@ -108,9 +111,15 @@ class Game extends Model
         return $users;
     }
 
+    public function get_users_filtered_on_last_verified()
+    {
+        return $this->get_users_with_role()
+            ->where('last_verified_at', '>=', $this->last_interval_at)
+            ->all();
+    }
+
     public function get_users_with_role()
     {
-
         $keys = $this->invite_keys()->get();
 
         $users = new Collection();

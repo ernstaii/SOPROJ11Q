@@ -17,6 +17,65 @@ label
     color:                      #C6002A;
 }
 
+.big-question-mark
+{
+    font-size:                  2vh;
+    margin-left:                0.3vw;
+    margin-right:               0.5vw;
+}
+
+.bottom-box
+{
+    background:                 #fff;
+    border-radius:              1vw;
+    display:                    flex;
+    flex-direction:             column;
+    margin-left:                2vw;
+    margin-right:               1vw;
+    margin-top:                 2.5vh;
+    max-height:                 385px;
+    min-width:                  375px;
+    text-align:                 center;
+    width:                      20vw;
+}
+
+.bottom-box p
+{
+    margin-left:                0.5vw;
+    margin-right:               0.5vw;
+    overflow-wrap:              break-word;
+    text-align:                 left;
+}
+
+.horizontal-body-box
+{
+    display:                    flex;
+    flex-direction:             row;
+}
+
+#id_box
+{
+    align-items:                center;
+    display:                    flex;
+    flex-direction:             column;
+    justify-content:            center;
+    text-align:                 center;
+}
+
+#id_box h1
+{
+    color:                      #C6002A;
+    font-size:                  2.5vw;
+    margin:                     2.5vh 0 0 0;
+}
+
+#id_box p
+{
+    color:                      black;
+    font-size:                  1vw;
+    margin: 0;
+}
+
 .page-top-bar
 {
     align-items:                center;
@@ -37,4 +96,66 @@ label
     -webkit-box-shadow:         1px 3px 20px 5px darkgray;
     -moz-box-shadow:            1px 3px 20px 5px darkgray;
     box-shadow:                 1px 3px 20px 5px darkgray;
+}
+
+.side-bar
+{
+    display:                    flex;
+    flex-direction:             column;
+    height:                     50vh;
+    justify-content:            center;
+    margin-right:               3vw;
+}
+
+.side-bar-item
+{
+    align-items:                center;
+    background:                 grey;
+    border:                     black 1px solid;
+    border-radius:              0 10px 10px 0;
+    display:                    flex;
+    font-size:                  1vw;
+    height:                     7vh;
+    justify-content:            center;
+    margin:                     2vh 0 2vh 0;
+    text-align:                 center;
+    width:                      8vw;
+}
+
+.side-bar a
+{
+    color:                      black;
+    text-decoration:            none;
+}
+
+.tooltip
+{
+    border-bottom:              1px dotted black;
+    display:                    inline-block;
+    position:                   relative;
+}
+
+.tooltip .tooltiptext
+{
+    background-color:           white;
+    border-radius:              6px;
+    color:                      #C6002A;
+    left:                       105%;
+    padding:                    5px 0;
+    position:                   absolute;
+    text-align:                 center;
+    top:                        -5px;
+    visibility:                 hidden;
+    width:                      240px;
+    z-index:                    1;
+}
+
+.tooltip:hover .tooltiptext
+{
+    visibility:                 visible;
+}
+
+.tooltiptext
+{
+    border:                     1px black dotted;
 }

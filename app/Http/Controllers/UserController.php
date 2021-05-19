@@ -16,6 +16,12 @@ class UserController extends Controller
 {
     public function get(User $user)
     {
+        $inviteKey = $user->inviteKey;
+
+        if(isset($inviteKey)) {
+            $user->role = $inviteKey->role;
+        }
+
         return $user;
     }
 
@@ -44,15 +50,19 @@ class UserController extends Controller
         $inviteKey->user_id = $user->id;
         $inviteKey->save();
 
-        if (in_array($inviteKey->game->status, [Statuses::Ongoing, Statuses::Paused]))
+        if (in_array($inviteKey->game->status, [Statuses::Ongoing, Statuses::Paused])) {
+            $user->status = UserStatuses::Playing;
             event(new PlayerJoinedGameEvent($inviteKey->game->id, $user));
+        }
 
+        $user->save();
         return $user;
     }
 
     public function update(UpdateLocationRequest $request, User $user)
     {
         $user->location = $request->location;
+        $user->last_verified_at = Carbon::now();
         $user->save();
 
         return $user;

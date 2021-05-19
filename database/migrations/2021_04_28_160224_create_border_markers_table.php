@@ -15,10 +15,9 @@ class CreateBorderMarkersTable extends Migration
     {
         Schema::create('border_markers', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('borderable_id');
+            $table->string('borderable_type');
             $table->string('location', 255);
-            $table->unsignedBigInteger('game_id');
-            $table->foreign('game_id')
-                ->references('id')->on('games');
             $table->timestamps();
         });
     }
