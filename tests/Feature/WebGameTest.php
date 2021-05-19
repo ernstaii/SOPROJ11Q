@@ -3,13 +3,16 @@
 namespace Tests\Feature;
 
 use App\Enums\Statuses;
+use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
 use App\Events\PauseGameEvent;
 use App\Events\ResumeGameEvent;
+use App\Events\SendNotificationEvent;
 use App\Models\BorderMarker;
 use App\Models\Game;
 use App\Models\InviteKey;
 use App\Models\Loot;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
@@ -34,7 +37,7 @@ class WebGameTest extends TestCase
     {
         $this->post('/games')
             ->assertStatus(302)
-            ->assertRedirect('/games/'. Game::first()->id);
+            ->assertRedirect('/games/' . Game::first()->id);
 
         $this->assertDatabaseCount('games', 1);
     }
@@ -54,9 +57,13 @@ class WebGameTest extends TestCase
         Event::fake();
 
         $game = Game::factory()->ongoing()->create();
-        InviteKey::factory()->count(3)->state([
-            'game_id' => $game->id
-        ])->create();
+        $users = User::factory()->count(5)->create();
+        foreach ($users as $user) {
+            InviteKey::factory()->state([
+                'game_id' => $game->id,
+                'user_id' => $user->id
+            ])->create();
+        }
         BorderMarker::factory()->count(3)->state([
             'borderable_id' => $game->id,
             'borderable_type' => Game::class
@@ -72,6 +79,7 @@ class WebGameTest extends TestCase
 
         Event::assertDispatchedTimes(EndGameEvent::class);
         $game->refresh();
+        $this->assertEquals(UserStatuses::Retired, User::first()->status);
         $this->assertEquals(Statuses::Finished, $game->status);
 
         $game->status = Statuses::Ongoing;
@@ -200,5 +208,19 @@ class WebGameTest extends TestCase
         $this->assertDatabaseCount('invite_keys', 0);
         $this->assertDatabaseCount('loot', 0);
         $this->assertDatabaseCount('border_markers', 0);
+    }
+
+    public function test_can_send_notification()
+    {
+        Event::fake();
+
+        $game = Game::factory()->create();
+
+        $this->post('/games/' . $game->id . '/notifications', [
+            'message' => 'Hoi dit is een bericht.'
+        ])->assertStatus(302);
+
+        Event::assertDispatched(SendNotificationEvent::class);
+        $this->assertEquals('Hoi dit is een bericht.', Notification::first()->message);
     }
 }

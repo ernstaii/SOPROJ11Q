@@ -7,7 +7,9 @@ use App\Enums\Statuses;
 use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
 use App\Events\PauseGameEvent;
+use App\Events\PlayerJoinedGameEvent;
 use App\Events\ResumeGameEvent;
+use App\Events\ScoreUpdatedEvent;
 use App\Events\SendNotificationEvent;
 use App\Events\StartGameEvent;
 use App\Http\Requests\StoreBorderMarkerRequest;
@@ -102,6 +104,16 @@ class GameController extends Controller
         return response(base64_decode($game->logo), 200, $headers);
     }
 
+    public function getPresetLoot(GamePreset $preset)
+    {
+       return $preset->loot()->get();
+    }
+
+    public function getPresetBorderMarkers(GamePreset $preset)
+    {
+        return $preset->border_markers()->get();
+    }
+
     public function show(Game $game)
     {
         switch ($game->status) {
@@ -112,7 +124,8 @@ class GameController extends Controller
                     'border_markers' => $game->border_markers,
                     'id' => $game->id,
                     'loot' => $game->loot,
-                    'police_station_location' => $game->police_station_location
+                    'police_station_location' => $game->police_station_location,
+                    'presets' => GamePreset::all()
                 ]);
             default:
                 $status_text = '';
@@ -163,10 +176,14 @@ class GameController extends Controller
         if ($game->status === Statuses::Config) {
             $game->duration = $request->duration;
             $game->interval = $request->interval;
-            if (isset($request->logo))
-                $game->logo = base64_encode(file_get_contents($request->logo));
+            if (isset($request->logo_upload)) {
+                if (str_contains($request->logo_upload, 'data:image/png;base64,'))
+                    $game->logo = base64_encode(file_get_contents($request->logo_upload));
+                else
+                    $game->logo = $request->logo_upload;
+            }
             if (isset($request->colour))
-            $game->colour_theme = $request->colour;
+                $game->colour_theme = $request->colour;
         }
 
         switch ($request->state) {
@@ -246,24 +263,38 @@ class GameController extends Controller
 
     public function updateThievesScore(Game $game, int $score)
     {
-        $game->thieves_score = $score;
+        $game->thieves_score += $score;
         $game->save();
 
-        return $game;
+        event(new ScoreUpdatedEvent($game->id, $game->police_score, $game->thieves_score ));
+
+        return $game->thieves_score;
     }
 
     public function updatePoliceScore(Game $game, int $score)
     {
-        $game->police_score = $score;
+        $game->police_score += $score;
         $game->save();
 
-        return $game;
+        event(new ScoreUpdatedEvent($game->id, $game->police_score, $game->thieves_score ));
+
+        return $game->police_score;
     }
 
 	public function sendNotification(StoreNotificationRequest $request, Game $game)
     {
         event(new SendNotificationEvent($game->id, $request->message));
         return redirect()->route('games.show', [$game]);
+    }
+
+    /**
+     * AJAX function. Not to be called via manual routing.
+     *
+     * @param Game $game
+     */
+    public function clearExistingMarkers(Game $game)
+    {
+        $game->border_markers()->delete();
     }
 
     /**
@@ -283,6 +314,16 @@ class GameController extends Controller
                 'location' => strval($lats[$i]) . ',' . strval($lngs[$i])
             ]);
         }
+    }
+
+    /**
+     * AJAX function. Not to be called via manual routing.
+     *
+     * @param Game $game
+     */
+    public function clearExistingLoot(Game $game)
+    {
+        $game->loot()->delete();
     }
 
     /**
@@ -339,11 +380,17 @@ class GameController extends Controller
         $border_lats = $request->border_lats;
         $border_lngs = $request->border_lngs;
 
+        $logo_value = null;
+        if (isset($request->logo_upload))
+            $logo_value = base64_encode(file_get_contents($request->logo));
+
         $preset = GamePreset::create([
             'name' => $request->name,
             'duration' => $request->duration,
             'interval' => $request->interval,
             'police_station_location' => $request->police_station_lat . ',' . $request->police_station_lng,
+            'colour_theme' => $request->colour_theme,
+            'logo' => $logo_value
         ]);
 
         for ($i = 0; $i < count($loot_lats); $i++) {

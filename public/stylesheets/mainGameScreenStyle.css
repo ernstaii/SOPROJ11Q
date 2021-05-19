@@ -82,6 +82,19 @@ h2
     padding:                    0.5vw;
 }
 
+#img_element_box
+{
+    height:                     50px;
+    overflow:                   hidden;
+    position:                   relative;
+    width:                      75px;
+}
+
+#img_element_box img
+{
+    object-fit:                 contain;
+}
+
 .item-box
 {
     max-height:                 401px;
@@ -167,9 +180,14 @@ h2
     display:                    none;
 }
 
+#presets
+{
+    margin-bottom:              3vh;
+}
+
 #preset_name
 {
-    margin-bottom:              3px;
+    margin-bottom:              1vh;
 }
 
 .slider-labels
