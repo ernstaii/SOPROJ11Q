@@ -10,5 +10,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(ConstantGameSeeder::class);
         $this->call(RandomGameSeeder::class);
+        $this->call(GadgetSeeder::class);
     }
 }

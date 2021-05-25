@@ -51,4 +51,9 @@ class User extends Authenticatable
     {
         return $this->inviteKey->game;
     }
+
+    public function gadgets()
+    {
+        return $this->belongsToMany(Gadget::class, 'gadgets_users')->withPivot('amount');
+    }
 }
