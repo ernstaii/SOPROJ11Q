@@ -32,6 +32,31 @@ async function changeNumberInputs(gameIds) {
         }
 
         await checkPassword(gameInput.value);
+
+        if (password_correct === false)
+            return;
+
+        let openButtonElem = document.createElement('a');
+        openButtonElem.id = 'open_game_button';
+        openButtonElem.href = '/games/' + gameInput.value;
+        let openButtonTextElem = document.createElement('h3');
+        openButtonTextElem.textContent = 'Ga naar spel ' + gameInput.value;
+        openButtonElem.appendChild(openButtonTextElem);
+
+        let deleteButtonElem = document.createElement('button');
+        deleteButtonElem.class = 'config-delete-button';
+        deleteButtonElem.id = 'delete_game_button';
+        deleteButtonElem.type = 'submit';
+        let deleteButtonTextElem = document.createElement('b');
+        deleteButtonTextElem.textContent = 'Verwijder spel ' + gameInput.value;
+        deleteButtonElem.appendChild(deleteButtonTextElem);
+
+        buttonsBox.insertBefore(openButtonElem, deleteGameForm);
+        deleteGameForm.appendChild(deleteButtonElem);
+        deleteGameForm.action = '/games/' + gameInput.value;
+
+        sideBarItem2.href = '/games/' + gameInput.value;
+        sideBarItem3.href = '/games/' + gameInput.value;
     }
 }
 
@@ -48,28 +73,7 @@ async function checkPassword(game_id) {
         data: { password: passwordFieldGet.value },
         success: function (data) {
             if (data == 1) {
-
-                let openButtonElem = document.createElement('a');
-                openButtonElem.id = 'open_game_button';
-                openButtonElem.href = '/games/' + gameInput.value;
-                let openButtonTextElem = document.createElement('h3');
-                openButtonTextElem.textContent = 'Ga naar spel ' + gameInput.value;
-                openButtonElem.appendChild(openButtonTextElem);
-
-                let deleteButtonElem = document.createElement('button');
-                deleteButtonElem.class = 'config-delete-button';
-                deleteButtonElem.id = 'delete_game_button';
-                deleteButtonElem.type = 'submit';
-                let deleteButtonTextElem = document.createElement('b');
-                deleteButtonTextElem.textContent = 'Verwijder spel ' + gameInput.value;
-                deleteButtonElem.appendChild(deleteButtonTextElem);
-
-                buttonsBox.insertBefore(openButtonElem, deleteGameForm);
-                deleteGameForm.appendChild(deleteButtonElem);
-                deleteGameForm.action = '/games/' + gameInput.value;
-
-                sideBarItem2.href = '/games/' + gameInput.value;
-                sideBarItem3.href = '/games/' + gameInput.value;
+                password_correct = true;
             }
         },
         error: function (err) {
