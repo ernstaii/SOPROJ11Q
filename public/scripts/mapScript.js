@@ -518,3 +518,8 @@ function applyEvents(marker) {
         this.closePopup();
     });
 }
+
+function applySidebarHrefs(game_id) {
+    sideBarItem2.href = '/games/' + game_id;
+    sideBarItem3.href = '/games/' + game_id;
+}

@@ -377,6 +377,8 @@ function callGameDetails(game_id) {
         getGameDetails(game_id);
         getGameNotifications(game_id);
     }, 5000);
+    sideBarItem2.href = '/games/' + game_id;
+    sideBarItem3.href = '/games/' + game_id;
 }
 
 async function getGameDetails(game_id) {

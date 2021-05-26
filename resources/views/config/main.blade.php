@@ -184,6 +184,7 @@
             @if (isset($police_station_location))
                 applyExistingPoliceStation({{$police_station_location}});
             @endif
+            applySidebarHrefs({{$id}});
         });
     </script>
 @endsection
