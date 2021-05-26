@@ -10,6 +10,7 @@ use App\Models\GamePreset;
 use App\Models\InviteKey;
 use App\Models\Loot;
 use App\Models\User;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithSession;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Game;
 use Illuminate\Support\Facades\Event;
@@ -17,13 +18,15 @@ use Tests\TestCase;
 
 class WebConfigTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, InteractsWithSession;
 
     public function test_can_show_config_screen()
     {
         $game = Game::factory()->create();
 
-        $this->get('/games/' . $game->id . '?password=password')
+        $this->withSession(['password' => $game->password]);
+
+        $this->get('/games/' . $game->id)
             ->assertStatus(200)
             ->assertViewIs('config.main')
             ->assertViewHas(['police_keys', 'thief_keys', 'id']);

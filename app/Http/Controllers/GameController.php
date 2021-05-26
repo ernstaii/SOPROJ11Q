@@ -191,6 +191,10 @@ class GameController extends Controller
         $game = Game::create([
             'password' => Hash::make($request->password)
         ]);
+        if (!Session::has('password') || !(Session::get('password')[0] === $game->password)) {
+            Session::put('password', $game->password);
+            Session::save();
+        }
         return redirect()->route('games.show', [$game]);
     }
 
