@@ -117,13 +117,14 @@
                 <h2>GADGETS</h2>
             </div>
             <div class="item-box" id="gadget_box">
-                <button class="gadgets-add-all-button" onclick="addAllGadgets({{$id}}, {{json_encode($userIds, JSON_HEX_TAG)}})">Geef iedereen één gadget</button>
+                <button class="gadgets-add-all-button" onclick="addAllGadgets({{$id}})">Geef iedereen één gadget</button>
                 <div class="gadget-total-box">
                     <div class="left-column">
+                        <h3 class="player-role-header">Politie</h3>
                         @foreach($users as $user)
                             @if($user->role === 'police')
                                 <div class="user-box">
-                                    <span class="user-box-name">{{$user->username}}</span>
+                                    <span class="user-box-name" id="user_{{$user->id}}">{{$user->username}}</span>
                                     <div class="user-box-buttons-box">
                                         <div class="user-box-buttons-divider">
                                             <label id="alarm">Alarm</label>
@@ -151,10 +152,11 @@
                         @endforeach
                     </div>
                     <div class="right-column">
+                        <h3 class="player-role-header">Boeven</h3>
                         @foreach($users as $user)
                             @if($user->role === 'thief')
                                 <div class="user-box">
-                                    <span class="user-box-name">{{$user->username}}</span>
+                                    <span class="user-box-name" id="user_{{$user->id}}">{{$user->username}}</span>
                                     <div class="user-box-buttons-box">
                                         <div class="user-box-buttons-divider">
                                             <label id="smokescreen">Rookgordijn</label>
@@ -196,6 +198,7 @@
             @endif
             applyExistingPoliceStation({{$police_station_location}});
             callGameDetails({{$id}});
+            getAllUserIds({{json_encode($userIds, JSON_HEX_TAG)}});
         });
     </script>
 @endsection

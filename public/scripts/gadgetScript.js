@@ -1,3 +1,5 @@
+let user_ids = [];
+
 async function manageGadget(actor, operator, user_id) {
     $.ajaxSetup({
         headers: {
@@ -29,7 +31,7 @@ async function manageGadget(actor, operator, user_id) {
     });
 }
 
-async function addAllGadgets(game_id, user_ids) {
+async function addAllGadgets(game_id) {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -58,4 +60,8 @@ async function addAllGadgets(game_id, user_ids) {
             console.log(err);
         },
     });
+}
+
+function getAllUserIds(userIds) {
+    user_ids = userIds;
 }
