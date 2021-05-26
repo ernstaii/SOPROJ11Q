@@ -43,7 +43,7 @@ class GameIntervalCommand extends Command
 
                     if ($difference >= $game->interval) {
                         $this->log('    Invoking interval event');
-                        $active_users = $game->get_users_filtered_on_last_verified();
+                        $active_users = new Collection($game->get_users_filtered_on_last_verified());
                         $active_users = $this->check_active_smokescreens($active_users);
                         event(new GameIntervalEvent($game->id, $active_users, $game->loot, $this->drone_is_active($active_users)));
                         $this->check_alarms($game);
