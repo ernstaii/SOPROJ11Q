@@ -134,8 +134,7 @@ class GameController extends Controller
 
     public function show(Game $game)
     {
-        dd(Session::get('password')[0] . "\n" . $game->password);
-        if (!(Session::get('password')[0] === $game->password))
+        if (!(Session::get('password') === $game->password))
             return redirect()->route('games.index');
 
         switch ($game->status) {
