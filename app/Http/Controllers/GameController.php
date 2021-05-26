@@ -29,6 +29,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Session;
 
 class GameController extends Controller
 {
@@ -121,14 +122,20 @@ class GameController extends Controller
 
     public function checkPassword(Game $game)
     {
-        if (Hash::check(Request::get('password'), $game->password))
+        if (Hash::check(Request::get('password'), $game->password)) {
+            if (!Session::has('password') || !(Session::get('password')[0] === $game->password)) {
+                Session::put('password', $game->password);
+                Session::save();
+            }
             return true;
+        }
         return false;
     }
 
     public function show(Game $game)
     {
-        if (!Hash::check(Request::get('password'), $game->password))
+        dd(Session::get('password')[0] . "\n" . $game->password);
+        if (!(Session::get('password')[0] === $game->password))
             return redirect()->route('games.index');
 
         switch ($game->status) {
