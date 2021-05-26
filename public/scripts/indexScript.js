@@ -5,21 +5,35 @@ const passwordFieldGet = document.querySelector('#password_get_input');
 const sideBarItem2 = document.querySelector('#side_bar_link2');
 const sideBarItem3 = document.querySelector('#side_bar_link3');
 
+let gameIds = [];
 let password_correct;
+let game_exists;
+
+function setGameIds(ids) {
+    gameIds = ids;
+}
+
+setInterval(() => {
+    changeNumberInputs(gameIds);
+}, 300);
 
 async function changeNumberInputs(gameIds) {
-    let game_exists = false;
-    password_correct = false;
     let openGameButton = document.querySelector('#open_game_button');
     let deleteGameButton = document.querySelector('#delete_game_button');
 
-    if (openGameButton && deleteGameButton) {
-        buttonsBox.removeChild(openGameButton);
-        deleteGameForm.removeChild(deleteGameButton);
-        deleteGameForm.action = '';
-        sideBarItem2.href = '/games';
-        sideBarItem3.href = '/games';
+    if (!game_exists || !password_correct) {
+        if (openGameButton && deleteGameButton) {
+            buttonsBox.removeChild(openGameButton);
+            deleteGameForm.removeChild(deleteGameButton);
+            deleteGameForm.action = '';
+            sideBarItem2.href = '/games';
+            sideBarItem3.href = '/games';
+            openGameButton = document.querySelector('#open_game_button');
+            deleteGameButton = document.querySelector('#delete_game_button');
+        }
     }
+
+    game_exists = false;
 
     if (gameInput.value && gameInput.value > 0) {
         gameIds.forEach(gameId =>{
@@ -36,24 +50,26 @@ async function changeNumberInputs(gameIds) {
         if (password_correct === false)
             return;
 
-        let openButtonElem = document.createElement('a');
-        openButtonElem.id = 'open_game_button';
-        openButtonElem.href = '/games/' + gameInput.value;
-        let openButtonTextElem = document.createElement('h3');
-        openButtonTextElem.textContent = 'Ga naar spel ' + gameInput.value;
-        openButtonElem.appendChild(openButtonTextElem);
+        if (!openGameButton && !deleteGameButton) {
+            let openButtonElem = document.createElement('a');
+            openButtonElem.id = 'open_game_button';
+            openButtonElem.href = '/games/' + gameInput.value;
+            let openButtonTextElem = document.createElement('h3');
+            openButtonTextElem.textContent = 'Ga naar spel ' + gameInput.value;
+            openButtonElem.appendChild(openButtonTextElem);
 
-        let deleteButtonElem = document.createElement('button');
-        deleteButtonElem.class = 'config-delete-button';
-        deleteButtonElem.id = 'delete_game_button';
-        deleteButtonElem.type = 'submit';
-        let deleteButtonTextElem = document.createElement('b');
-        deleteButtonTextElem.textContent = 'Verwijder spel ' + gameInput.value;
-        deleteButtonElem.appendChild(deleteButtonTextElem);
+            let deleteButtonElem = document.createElement('button');
+            deleteButtonElem.class = 'config-delete-button';
+            deleteButtonElem.id = 'delete_game_button';
+            deleteButtonElem.type = 'submit';
+            let deleteButtonTextElem = document.createElement('b');
+            deleteButtonTextElem.textContent = 'Verwijder spel ' + gameInput.value;
+            deleteButtonElem.appendChild(deleteButtonTextElem);
 
-        buttonsBox.insertBefore(openButtonElem, deleteGameForm);
-        deleteGameForm.appendChild(deleteButtonElem);
-        deleteGameForm.action = '/games/' + gameInput.value;
+            buttonsBox.insertBefore(openButtonElem, deleteGameForm);
+            deleteGameForm.appendChild(deleteButtonElem);
+            deleteGameForm.action = '/games/' + gameInput.value;
+        }
 
         sideBarItem2.href = '/games/' + gameInput.value;
         sideBarItem3.href = '/games/' + gameInput.value;
@@ -74,6 +90,9 @@ async function checkPassword(game_id) {
         success: function (data) {
             if (data == 1) {
                 password_correct = true;
+            }
+            else {
+                password_correct = false;
             }
         },
         error: function (err) {

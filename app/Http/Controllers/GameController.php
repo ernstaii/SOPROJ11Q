@@ -129,6 +129,9 @@ class GameController extends Controller
             }
             return true;
         }
+        else {
+            Session::remove('password');
+        }
         return false;
     }
 
