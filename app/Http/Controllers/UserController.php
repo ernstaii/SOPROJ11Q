@@ -21,7 +21,7 @@ class UserController extends Controller
     {
         $inviteKey = $user->inviteKey;
 
-        if(isset($inviteKey)) {
+        if (isset($inviteKey)) {
             $user->role = $inviteKey->role;
         }
 
@@ -99,8 +99,7 @@ class UserController extends Controller
             if ($gadget->name === $request->gadget_name) {
                 if ($request->operator === 'add')
                     $gadget->pivot->amount += 1;
-                else
-                {
+                else {
                     if ($gadget->pivot->amount === 1) {
                         $user->gadgets()->detach(Gadget::whereName($request->gadget_name)->first()->id);
                         event(new GadgetAmountUpdatedEvent($user->get_game()->id, $user));
@@ -120,5 +119,11 @@ class UserController extends Controller
             return true;
         }
         return false;
+    }
+
+    public function triggerAlarm(User $user)
+    {
+        $user->triggered_alarm = true;
+        $user->save();
     }
 }

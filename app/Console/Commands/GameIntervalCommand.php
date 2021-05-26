@@ -46,6 +46,7 @@ class GameIntervalCommand extends Command
                         $active_users = $game->get_users_filtered_on_last_verified();
                         $active_users = $this->check_active_smokescreens($active_users);
                         event(new GameIntervalEvent($game->id, $active_users, $game->loot, $this->drone_is_active($active_users)));
+                        $this->check_alarms($game);
                         $game->last_interval_at = $now;
                     }
                 } else {
@@ -71,15 +72,20 @@ class GameIntervalCommand extends Command
         return 0;
     }
 
-    private function drone_is_active($users)
+    private function drone_is_active(Collection $users)
     {
+        $drone_activated = false;
         foreach ($users as $user)
             if ($user->gadgets()->count() > 0)
                 foreach ($user->gadgets() as $gadget)
-                    if ($gadget->pivot->in_use && $gadget->name === Gadgets::Drone)
-                        return true;
+                    if ($gadget->pivot->in_use && $gadget->name === Gadgets::Drone) {
+                        $gadget->pivot->in_use = null;
+                        $gadget->pivot->activated_at = null;
+                        $gadget->pivot->save();
+                        $drone_activated = true;
+                    }
 
-        return false;
+        return $drone_activated;
     }
 
     private function check_active_smokescreens(Collection $users)
@@ -89,6 +95,9 @@ class GameIntervalCommand extends Command
                 $removed_user_count = 0;
                 foreach ($users[$i]->gadgets() as $gadget)
                     if ($gadget->pivot->in_use && $gadget->name === Gadgets::Smokescreen) {
+                        $gadget->pivot->in_use = null;
+                        $gadget->pivot->activated_at = null;
+                        $gadget->pivot->save();
                         $users->splice($i - $removed_user_count, 1);
                         $removed_user_count += 1;
                     }
