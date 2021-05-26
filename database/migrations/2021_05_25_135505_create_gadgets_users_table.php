@@ -17,6 +17,9 @@ class CreateGadgetsUsersTable extends Migration
             $table->unsignedBigInteger('gadget_id');
             $table->unsignedBigInteger('user_id');
             $table->integer('amount');
+            $table->boolean('in_use')->nullable();
+            $table->string('location')->nullable();
+            $table->timestamp('activated_at')->nullable();
 
             $table->foreign('gadget_id')
                 ->references('id')->on('gadgets');

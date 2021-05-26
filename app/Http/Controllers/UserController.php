@@ -74,11 +74,14 @@ class UserController extends Controller
     public function updateGadget(User $user, Gadget $gadget)
     {
         $gadgetObj = $user->gadgets()->find($gadget->id)->pivot;
-        if ($gadgetObj->amount > 0) {
+        if ($gadgetObj->amount > 0)
             $gadgetObj->amount -= 1;
-            $gadgetObj->update();
-        }
 
+        $gadgetObj->in_use = true;
+        $gadgetObj->location = $user->location;
+        $gadgetObj->activated_at = Carbon::now();
+
+        $gadgetObj->update();
         return $user->gadgets()->get();
     }
 

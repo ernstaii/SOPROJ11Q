@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Enums\UserStatuses;
+use App\Enums\Gadgets;
 use App\Models\Notification;
 use App\Models\User;
 use Carbon\Carbon;
@@ -28,9 +28,20 @@ class ThiefCaughtEvent extends GameEvent
             'message' => $this->message
         ]);
 
-        event(new GameIntervalEvent($game->id, $game->get_users_with_role()->where('status', '=', UserStatuses::Playing), $game->loot));
+        $users = $game->get_users_filtered_on_last_verified();
+        event(new GameIntervalEvent($game->id, $users, $game->loot, $this->drone_is_active($users)));
         $game->last_interval_at = Carbon::now();
         $game->save();
+    }
+
+    private function drone_is_active($users) {
+        foreach ($users as $user)
+            if ($user->gadgets()->count() > 0)
+                foreach ($user->gadgets() as $gadget)
+                    if ($gadget->pivot->in_use && $gadget->name === Gadgets::Drone)
+                        return true;
+
+        return false;
     }
 
     public function broadcastAs()

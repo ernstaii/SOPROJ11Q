@@ -127,8 +127,8 @@
                                     <div class="user-box-buttons-box">
                                         <div class="user-box-buttons-divider">
                                             <label id="alarm">Alarm</label>
-                                            @if($user->gadgets()->whereName('Alarm')->first() !== null)
-                                                <label id="amount_of_alarms_{{$user->id}}">{{$user->gadgets()->whereName('Alarm')->first()->pivot->amount}}</label>
+                                            @if($user->gadgets()->whereName(\App\Enums\Gadgets::Alarm)->first() !== null)
+                                                <label id="amount_of_alarms_{{$user->id}}">{{$user->gadgets()->whereName(\App\Enums\Gadgets::Alarm)->first()->pivot->amount}}</label>
                                             @else
                                                 <label id="amount_of_alarms_{{$user->id}}">0</label>
                                             @endif
@@ -137,8 +137,8 @@
                                         </div>
                                         <div class="user-box-buttons-divider">
                                             <label id="drone">Drone</label>
-                                            @if($user->gadgets()->whereName('Drone')->first() !== null)
-                                                <label id="amount_of_drones_{{$user->id}}">{{$user->gadgets()->whereName('Drone')->first()->pivot->amount}}</label>
+                                            @if($user->gadgets()->whereName(\App\Enums\Gadgets::Drone)->first() !== null)
+                                                <label id="amount_of_drones_{{$user->id}}">{{$user->gadgets()->whereName(\App\Enums\Gadgets::Drone)->first()->pivot->amount}}</label>
                                             @else
                                                 <label id="amount_of_drones_{{$user->id}}">0</label>
                                             @endif
@@ -158,8 +158,8 @@
                                     <div class="user-box-buttons-box">
                                         <div class="user-box-buttons-divider">
                                             <label id="smokescreen">Rookgordijn</label>
-                                            @if($user->gadgets()->whereName('Rookgordijn')->first() !== null)
-                                                <label id="amount_of_smokescreens_{{$user->id}}">{{$user->gadgets()->whereName('Rookgordijn')->first()->pivot->amount}}</label>
+                                            @if($user->gadgets()->whereName(\App\Enums\Gadgets::Smokescreen)->first() !== null)
+                                                <label id="amount_of_smokescreens_{{$user->id}}">{{$user->gadgets()->whereName(\App\Enums\Gadgets::Smokescreen)->first()->pivot->amount}}</label>
                                             @else
                                                 <label id="amount_of_smokescreens_{{$user->id}}">0</label>
                                             @endif

@@ -18,6 +18,6 @@ class Gadget extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'gadgets_users')->withPivot('amount');
+        return $this->belongsToMany(User::class, 'gadgets_users')->withPivot(['amount', 'in_use', 'location', 'activated_at']);
     }
 }

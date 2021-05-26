@@ -2,17 +2,17 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\Gadgets;
 use App\Enums\Statuses;
 use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
 use App\Events\GameIntervalEvent;
 use App\Models\Game;
-use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use const Grpc\STATUS_ABORTED;
 
 class GameIntervalCommand extends Command
 {
@@ -43,7 +43,9 @@ class GameIntervalCommand extends Command
 
                     if ($difference >= $game->interval) {
                         $this->log('    Invoking interval event');
-                        event(new GameIntervalEvent($game->id, $game->get_users_filtered_on_last_verified(), $game->loot));
+                        $active_users = $game->get_users_filtered_on_last_verified();
+                        $active_users = $this->check_active_smokescreens($active_users);
+                        event(new GameIntervalEvent($game->id, $active_users, $game->loot, $this->drone_is_active($active_users)));
                         $game->last_interval_at = $now;
                     }
                 } else {
@@ -67,6 +69,33 @@ class GameIntervalCommand extends Command
         }
         $this->log('Interval ended');
         return 0;
+    }
+
+    private function drone_is_active($users)
+    {
+        foreach ($users as $user)
+            if ($user->gadgets()->count() > 0)
+                foreach ($user->gadgets() as $gadget)
+                    if ($gadget->pivot->in_use && $gadget->name === Gadgets::Drone)
+                        return true;
+
+        return false;
+    }
+
+    private function check_active_smokescreens(Collection $users)
+    {
+        for ($i = 0; $i < $users->count(); $i++) {
+            if ($users[$i]->gadgets()->count() > 0) {
+                $removed_user_count = 0;
+                foreach ($users[$i]->gadgets() as $gadget)
+                    if ($gadget->pivot->in_use && $gadget->name === Gadgets::Smokescreen) {
+                        $users->splice($i - $removed_user_count, 1);
+                        $removed_user_count += 1;
+                    }
+            }
+        }
+
+        return $users;
     }
 
     private function hasGameTimeElapsed(Game $game, Carbon $now)

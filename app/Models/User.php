@@ -54,6 +54,6 @@ class User extends Authenticatable
 
     public function gadgets()
     {
-        return $this->belongsToMany(Gadget::class, 'gadgets_users')->withPivot('amount');
+        return $this->belongsToMany(Gadget::class, 'gadgets_users')->withPivot(['amount', 'in_use', 'location', 'activated_at']);
     }
 }
