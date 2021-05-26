@@ -80,6 +80,7 @@ class GameIntervalCommand extends Command
                 foreach ($user->gadgets() as $gadget)
                     if ($gadget->pivot->in_use && $gadget->name === Gadgets::Drone) {
                         $gadget->pivot->in_use = null;
+                        $gadget->pivot->location = null;
                         $gadget->pivot->activated_at = null;
                         $gadget->pivot->save();
                         $drone_activated = true;
@@ -96,6 +97,7 @@ class GameIntervalCommand extends Command
                 foreach ($users[$i]->gadgets() as $gadget)
                     if ($gadget->pivot->in_use && $gadget->name === Gadgets::Smokescreen) {
                         $gadget->pivot->in_use = null;
+                        $gadget->pivot->location = null;
                         $gadget->pivot->activated_at = null;
                         $gadget->pivot->save();
                         $users->splice($i - $removed_user_count, 1);

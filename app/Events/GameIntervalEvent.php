@@ -35,7 +35,7 @@ class GameIntervalEvent extends GameEvent
         $users = $game->get_users();
 
         foreach ($users as $user) {
-            if (!$user->triggered_alarm) {
+            if ($user->triggered_alarm) {
                 $user->triggered_alarm = null;
                 $user->save();
             }
