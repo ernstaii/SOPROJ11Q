@@ -18,9 +18,9 @@ class GadgetAmountUpdatedEvent extends GameEvent
 
     public function __construct($gameId, User $user)
     {
+        parent::__construct($gameId);
         $this->user = $user;
         $this->gadgets = $user->gadgets()->get();
-        $this->gameId = $gameId;
     }
 
     public function broadcastAs()

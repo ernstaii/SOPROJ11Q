@@ -76,15 +76,14 @@ class GameIntervalCommand extends Command
     {
         $drone_activated = false;
         foreach ($users as $user)
-            if ($user->gadgets()->count() > 0)
-                foreach ($user->gadgets() as $gadget)
-                    if ($gadget->pivot->in_use && $gadget->name === Gadgets::Drone) {
-                        $gadget->pivot->in_use = null;
-                        $gadget->pivot->location = null;
-                        $gadget->pivot->activated_at = null;
-                        $gadget->pivot->save();
-                        $drone_activated = true;
-                    }
+            foreach ($user->gadgets() as $gadget)
+                if ($gadget->pivot->in_use && $gadget->name === Gadgets::Drone) {
+                    $gadget->pivot->in_use = null;
+                    $gadget->pivot->location = null;
+                    $gadget->pivot->activated_at = null;
+                    $gadget->pivot->save();
+                    $drone_activated = true;
+                }
 
         return $drone_activated;
     }

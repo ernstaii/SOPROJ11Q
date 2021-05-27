@@ -122,7 +122,7 @@
                     <div class="left-column">
                         <h3 class="player-role-header">Politie</h3>
                         @foreach($users as $user)
-                            @if($user->role === 'police')
+                            @if($user->role === \App\Enums\Roles::Police)
                                 <div class="user-box">
                                     <span class="user-box-name" id="user_{{$user->id}}">{{$user->username}}</span>
                                     <div class="user-box-buttons-box">
@@ -154,7 +154,7 @@
                     <div class="right-column">
                         <h3 class="player-role-header">Boeven</h3>
                         @foreach($users as $user)
-                            @if($user->role === 'thief')
+                            @if($user->role === \App\Enums\Roles::Thief)
                                 <div class="user-box">
                                     <span class="user-box-name" id="user_{{$user->id}}">{{$user->username}}</span>
                                     <div class="user-box-buttons-box">

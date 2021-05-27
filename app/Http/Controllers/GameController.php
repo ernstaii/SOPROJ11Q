@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Gadgets;
 use App\Enums\Roles;
 use App\Enums\Statuses;
 use App\Enums\UserStatuses;
@@ -445,12 +446,12 @@ class GameController extends Controller
     public function addGadgets(Game $game)
     {
         foreach ($game->get_users_with_role() as $user) {
-            if ($user->role === 'police') {
-                $this->checkGadgets('Alarm', $user);
-                $this->checkGadgets('Drone', $user);
+            if ($user->role === Roles::Police) {
+                $this->checkGadgets(Gadgets::Alarm, $user);
+                $this->checkGadgets(Gadgets::Drone, $user);
             }
             else {
-                $this->checkGadgets('Rookgordijn', $user);
+                $this->checkGadgets(Gadgets::Smokescreen, $user);
             }
         }
     }
