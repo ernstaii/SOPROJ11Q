@@ -60,7 +60,7 @@ class GameController extends Controller
             if ($missing_user->status != UserStatuses::Disconnected && $missing_user->status != UserStatuses::InLobby){
                 Notification::create([
                     'game_id' => $game->id,
-                    'message' => "Gebruiker ".$missing_user->username." heeft het spel verlaten"
+                    'message' => $missing_user->username." heeft het spel verlaten"
                 ]);
                 $missing_user->status = UserStatuses::Disconnected;
                 $missing_user->save();
