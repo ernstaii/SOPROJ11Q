@@ -14,6 +14,8 @@
         <div class="box shadow">
             <form method="post" action="{{route('games.store')}}" id="game_create_form">
                 @csrf
+                <label for="name_create_input" id="game_name">Spel naam</label>
+                <input type="text" id="game_name" name="name" min="3" placeholder="Vul a.u.b. een naam in..." value="{{old('name')}}">
                 <label for="password_create_input" id="password_create_label">Spel wachtwoord</label>
                 <div class="password-box">
                     <input type="password" id="password_create_input" name="password" placeholder="Vul a.u.b. een wachtwoord in...">
@@ -27,10 +29,10 @@
                 <div class="mini-box shadow">
                     <h2>Vind een bestaand spel</h2>
                     <div class="text-box" id="buttons_box">
-                        <label for="get_game_input">Spel ID</label>
+                        <label for="get_game_input">Spel naam</label>
                         <div class="tooltip">
-                            <span class="tooltiptext"><b class="big-question-mark">?</b>Vul hier het ID van het spel in.</span>
-                            <input type="number" id="get_game_input" name="id" placeholder="Vul ID in">
+                            <span class="tooltiptext"><b class="big-question-mark">?</b>Vul hier de naam van het spel in.</span>
+                            <input type="text" id="get_game_input" name="name" placeholder="Vul de naam in">
                         </div>
                         <label id="password_label" for="password_get_input">Spel wachtwoord</label>
                         <div class="password-box">
@@ -53,7 +55,7 @@
     </div>
     <script>
         window.addEventListener('DOMContentLoaded', function() {
-            setGameIds({{json_encode($gameIds, JSON_HEX_TAG)}});
+            setGameData('{!! json_encode($game_data, JSON_HEX_TAG) !!}');
         });
     </script>
 @endsection

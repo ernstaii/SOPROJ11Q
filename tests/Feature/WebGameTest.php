@@ -31,15 +31,16 @@ class WebGameTest extends TestCase
 
         $this->get('/games')
             ->assertStatus(200)
-            ->assertViewHas('gameIds');
+            ->assertViewHas('game_data');
     }
 
     public function test_can_store_game()
     {
         $this->post('/games', [
+            'name' => 'unique_name',
             'password' => 'password'
         ])->assertStatus(302)
-            ->assertRedirect('/games/' . Game::first()->id);
+            ->assertRedirect('/games/' . Game::first()->name);
 
         $this->assertDatabaseCount('games', 1);
     }
@@ -50,7 +51,7 @@ class WebGameTest extends TestCase
 
         $this->withSession(['password' => $game->password]);
 
-        $this->get('/games/' . $game->id)
+        $this->get('/games/' . $game->name)
             ->assertStatus(200)
             ->assertViewIs('game.main')
             ->assertViewHas(['id', 'users']);
@@ -79,7 +80,7 @@ class WebGameTest extends TestCase
             'interval' => '30',
             'state' => Statuses::Finished
         ])->assertStatus(302)
-            ->assertRedirect('/games/' . $game->id);
+            ->assertRedirect('/games/' . $game->name);
 
         Event::assertDispatchedTimes(EndGameEvent::class);
         $game->refresh();

@@ -15,6 +15,7 @@ class GameFactory extends Factory
     {
         return [
             'password' => Hash::make('password'),
+            'name' => 'game_' . rand(0,999999),
             'status' => Statuses::Config,
             'duration' => 120,
             'interval' => 60,

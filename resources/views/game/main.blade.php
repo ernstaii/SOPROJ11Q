@@ -104,17 +104,18 @@
         </div>
         <div class="bottom-box shadow">
             <div class="item-header">
-                <h2>SPEL ID</h2>
+                <h2>SPEL DETAILS</h2>
             </div>
             <div class="item-box" id="id_box">
-                <p>Het ID van het huidige spel is:</p>
-                <h1>{{$id}}</h1>
+                <p>Het hudige spel:</p>
+                <h1>{{$name}}</h1>
+                <h3>ID: {{$id}}</h3>
             </div>
         </div>
     </div>
     <script>
         window.addEventListener('DOMContentLoaded', function () {
-            setGameId({{$id}});
+            setGameDetails({{$id}}, '{{$name}}');
             @foreach($loot as $loot_item)
             applyLootMarker({{$loot_item->location}}, '{{$loot_item->name}}', '{{$loot_item->id}}');
             @endforeach
