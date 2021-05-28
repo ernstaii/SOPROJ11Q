@@ -10,6 +10,7 @@ class GameIntervalEvent extends GameEvent
     public function __construct($gameId, $users, $loot)
     {
         parent::__construct($gameId);
+
         $this->users = [];
         foreach ($users as $user){
             array_push($this->users, $user);

@@ -14,13 +14,14 @@ use App\Models\InviteKey;
 use App\Models\Loot;
 use App\Models\Notification;
 use App\Models\User;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithSession;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class WebGameTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, InteractsWithSession;
 
     public function test_can_get_to_game_index()
     {
@@ -35,9 +36,10 @@ class WebGameTest extends TestCase
 
     public function test_can_store_game()
     {
-        $this->post('/games?password=password')
-            ->assertStatus(302)
-            ->assertRedirect('/games/' . Game::first()->id . '?password=password');
+        $this->post('/games', [
+            'password' => 'password'
+        ])->assertStatus(302)
+            ->assertRedirect('/games/' . Game::first()->id);
 
         $this->assertDatabaseCount('games', 1);
     }
@@ -46,7 +48,9 @@ class WebGameTest extends TestCase
     {
         $game = Game::factory()->ongoing()->create();
 
-        $this->get('/games/' . $game->id . '?password=password')
+        $this->withSession(['password' => $game->password]);
+
+        $this->get('/games/' . $game->id)
             ->assertStatus(200)
             ->assertViewIs('game.main')
             ->assertViewHas(['id', 'users']);
@@ -199,7 +203,9 @@ class WebGameTest extends TestCase
             'lootable_type' => Game::class
         ])->create();
 
-        $this->delete('/games/' . $game->id . '?password=password')
+        $this->withSession(['password' => $game->password]);
+
+        $this->delete('/games/' . $game->id)
             ->assertStatus(302)
             ->assertRedirect('/games');
 
