@@ -31,7 +31,7 @@
             <div class="item-box">
                 <div id="form_box">
                     <div class="config-form">
-                        <form id="start_game_form" class="form-col-1" action="{{route('games.update', ['game' => $id])}}?password={{$password}}" method="post"
+                        <form id="start_game_form" class="form-col-1" action="{{route('games.update', ['game' => $id])}}" method="post"
                               enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -184,7 +184,7 @@
             @if (isset($police_station_location))
                 applyExistingPoliceStation({{$police_station_location}});
             @endif
-            passwordFromURL({{$id}});
+            applySidebarHrefs({{$id}});
         });
     </script>
 @endsection

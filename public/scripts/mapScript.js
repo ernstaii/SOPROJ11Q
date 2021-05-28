@@ -519,12 +519,7 @@ function applyEvents(marker) {
     });
 }
 
-function passwordFromURL(game_id) {
-    let url_string = window.location.href;
-    let url = new URL(url_string);
-    let password = url.searchParams.get('password');
-    startGameForm.action = '/games/' + game_id + '?password=' + password;
-
-    sideBarItem2.href = '/games/' + game_id + '?password=' + password;
-    sideBarItem3.href = '/games/' + game_id + '?password=' + password;
+function applySidebarHrefs(game_id) {
+    sideBarItem2.href = '/games/' + game_id;
+    sideBarItem3.href = '/games/' + game_id;
 }
