@@ -73,7 +73,7 @@ async function changeNumberInputs(gameData) {
 
             buttonsBox.insertBefore(openButtonElem, deleteGameForm);
             deleteGameForm.appendChild(deleteButtonElem);
-            deleteGameForm.action = '/games/' + gameInput.value;
+            deleteGameForm.action = '/games/' + game_id;
         }
 
         sideBarItem2.href = '/games/' + game_name;
