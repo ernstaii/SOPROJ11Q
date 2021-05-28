@@ -111,8 +111,13 @@ class Game extends Model
         return $users;
     }
 
+    // This methode return users when they are verified. This methode doesn't affect the status of a player
     public function get_users_filtered_on_last_verified()
     {
+        if($this->last_interval_at == null) {
+            return $this->get_users_with_role()->all();
+        }
+
         return $this->get_users_with_role()
             ->where('last_verified_at', '>=', $this->last_interval_at)
             ->all();
