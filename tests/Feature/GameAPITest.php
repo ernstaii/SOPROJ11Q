@@ -356,4 +356,15 @@ class GameAPITest extends TestCase
         $this->assertTrue(is_int((int) $response));
         $this->assertEquals(($currentScore + $scoreIncreaseValue), intval($response));
     }
+
+    public function test_can_store_app_error()
+    {
+        $this->post('/api/app-errors', [
+            'error_id' => '1000_1341a',
+            'message' => 'This is a test.',
+            'stacktrace' => 'Long stacktrace'
+        ])->assertStatus(200);
+
+        $this->assertDatabaseCount('app_errors', 1);
+    }
 }
