@@ -66,6 +66,9 @@ class UserController extends Controller
     {
         $user->location = $request->location;
         $user->last_verified_at = Carbon::now();
+        if($user->status != UserStatuses::Caught && $user->status != UserStatuses::Retired) {
+            $user->status = UserStatuses::Playing;
+        }
         $user->save();
 
         return $user;

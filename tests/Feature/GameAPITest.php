@@ -110,53 +110,6 @@ class GameAPITest extends TestCase
         $this->assertObjectHasAttribute('role', $content_array[0]);
     }
 
-    public function test_can_get_users_that_have_been_verified()
-    {
-        $game = Game::factory()->state([
-            'last_interval_at' => Carbon::now(),
-        ])->create();
-        $user = User::factory()->state([
-            'last_verified_at' => Carbon::now()->addSeconds(-5),
-        ])->create();
-        InviteKey::factory()->state([
-            'game_id' => $game->id,
-            'user_id' => $user->id,
-        ])->create();
-
-        // ==================== User verification hasn't been up to date, so there are no results ====================
-        $this->get('/api/games/' . $game->id . '/users-with-role')
-            ->assertStatus(200)
-            ->assertJsonCount(0);
-
-        // ==================== User verification is up to date, so there are results ====================
-        $user->last_verified_at = Carbon::now()->addSeconds(10);
-        $user->save();
-
-        $this->get('/api/games/' . $game->id . '/users-with-role')
-            ->assertStatus(200)
-            ->assertJsonCount(1);
-    }
-
-    public function test_users_with_role_only_returns_keys_with_user()
-    {
-        $game = Game::factory()->create();
-        $user = User::factory()->create();
-        InviteKey::factory()->state([
-            'game_id' => $game->id,
-            'user_id' => $user->id,
-        ])->create();
-        InviteKey::factory(4)->state([
-            'game_id' => $game->id,
-        ])->create();
-
-        $res = $this->get('/api/games/' . $game->id . '/users-with-role')
-            ->assertStatus(200)
-            ->assertJsonCount(1);
-
-        $content_array = (array)json_decode($res->getContent());
-        $this->assertObjectHasAttribute('role', $content_array[0]);
-    }
-
     public function test_can_get_loot_attached_to_game()
     {
         $game = Game::factory()->create();
@@ -355,5 +308,16 @@ class GameAPITest extends TestCase
 
         $this->assertTrue(is_int((int) $response));
         $this->assertEquals(($currentScore + $scoreIncreaseValue), intval($response));
+    }
+
+    public function test_can_store_app_error()
+    {
+        $this->post('/api/app-errors', [
+            'error_id' => '1000_1341a',
+            'message' => 'This is a test.',
+            'stacktrace' => 'Long stacktrace'
+        ])->assertStatus(200);
+
+        $this->assertDatabaseCount('app_errors', 1);
     }
 }

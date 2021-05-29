@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppErrorController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\InviteKeyController;
 use App\Http\Controllers\LootController;
@@ -33,6 +34,7 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/games/{game}/logo', [GameController::class, 'getLogo']);
     $router->post('/games/{game}/notifications', [GameController::class, 'postNotification']);
     $router->post('/users/{user}/trigger-alarm', [UserController::class, 'triggerAlarm']);
+    $router->post('/app-errors', [AppErrorController::class, 'store']);
     $router->patch('/games/{game}/thieves-score/{score}', [GameController::class, 'updateThievesScore']);
     $router->patch('/games/{game}/police-score/{score}', [GameController::class, 'updatePoliceScore']);
     $router->patch('/users/{user}/catch', [UserController::class, 'catchThief']);

@@ -29,14 +29,14 @@
                     <div class="text-box" id="buttons_box">
                         <label for="get_game_input">Spel ID</label>
                         <div class="tooltip">
-                            <span class="tooltiptext"><b class="big-question-mark">?</b>Druk op enter of klik ergens anders op het scherm om naar een specifiek spel te zoeken.</span>
-                            <input type="number" id="get_game_input" name="id" onchange="changeNumberInputs({{json_encode($gameIds, JSON_HEX_TAG)}})" placeholder="Vul ID in">
+                            <span class="tooltiptext"><b class="big-question-mark">?</b>Vul hier het ID van het spel in.</span>
+                            <input type="number" id="get_game_input" name="id" placeholder="Vul ID in">
                         </div>
                         <label id="password_label" for="password_get_input">Spel wachtwoord</label>
                         <div class="password-box">
                             <div class="tooltip">
-                                <span class="tooltiptext"><b class="big-question-mark">?</b>Druk op enter of klik ergens anders op het scherm om het wachtwoord te laten controleren.</span>
-                                <input type="password" id="password_get_input" name="password" onchange="changeNumberInputs({{json_encode($gameIds, JSON_HEX_TAG)}})" placeholder="Vul wachtwoord in">
+                                <span class="tooltiptext"><b class="big-question-mark">?</b>Vul hier het wachtwoord van het spel in.</span>
+                                <input type="password" id="password_get_input" name="password" placeholder="Vul wachtwoord in">
                             </div>
                             <div id="password_check_box_div">
                                 <input type="checkbox" onclick="showPassword('get')">Wachtwoord weergeven
@@ -51,5 +51,10 @@
             </div>
         </div>
     </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            setGameIds({{json_encode($gameIds, JSON_HEX_TAG)}});
+        });
+    </script>
 @endsection
 

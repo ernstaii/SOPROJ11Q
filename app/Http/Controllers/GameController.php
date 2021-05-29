@@ -32,6 +32,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Session;
 
 class GameController extends Controller
 {
@@ -59,10 +60,10 @@ class GameController extends Controller
         $diff = $game->get_users()->diffKeys($filtered_users);
 
         foreach ($diff as $missing_user){
-            if ($missing_user->status != UserStatuses::Disconnected){
+            if ($missing_user->status != UserStatuses::Disconnected && $missing_user->status != UserStatuses::InLobby){
                 Notification::create([
                     'game_id' => $game->id,
-                    'message' => "Gebruiker ".$missing_user->username." heeft het spel verlaten"
+                    'message' => $missing_user->username." heeft het spel verlaten"
                 ]);
                 $missing_user->status = UserStatuses::Disconnected;
                 $missing_user->save();
@@ -124,14 +125,22 @@ class GameController extends Controller
 
     public function checkPassword(Game $game)
     {
-        if (Hash::check(Request::get('password'), $game->password))
+        if (Hash::check(Request::get('password'), $game->password)) {
+            if (!Session::has('password') || !(Session::get('password')[0] === $game->password)) {
+                Session::put('password', $game->password);
+                Session::save();
+            }
             return true;
+        }
+        else {
+            Session::remove('password');
+        }
         return false;
     }
 
     public function show(Game $game)
     {
-        if (!Hash::check(Request::get('password'), $game->password))
+        if (!(Session::get('password') === $game->password))
             return redirect()->route('games.index');
 
         switch ($game->status) {
@@ -142,7 +151,6 @@ class GameController extends Controller
                     'border_markers' => $game->border_markers,
                     'id' => $game->id,
                     'loot' => $game->loot,
-                    'password' => $game->password,
                     'police_station_location' => $game->police_station_location,
                     'presets' => GamePreset::all()
                 ]);
@@ -193,7 +201,11 @@ class GameController extends Controller
         $game = Game::create([
             'password' => Hash::make($request->password)
         ]);
-        return redirect()->route('games.show', [$game, 'password' => $request->password]);
+        if (!Session::has('password') || !(Session::get('password')[0] === $game->password)) {
+            Session::put('password', $game->password);
+            Session::save();
+        }
+        return redirect()->route('games.show', [$game]);
     }
 
     public function update(UpdateGameStateRequest $request, Game $game)
@@ -257,12 +269,12 @@ class GameController extends Controller
         }
         $game->save();
 
-        return redirect()->route('games.show', [$game, 'password' => Request::get('password')]);
+        return redirect()->route('games.show', [$game]);
     }
 
     public function destroy(Game $game)
     {
-        if (!Hash::check(Request::get('password'), $game->password))
+        if (!(Session::get('password') === $game->password))
             return redirect()->route('games.index');
 
         $invite_keys = $game->invite_keys();
@@ -312,7 +324,7 @@ class GameController extends Controller
 	public function sendNotification(StoreNotificationRequest $request, Game $game)
     {
         event(new SendNotificationEvent($game->id, $request->message));
-        return redirect()->route('games.show', [$game, 'password' => Request::get('password')]);
+        return redirect()->route('games.show', [$game]);
     }
 
     /**
