@@ -29,6 +29,7 @@ class ConstantGameSeeder extends Seeder
         ]);
 
         $game = Game::create([
+            'name' => 'Game 1',
             'password' => Hash::make('password'),
             'police_station_location' => $this->getRandLocationNearOss()
         ]);
@@ -107,6 +108,7 @@ class ConstantGameSeeder extends Seeder
         ]);
 
         $game = Game::create([
+            'name' => 'Game 2',
             'password' => Hash::make('password'),
             'police_station_location' => $this->getRandLocationNearOss()
         ]);

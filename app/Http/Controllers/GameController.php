@@ -35,10 +35,13 @@ class GameController extends Controller
 {
     public function index()
     {
-        $gameIds = array();
+        $game_data = array();
         foreach (Game::all() as $game)
-            array_push($gameIds, $game->id);
-        return view('game.index', ['gameIds' => $gameIds]);
+            array_push($game_data, [
+                'id' => $game->id,
+                'name' => $game->name
+            ]);
+        return view('game.index', ['game_data' => $game_data]);
     }
 
     public function get(Game $game)
@@ -135,8 +138,13 @@ class GameController extends Controller
         return false;
     }
 
-    public function show(Game $game)
+    public function show($game_name)
     {
+        $game = Game::whereName($game_name)->first();
+
+        if ($game == null)
+            abort(404);
+
         if (!(Session::get('password') === $game->password))
             return redirect()->route('games.index');
 
@@ -147,6 +155,7 @@ class GameController extends Controller
                     'thief_keys' => $game->get_keys_for_role(Roles::Thief),
                     'border_markers' => $game->border_markers,
                     'id' => $game->id,
+                    'name' => $game->name,
                     'loot' => $game->loot,
                     'police_station_location' => $game->police_station_location,
                     'presets' => GamePreset::all()
@@ -173,6 +182,7 @@ class GameController extends Controller
                 }
                 return view('game.main', [
                     'id' => $game->id,
+                    'name' => $game->name,
                     'loot' => $game->loot,
                     'users' => $game->get_users_with_role(),
                     'border_markers' => $game->border_markers,
@@ -192,13 +202,14 @@ class GameController extends Controller
     public function store(StoreGameRequest $request)
     {
         $game = Game::create([
+            'name' => $request->name,
             'password' => Hash::make($request->password)
         ]);
         if (!Session::has('password') || !(Session::get('password')[0] === $game->password)) {
             Session::put('password', $game->password);
             Session::save();
         }
-        return redirect()->route('games.show', [$game]);
+        return redirect()->route('games.show', ['game_name' => $game->name]);
     }
 
     public function update(UpdateGameStateRequest $request, Game $game)
@@ -262,7 +273,7 @@ class GameController extends Controller
         }
         $game->save();
 
-        return redirect()->route('games.show', [$game]);
+        return redirect()->route('games.show', ['game_name' => $game->name]);
     }
 
     public function destroy(Game $game)
@@ -317,7 +328,7 @@ class GameController extends Controller
 	public function sendNotification(StoreNotificationRequest $request, Game $game)
     {
         event(new SendNotificationEvent($game->id, $request->message));
-        return redirect()->route('games.show', [$game]);
+        return redirect()->route('games.show', ['game_name' => $game->name]);
     }
 
     /**

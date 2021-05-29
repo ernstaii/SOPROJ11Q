@@ -5,24 +5,24 @@ const passwordFieldGet = document.querySelector('#password_get_input');
 const sideBarItem2 = document.querySelector('#side_bar_link2');
 const sideBarItem3 = document.querySelector('#side_bar_link3');
 
-let gameIds = [];
+let gameData = [];
 let password_correct;
 let game_exists;
 
-function setGameIds(ids) {
-    gameIds = ids;
+function setGameData(data) {
+    gameData = JSON.parse(data);
 }
 
 setInterval(() => {
-    changeNumberInputs(gameIds);
+    changeNumberInputs(gameData);
 }, 300);
 
-async function changeNumberInputs(gameIds) {
+async function changeNumberInputs(gameData) {
     let openGameButton = document.querySelector('#open_game_button');
     let deleteGameButton = document.querySelector('#delete_game_button');
 
     if (!game_exists || !password_correct) {
-        if (openGameButton && deleteGameButton) {
+            if (openGameButton && deleteGameButton) {
             buttonsBox.removeChild(openGameButton);
             deleteGameForm.removeChild(deleteGameButton);
             deleteGameForm.action = '';
@@ -35,17 +35,22 @@ async function changeNumberInputs(gameIds) {
 
     game_exists = false;
 
-    if (gameInput.value && gameInput.value > 0) {
-        gameIds.forEach(gameId =>{
-            if (gameId == gameInput.value)
+    if (gameInput.value) {
+        game_id = -1;
+        game_name = "";
+        gameData.forEach(game =>{
+            if (game.name == gameInput.value) {
                 game_exists = true;
+                game_id = game.id;
+                game_name = game.name;
+            }
         });
 
         if (!game_exists) {
             return;
         }
 
-        await checkPassword(gameInput.value);
+        await checkPassword(game_id);
 
         if (password_correct === false)
             return;
@@ -53,9 +58,9 @@ async function changeNumberInputs(gameIds) {
         if (!openGameButton && !deleteGameButton) {
             let openButtonElem = document.createElement('a');
             openButtonElem.id = 'open_game_button';
-            openButtonElem.href = '/games/' + gameInput.value;
+            openButtonElem.href = '/games/' + game_name;
             let openButtonTextElem = document.createElement('h3');
-            openButtonTextElem.textContent = 'Ga naar spel ' + gameInput.value;
+            openButtonTextElem.textContent = 'Ga naar spel: ' + game_name;
             openButtonElem.appendChild(openButtonTextElem);
 
             let deleteButtonElem = document.createElement('button');
@@ -63,16 +68,16 @@ async function changeNumberInputs(gameIds) {
             deleteButtonElem.id = 'delete_game_button';
             deleteButtonElem.type = 'submit';
             let deleteButtonTextElem = document.createElement('b');
-            deleteButtonTextElem.textContent = 'Verwijder spel ' + gameInput.value;
+            deleteButtonTextElem.textContent = 'Verwijder spel: ' + game_name;
             deleteButtonElem.appendChild(deleteButtonTextElem);
 
             buttonsBox.insertBefore(openButtonElem, deleteGameForm);
             deleteGameForm.appendChild(deleteButtonElem);
-            deleteGameForm.action = '/games/' + gameInput.value;
+            deleteGameForm.action = '/games/' + game_id;
         }
 
-        sideBarItem2.href = '/games/' + gameInput.value;
-        sideBarItem3.href = '/games/' + gameInput.value;
+        sideBarItem2.href = '/games/' + game_name;
+        sideBarItem3.href = '/games/' + game_name;
     }
 }
 

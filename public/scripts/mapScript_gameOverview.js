@@ -22,6 +22,7 @@ let lootIds = [];
 
 let selectedLootId = -1;
 let gameId = -1;
+let gameName = "";
 
 const lootIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
@@ -88,8 +89,9 @@ function initMap() {
     mymap.on('click', addLoot);
 }
 
-function setGameId(game_id) {
+function setGameDetails(game_id, game_name) {
     gameId = game_id;
+    gameName = game_name;
 }
 
 function applyLootMarker(lat, lng, loot_name, loot_id) {
@@ -377,8 +379,8 @@ function callGameDetails(game_id) {
         getGameDetails(game_id);
         getGameNotifications(game_id);
     }, 5000);
-    sideBarItem2.href = '/games/' + game_id;
-    sideBarItem3.href = '/games/' + game_id;
+    sideBarItem2.href = '/games/' + gameName;
+    sideBarItem3.href = '/games/' + gameName;
 }
 
 async function getGameDetails(game_id) {
