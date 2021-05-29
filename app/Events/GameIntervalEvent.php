@@ -15,7 +15,7 @@ class GameIntervalEvent extends GameEvent
         foreach ($users as $user){
             array_push($this->users, $user);
         }
-        
+
         $this->loot = $loot;
     }
 
