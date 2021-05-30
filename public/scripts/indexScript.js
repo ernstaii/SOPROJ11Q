@@ -9,6 +9,7 @@ let gameData = [];
 let password_correct;
 let game_exists;
 let old_value;
+let callBack = 1;
 
 function setGameData(data) {
     gameData = JSON.parse(data);
@@ -31,6 +32,7 @@ async function changeNumberInputs(gameData) {
             sideBarItem3.href = '/games';
             openGameButton = document.querySelectorAll('#open_game_button');
             deleteGameButton = document.querySelectorAll('#delete_game_button');
+            console.log('[INITIAL] removed buttons on callback: ' + callBack);
         }
     }
 
@@ -48,13 +50,16 @@ async function changeNumberInputs(gameData) {
         });
 
         if (!game_exists) {
+            callBack++;
             return;
         }
 
         await checkPassword(game_id);
 
-        if (password_correct === false)
+        if (password_correct === false) {
+            callBack++;
             return;
+        }
 
         if (openGameButton.length < 1 && deleteGameButton.length < 1) {
             let openButtonElem = document.createElement('a');
@@ -77,6 +82,7 @@ async function changeNumberInputs(gameData) {
             deleteGameForm.action = '/games/' + game_id;
 
             old_value = game_name;
+            console.log('[INITIAL] added buttons on callback: ' + callBack);
         }
 
         sideBarItem2.href = '/games/' + game_name;
@@ -84,22 +90,31 @@ async function changeNumberInputs(gameData) {
     }
 
     if (openGameButton.length > 1)
-        for (let i = openGameButton.length - 1; i > 0; i--)
+        for (let i = openGameButton.length - 1; i > 0; i--) {
             buttonsBox.removeChild(openGameButton[i]);
+            console.log('[CLEANUP] removed open game button on callback: ' + callBack);
+        }
 
     if (deleteGameButton.length > 1)
-        for (let i = deleteGameButton.length - 1; i > 0; i--)
+        for (let i = deleteGameButton.length - 1; i > 0; i--) {
             deleteGameForm.removeChild(deleteGameButton[i]);
+            console.log('[CLEANUP] removed delete game button on callback: ' + callBack);
+        }
 
     setTimeout(() => {
         if (openGameButton.length > 1)
-            for (let i = openGameButton.length - 1; i > 0; i--)
+            for (let i = openGameButton.length - 1; i > 0; i--) {
                 buttonsBox.removeChild(openGameButton[i]);
+                console.log('[EXT CLEANUP] removed open game button on callback: ' + callBack);
+            }
 
         if (deleteGameButton.length > 1)
-            for (let i = deleteGameButton.length - 1; i > 0; i--)
+            for (let i = deleteGameButton.length - 1; i > 0; i--) {
                 deleteGameForm.removeChild(deleteGameButton[i]);
+                console.log('[EXT CLEANUP] removed delete game button on callback: ' + callBack);
+            }
     }, 500);
+    callBack++;
 }
 
 async function checkPassword(game_id) {
