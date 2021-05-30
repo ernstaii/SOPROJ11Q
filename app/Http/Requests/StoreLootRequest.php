@@ -22,8 +22,12 @@ class StoreLootRequest extends FormRequest
     public function messages()
     {
         return [
-            'lats.array' => 'mapScript.js:255|type should be "array", different type provided.',
-            'lngs.array' => 'mapScript.js:255|type should be "array", different type provided.'
+            'lats.required' => 'Zorg er a.u.b. voor dat er een lijst aan breedtegraden wordt opgestuurd. (Buit)',
+            'lats.array' => 'Zorg er a.u.b. voor dat er een lijst aan breedtegraden wordt opgestuurd. (Buit)',
+            'lats.min' => 'Zorg er a.u.b. voor dat er minimaal één breedtegraad aanwezig is. (Buit)',
+            'lngs.required' => 'Zorg er a.u.b. voor dat er een lijst aan lengtegraden wordt opgestuurd. (Buit)',
+            'lngs.array' => 'Zorg er a.u.b. voor dat er een lijst aan lengtegraden wordt opgestuurd. (Buit)',
+            'lngs.min' => 'Zorg er a.u.b. voor dat er minimaal één lengtegraad aanwezig is. (Buit)'
         ];
     }
 }

@@ -22,8 +22,12 @@ class StoreBorderMarkerRequest extends FormRequest
     public function messages()
     {
         return [
-            'lats.array' => 'mapScript.js:114|type should be "array", different type provided.',
-            'lngs.array' => 'mapScript.js:114|type should be "array", different type provided.'
+            'lats.required' => 'Zorg er a.u.b. voor dat er een lijst aan breedtegraden wordt opgestuurd. (Grens-pin)',
+            'lats.array' => 'Zorg er a.u.b. voor dat er een lijst aan breedtegraden wordt opgestuurd. (Grens-pin)',
+            'lats.min' => 'Zorg er a.u.b. voor dat er minimaal drie breedtegraden aanwezig zijn. (Grens-pin)',
+            'lngs.required' => 'Zorg er a.u.b. voor dat er een lijst aan lengtegraden wordt opgestuurd. (Grens-pin)',
+            'lngs.array' => 'Zorg er a.u.b. voor dat er een lijst aan lengtegraden wordt opgestuurd. (Grens-pin)',
+            'lngs.min' => 'Zorg er a.u.b. voor dat er minimaal drie lengtegraden aanwezig zijn. (Grens-pin)'
         ];
     }
 }
