@@ -10,7 +10,7 @@ let password_correct;
 let game_exists;
 let old_value;
 let callBack = 1;
-let is_occupied = false;
+let is_occupied = true;
 
 function setGameData(data) {
     gameData = JSON.parse(data);
