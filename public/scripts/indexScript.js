@@ -10,7 +10,7 @@ let password_correct;
 let game_exists;
 let old_value;
 let callBack = 1;
-let is_occupied = true;
+let is_occupied = false;
 
 function setGameData(data) {
     gameData = JSON.parse(data);
@@ -21,7 +21,7 @@ setInterval(() => {
 }, 300);
 
 async function changeNumberInputs(gameData) {
-    if (is_occupied === true) {
+    if (is_occupied === false) {
         let openGameButton = document.querySelectorAll('#open_game_button');
         let deleteGameButton = document.querySelectorAll('#delete_game_button');
 
