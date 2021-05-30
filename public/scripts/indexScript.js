@@ -90,6 +90,16 @@ async function changeNumberInputs(gameData) {
     if (deleteGameButton.length > 1)
         for (let i = deleteGameButton.length - 1; i > 0; i--)
             deleteGameForm.removeChild(deleteGameButton[i]);
+
+    setTimeout(() => {
+        if (openGameButton.length > 1)
+            for (let i = openGameButton.length - 1; i > 0; i--)
+                buttonsBox.removeChild(openGameButton[i]);
+
+        if (deleteGameButton.length > 1)
+            for (let i = deleteGameButton.length - 1; i > 0; i--)
+                deleteGameForm.removeChild(deleteGameButton[i]);
+    }, 500);
 }
 
 async function checkPassword(game_id) {
