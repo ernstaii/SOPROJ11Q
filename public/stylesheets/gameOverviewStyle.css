@@ -31,10 +31,20 @@
     text-align:                 center;
 }
 
+#message
+{
+    min-width:                  307px;
+}
+
 .messages
 {
     justify-content:            stretch;
     overflow-y:                 auto;
+}
+
+#reason
+{
+    min-width:                  307px;
 }
 
 .score-text
