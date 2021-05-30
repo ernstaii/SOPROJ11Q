@@ -21,18 +21,18 @@ setInterval(() => {
 
 async function changeNumberInputs(gameData) {
     if (is_occupied === false) {
-        let openGameButton = document.querySelectorAll('#open_game_button');
-        let deleteGameButton = document.querySelectorAll('#delete_game_button');
+        let openGameButton = document.querySelector('#open_game_button');
+        let deleteGameButton = document.querySelector('#delete_game_button');
 
         if (!game_exists || !password_correct || old_value !== gameInput.value) {
-            if (openGameButton.length > 0 && deleteGameButton.length > 0) {
-                buttonsBox.removeChild(openGameButton[0]);
-                deleteGameForm.removeChild(deleteGameButton[0]);
+            if (openGameButton && deleteGameButton) {
+                buttonsBox.removeChild(openGameButton);
+                deleteGameForm.removeChild(deleteGameButton);
                 deleteGameForm.action = '';
                 sideBarItem2.href = '/games';
                 sideBarItem3.href = '/games';
-                openGameButton = document.querySelectorAll('#open_game_button');
-                deleteGameButton = document.querySelectorAll('#delete_game_button');
+                openGameButton = document.querySelector('#open_game_button');
+                deleteGameButton = document.querySelector('#delete_game_button');
             }
         }
 
@@ -60,7 +60,7 @@ async function changeNumberInputs(gameData) {
                 return;
             }
 
-            if (openGameButton.length < 1 && deleteGameButton.length < 1) {
+            if (!openGameButton && !deleteGameButton) {
                 let openButtonElem = document.createElement('a');
                 openButtonElem.id = 'open_game_button';
                 openButtonElem.href = '/games/' + game_name;
