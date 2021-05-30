@@ -8,6 +8,7 @@ const sideBarItem3 = document.querySelector('#side_bar_link3');
 let gameData = [];
 let password_correct;
 let game_exists;
+let old_value;
 
 function setGameData(data) {
     gameData = JSON.parse(data);
@@ -18,18 +19,18 @@ setInterval(() => {
 }, 300);
 
 async function changeNumberInputs(gameData) {
-    let openGameButton = document.querySelector('#open_game_button');
-    let deleteGameButton = document.querySelector('#delete_game_button');
+    let openGameButton = document.querySelectorAll('#open_game_button');
+    let deleteGameButton = document.querySelectorAll('#delete_game_button');
 
-    if (!game_exists || !password_correct) {
-            if (openGameButton && deleteGameButton) {
-            buttonsBox.removeChild(openGameButton);
-            deleteGameForm.removeChild(deleteGameButton);
+    if (!game_exists || !password_correct || old_value !== gameInput.value) {
+        if (openGameButton.length > 0 && deleteGameButton.length > 0) {
+            buttonsBox.removeChild(openGameButton[0]);
+            deleteGameForm.removeChild(deleteGameButton[0]);
             deleteGameForm.action = '';
             sideBarItem2.href = '/games';
             sideBarItem3.href = '/games';
-            openGameButton = document.querySelector('#open_game_button');
-            deleteGameButton = document.querySelector('#delete_game_button');
+            openGameButton = document.querySelectorAll('#open_game_button');
+            deleteGameButton = document.querySelectorAll('#delete_game_button');
         }
     }
 
@@ -55,7 +56,7 @@ async function changeNumberInputs(gameData) {
         if (password_correct === false)
             return;
 
-        if (!openGameButton && !deleteGameButton) {
+        if (openGameButton.length < 1 && deleteGameButton.length < 1) {
             let openButtonElem = document.createElement('a');
             openButtonElem.id = 'open_game_button';
             openButtonElem.href = '/games/' + game_name;
@@ -74,11 +75,21 @@ async function changeNumberInputs(gameData) {
             buttonsBox.insertBefore(openButtonElem, deleteGameForm);
             deleteGameForm.appendChild(deleteButtonElem);
             deleteGameForm.action = '/games/' + game_id;
+
+            old_value = game_name;
         }
 
         sideBarItem2.href = '/games/' + game_name;
         sideBarItem3.href = '/games/' + game_name;
     }
+
+    if (openGameButton.length > 1)
+        for (let i = openGameButton.length - 1; i > 0; i--)
+            buttonsBox.removeChild(openGameButton[i]);
+
+    if (deleteGameButton.length > 1)
+        for (let i = deleteGameButton.length - 1; i > 0; i--)
+            deleteGameForm.removeChild(deleteGameButton[i]);
 }
 
 async function checkPassword(game_id) {
