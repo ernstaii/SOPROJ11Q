@@ -54,7 +54,16 @@ async function changeNumberInputs(gameData) {
             return;
         }
 
-        await checkPassword(game_id);
+        let ms = 0;
+        setInterval(() => {
+            ms++;
+        }, 1);
+
+        await checkPassword(game_id).then(() => {
+            if (password_correct === true) {
+                console.log('AJAX callback finished in ' + ms + ' ms!');
+            }
+        });
 
         if (password_correct === false) {
             callBack++;
