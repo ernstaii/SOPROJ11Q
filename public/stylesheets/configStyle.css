@@ -47,6 +47,29 @@ label
     text-align:                 left;
 }
 
+.box-header
+{
+    align-items:                center;
+    display:                    flex;
+    flex-direction:             row;
+    justify-content:            space-between;
+}
+
+.box-header h2
+{
+    margin-left:                25%;
+}
+
+.close-tab-button
+{
+    background:                 #C6002A;
+    border-radius:              1vw;
+    height:                     6px;
+    margin-right:               5%;
+    cursor:                     pointer;
+    width:                      20px;
+}
+
 .horizontal-body-box
 {
     display:                    flex;
@@ -96,6 +119,27 @@ label
     -webkit-box-shadow:         1px 3px 20px 5px darkgray;
     -moz-box-shadow:            1px 3px 20px 5px darkgray;
     box-shadow:                 1px 3px 20px 5px darkgray;
+}
+
+.show-div
+{
+    align-items:                center;
+    background:                 #fff;
+    border-radius:              1vw;
+    border-bottom-width:        5px;
+    display:                    flex;
+    flex-direction:             row;
+    justify-content:            space-between;
+    height:                     4.4vh;
+    margin-left:                2vw;
+    margin-right:               1vw;
+    min-width:                  375px;
+    width:                      20vw;
+}
+
+.show-div h2
+{
+    margin-left:                25%;
 }
 
 .side-bar

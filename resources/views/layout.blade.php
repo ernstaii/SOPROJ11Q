@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="{{ asset('stylesheets/error.css') }}">
     <link rel="stylesheet" href="{{asset('stylesheets/configStyle.css')}}">
     <script src="{{asset('scripts/errorRemovalScript.js')}}" defer></script>
+    <script src="{{asset('scripts/hideBoxScript.js')}}" defer></script>
     @yield('head')
 </head>
 <body>

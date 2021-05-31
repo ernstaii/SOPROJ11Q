@@ -24,9 +24,10 @@
 
 @section('content')
     <div class="config-main-screen">
-        <div class="box shadow">
-            <div class="item-header">
+        <div class="box shadow" id="config_1">
+            <div class="item-header box-header">
                 <h2>SPEL CONFIGURATIE</h2>
+                <div class="close-tab-button" onclick="hideBox('config_1', 'config')"></div>
             </div>
             <div class="item-box">
                 <div id="form_box">
@@ -185,7 +186,7 @@
             @if (isset($police_station_location))
                 applyExistingPoliceStation({{$police_station_location}});
             @endif
-            applySidebarHrefs({{$name}});
+            applySidebarHrefs('{{$name}}');
         });
     </script>
 @endsection
