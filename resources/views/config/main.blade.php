@@ -151,6 +151,10 @@
                     </select>
                     <label for="preset_name">Maak een nieuwe template aan</label>
                     <input type="text" id="preset_name" name="name" value="{{ old('name') }}" placeholder="Vul hier de naam van het nieuwe template in...">
+                    <div>
+                        <label>Is dit een privé template?</label>
+                        <input type="checkbox" id="preset_is_private">
+                    </div>
                     <button onclick="savePreset()" class="keys-share-button" id="save_preset_button">Opslaan</button>
                 </div>
             </div>
@@ -185,7 +189,9 @@
             @if (isset($police_station_location))
                 applyExistingPoliceStation({{$police_station_location}});
             @endif
-            applySidebarHrefs({{$name}});
+            applySidebarHrefs('{{$name}}');
+            updateAvailablePresets();
+            showPrivatePresets();
         });
     </script>
 @endsection

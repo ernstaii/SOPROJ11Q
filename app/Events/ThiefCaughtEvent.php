@@ -3,7 +3,6 @@
 namespace App\Events;
 
 use App\Enums\UserStatuses;
-use App\Models\Notification;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Broadcasting\InteractsWithSockets;
