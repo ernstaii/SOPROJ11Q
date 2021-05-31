@@ -23,11 +23,6 @@ class ThiefCaughtEvent extends GameEvent
         $this->gameId = $game->id;
         $this->message = 'Boef ' . $user->username . ' is zojuist gevangen!';
 
-        Notification::create([
-            'game_id' => $game->id,
-            'message' => $this->message
-        ]);
-
         event(new GameIntervalEvent($game->id, $game->get_users_with_role()->where('status', '=', UserStatuses::Playing), $game->loot));
         $game->last_interval_at = Carbon::now();
         $game->save();
