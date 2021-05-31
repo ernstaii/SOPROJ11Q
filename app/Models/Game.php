@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,21 +10,21 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Game
  *
- * @property int $id
- * @property string $password
- * @property string $status
- * @property int $duration
- * @property int $interval
- * @property int $time_left
- * @property string|null $police_station_location
- * @property int $thieves_score
- * @property int $police_score
- * @property string|null $last_interval_at
- * @property string|null $started_at
- * @property string|null $logo
- * @property string $colour_theme
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int                                        $id
+ * @property string                                     $password
+ * @property string                                     $status
+ * @property int                                        $duration
+ * @property int                                        $interval
+ * @property int                                        $time_left
+ * @property string|null                                $police_station_location
+ * @property int                                        $thieves_score
+ * @property int                                        $police_score
+ * @property string|null                                $last_interval_at
+ * @property string|null                                $started_at
+ * @property string|null                                $logo
+ * @property string                                     $colour_theme
+ * @property \Illuminate\Support\Carbon|null            $created_at
+ * @property \Illuminate\Support\Carbon|null            $updated_at
  * @property-read Collection|\App\Models\BorderMarker[] $border_markers
  * @property-read int|null                              $border_markers_count
  * @property-read Collection|\App\Models\InviteKey[]    $invite_keys
@@ -114,12 +115,15 @@ class Game extends Model
 
     public function get_users_filtered_on_last_verified()
     {
-        if($this->last_interval_at == null) {
+        if ($this->last_interval_at == null) {
             return $this->get_users_with_role()->all();
         }
 
+        // Because of the delay and the interval, sometimes user last_interval_at will be updated to lately
+        $dateTime = Carbon::parse($this->last_interval_at)->addSeconds(-30)->toDateTimeString();
+
         return $this->get_users_with_role()
-            ->where('last_verified_at', '>=', $this->last_interval_at)
+            ->where('last_verified_at', '>=', $dateTime)
             ->all();
     }
 
