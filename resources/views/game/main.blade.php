@@ -25,7 +25,7 @@
     <div class="game-main-screen">
         <div class="box shadow">
             <div class="item-header">
-                <h2>Spel Status Beheren</h2>
+                <h2>SPEL STATUS BEHEREN</h2>
             </div>
             <div class="button-1">
                 <form id="form_1" action="{{route('games.update', ['game' => $id])}}" method="post">
@@ -113,7 +113,7 @@
         </div>
         <div class="bottom-box shadow">
             <div class="item-header">
-                <h2>Spel Notificaties</h2>
+                <h2>SPEL NOTIFICATIES</h2>
             </div>
             <div class="messages">
             </div>

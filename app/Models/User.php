@@ -13,7 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string|null                     $location
  * @property string                          $status
  * @property string|null                     $caught_at
- * @property string|null                     $is_fake_agent
+ * @property boolean|null                    $is_fake_agent
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InviteKey|null $inviteKey
@@ -26,6 +26,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsFakeAgent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
  * @mixin \Eloquent
