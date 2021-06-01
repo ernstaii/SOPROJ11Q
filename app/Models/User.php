@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string|null                     $location
  * @property string                          $status
  * @property string|null                     $caught_at
+ * @property string|null                     $is_fake_agent
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InviteKey|null $inviteKey
@@ -40,6 +41,7 @@ class User extends Authenticatable
         'status',
         'caught_at',
         'last_verified_at',
+        'is_fake_agent',
     ];
 
     public function inviteKey()

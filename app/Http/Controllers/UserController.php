@@ -7,6 +7,7 @@ use App\Enums\UserStatuses;
 use App\Events\PlayerJoinedGameEvent;
 use App\Events\ThiefCaughtEvent;
 use App\Http\Requests\UpdateLocationRequest;
+use App\Http\Requests\UpdateSpecialRoleRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Models\InviteKey;
 use App\Models\User;
@@ -69,5 +70,11 @@ class UserController extends Controller
         $user->save();
 
         return $user;
+    }
+
+    public function setSpecialRole(UpdateSpecialRoleRequest $request, User $user)
+    {
+        $user->is_fake_agent = ($request->is_special_role == 'true') ? true : false;
+        $user->save();
     }
 }

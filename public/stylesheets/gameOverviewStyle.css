@@ -72,6 +72,41 @@
     color:                      white;
 }
 
+.thief-spec-role-box
+{
+    display:                    flex;
+    flex-direction:             row;
+    justify-content:            space-between;
+    margin-top:                 5px;
+    min-width:                  375px;
+    width:                      20vw;
+}
+
+.thief-spec-role-checkbox
+{
+    margin:                     0 1vw 0 0;
+}
+
+.thief-spec-role-checkbox-box
+{
+    align-items:                center;
+    display:                    flex;
+    flex-direction:             row;
+    justify-content:            space-between;
+    width:                      115px;
+}
+
+.thief-spec-role-checkbox-name
+{
+    margin:                     0;
+}
+
+.thief-spec-role-name
+{
+    margin:                     0;
+    padding-left:               2vw;
+}
+
 .timer
 {
     font-size:                  3vw;

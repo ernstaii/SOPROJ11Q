@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\InviteKeyController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,3 +35,4 @@ Route::post('/games/{game}/loot', [GameController::class, 'storeLoot'])->name('g
 Route::patch('/games/{game}/police-station', [GameController::class, 'setPoliceStationLocation'])->name('games.police-station.update');
 Route::post('/games/{game}/notifications', [GameController::class, 'sendNotification'])->name('games.sendMessage');
 Route::get('/games/{game}/password', [GameController::class, 'checkPassword'])->name('games.checkPassword');
+Route::patch('/users/{user}/special-role', [UserController::class, 'setSpecialRole'])->name('users.set-special-role');

@@ -14,6 +14,7 @@
             crossorigin=""></script>
     <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
     <script src="{{asset('scripts/mapScript_gameOverview.js')}}" defer></script>
+    <script src="{{asset('scripts/specialRolesScript.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -122,9 +123,31 @@
                 <h2>SPEL DETAILS</h2>
             </div>
             <div class="item-box" id="id_box">
-                <p>Het hudige spel:</p>
+                <p>Het huidige spel:</p>
                 <h1>{{$name}}</h1>
                 <h3>ID: {{$id}}</h3>
+            </div>
+        </div>
+        <div class="bottom-box shadow">
+            <div class="item-header">
+                <h2>SPECIALE ROLLEN</h2>
+            </div>
+            <div class="item-box" id="special_roles_box">
+                @foreach($users as $user)
+                    @if($user->role === \App\Enums\Roles::Thief)
+                        <div class="thief-spec-role-box" id="thief_box_{{$user->id}}">
+                            <p class="thief-spec-role-name" id="thief_name_{{$user->id}}">{{$user->username}}</p>
+                            <div class="thief-spec-role-checkbox-box">
+                                <label for="is_fake_agent" class="thief-spec-role-checkbox-text">Nep agent?</label>
+                                @if ($user->is_fake_agent)
+                                    <input name="is_fake_agent" type="checkbox" class="thief-spec-role-checkbox" id="thief_fake_agent_checkbox_{{$user->id}}" onchange="setSpecialRole({{$user->id}})" checked>
+                                @else
+                                    <input name="is_fake_agent" type="checkbox" class="thief-spec-role-checkbox" id="thief_fake_agent_checkbox_{{$user->id}}" onchange="setSpecialRole({{$user->id}})">
+                                @endif
+                            </div>
+                        </div>
+                    @endif
+                @endforeach
             </div>
         </div>
     </div>
