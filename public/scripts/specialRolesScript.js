@@ -1,4 +1,4 @@
-async function setSpecialRole(user_id) {
+async function setSpecialRole(user_id, game_id) {
     let checked = document.querySelector('#thief_fake_agent_checkbox_' + user_id).checked;
 
     $.ajaxSetup({
@@ -10,7 +10,7 @@ async function setSpecialRole(user_id) {
     await $.ajax({
         url: '/users/' + user_id + '/special-role',
         type: 'PATCH',
-        data: { is_special_role: checked },
+        data: { is_special_role: checked, game_id: game_id },
         success: function () {
         },
         error: function (err) {

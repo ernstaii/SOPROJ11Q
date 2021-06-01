@@ -140,9 +140,9 @@
                             <div class="thief-spec-role-checkbox-box">
                                 <label for="is_fake_agent" class="thief-spec-role-checkbox-text">Nep agent?</label>
                                 @if ($user->is_fake_agent)
-                                    <input name="is_fake_agent" type="checkbox" class="thief-spec-role-checkbox" id="thief_fake_agent_checkbox_{{$user->id}}" onchange="setSpecialRole({{$user->id}})" checked>
+                                    <input name="is_fake_agent" type="checkbox" class="thief-spec-role-checkbox" id="thief_fake_agent_checkbox_{{$user->id}}" onchange="setSpecialRole({{$user->id}}, {{$id}})" checked>
                                 @else
-                                    <input name="is_fake_agent" type="checkbox" class="thief-spec-role-checkbox" id="thief_fake_agent_checkbox_{{$user->id}}" onchange="setSpecialRole({{$user->id}})">
+                                    <input name="is_fake_agent" type="checkbox" class="thief-spec-role-checkbox" id="thief_fake_agent_checkbox_{{$user->id}}" onchange="setSpecialRole({{$user->id}}, {{$id}})">
                                 @endif
                             </div>
                         </div>
