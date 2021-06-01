@@ -199,6 +199,11 @@ h2
 
 #preset_name
 {
+    margin-bottom:              2px;
+}
+
+#preset_is_private
+{
     margin-bottom:              1vh;
 }
 

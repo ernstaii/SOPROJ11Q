@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Gadgets;
 use App\Enums\Roles;
 use App\Enums\Statuses;
 use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
+use App\Events\GadgetAmountUpdatedEvent;
 use App\Events\PauseGameEvent;
 use App\Events\PlayerJoinedGameEvent;
 use App\Events\ResumeGameEvent;
@@ -20,6 +22,7 @@ use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Requests\UpdateGameStateRequest;
 use App\Http\Requests\UpdatePoliceStationLocationRequest;
 use App\Models\BorderMarker;
+use App\Models\Gadget;
 use App\Models\Game;
 use App\Models\GamePreset;
 use App\Models\Loot;
@@ -161,6 +164,9 @@ class GameController extends Controller
                     'presets' => GamePreset::all()
                 ]);
             default:
+                $userIds = array();
+                foreach ($game->get_users() as $user)
+                    array_push($userIds, $user->id);
                 $status_text = '';
                 if ($game->status == Statuses::Ongoing) {
                     $game->time_left -= Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
@@ -194,7 +200,8 @@ class GameController extends Controller
                     'thieves_score' => $game->thieves_score,
                     'police_score' => $game->police_score,
                     'police_station_location' => $game->police_station_location,
-                    'status_text' => $status_text
+                    'status_text' => $status_text,
+                    'userIds' => $userIds
                 ]);
         }
     }
@@ -268,7 +275,7 @@ class GameController extends Controller
                 if (is_null($message)) {
                     $message = "Het spel is gepauzeerd!";
                 }
-                event(new PauseGameEvent($game->id, $message));
+                event(new PauseGameEvent($game->id, $message, $game->time_left));
                 break;
         }
         $game->save();
@@ -452,5 +459,39 @@ class GameController extends Controller
                 'location' => strval($border_lats[$i]) . ',' . strval($border_lngs[$i])
             ]);
         }
+    }
+
+    /**
+     * AJAX function. Not to be called via manual routing.
+     *
+     * @param Game $game
+     */
+    public function addGadgets(Game $game)
+    {
+        foreach ($game->get_users_with_role() as $user) {
+            if ($user->role === Roles::Police) {
+                $this->checkGadgets(Gadgets::Alarm, $user);
+                $this->checkGadgets(Gadgets::Drone, $user);
+            }
+            else {
+                $this->checkGadgets(Gadgets::Smokescreen, $user);
+            }
+        }
+    }
+
+    private function checkGadgets($gadget_name, User $user)
+    {
+        $gadgets = $user->gadgets()->get();
+        foreach ($gadgets as $gadget) {
+            if ($gadget->name === $gadget_name) {
+                $gadget->pivot->amount += 1;
+                $gadget->pivot->update();
+                event(new GadgetAmountUpdatedEvent($user->get_game()->id, $user));
+                return;
+            }
+        }
+
+        $user->gadgets()->attach(Gadget::whereName($gadget_name)->first()->id, array('amount' => 1));
+        event(new GadgetAmountUpdatedEvent($user->get_game()->id, $user));
     }
 }

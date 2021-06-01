@@ -25,22 +25,25 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\App\Models\BorderMarker[] $border_markers
- * @property-read int|null                              $border_markers_count
- * @property-read Collection|\App\Models\InviteKey[]    $invite_keys
- * @property-read int|null                              $invite_keys_count
- * @property-read Collection|\App\Models\Loot[]         $loot
- * @property-read int|null                              $loot_count
+ * @property-read int|null $border_markers_count
+ * @property-read Collection|\App\Models\InviteKey[] $invite_keys
+ * @property-read int|null $invite_keys_count
+ * @property-read Collection|\App\Models\Loot[] $loot
+ * @property-read int|null $loot_count
  * @property-read Collection|\App\Models\Notification[] $notifications
- * @property-read int|null                              $notifications_count
+ * @property-read int|null $notifications_count
  * @method static \Database\Factories\GameFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Game newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Game newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Game query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereColourTheme($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereDuration($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereInterval($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereLastIntervalAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereLogo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game wherePoliceScore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game wherePoliceStationLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereStartedAt($value)
