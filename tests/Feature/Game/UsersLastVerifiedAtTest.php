@@ -18,7 +18,7 @@ class UsersLastVerifiedAtTest extends TestCase
     public function test_can_get_users_that_have_not_been_verified()
     {
         $game = Game::factory()->state(['last_interval_at' => Carbon::now()])->create();
-        $user = User::factory()->state(['last_verified_at' => Carbon::now()->addSeconds(-5)])->create();
+        $user = User::factory()->state(['last_verified_at' => Carbon::now()->addSeconds(-60)])->create();
         InviteKey::factory()->state([
             'game_id' => $game->id,
             'user_id' => $user->id,
@@ -48,7 +48,7 @@ class UsersLastVerifiedAtTest extends TestCase
     {
         $game = Game::factory()->state(['last_interval_at' => Carbon::now(), 'status' => Statuses::Ongoing])->create();
         $user = User::factory()->state([
-            'last_verified_at' => Carbon::now()->addSeconds(-5),
+            'last_verified_at' => Carbon::now()->addSeconds(-60),
             'status' => UserStatuses::Playing,
         ])->create();
         InviteKey::factory()->state(['game_id' => $game->id, 'user_id' => $user->id])->create();
@@ -84,7 +84,7 @@ class UsersLastVerifiedAtTest extends TestCase
     {
         $game = Game::factory()->state(['last_interval_at' => Carbon::now(), 'status' => Statuses::Ongoing])->create();
         $user = User::factory()->state([
-            'last_verified_at' => Carbon::now()->addSeconds(-5),
+            'last_verified_at' => Carbon::now()->addSeconds(-60),
             'status' => UserStatuses::Playing,
         ])->create();
         InviteKey::factory()->state(['game_id' => $game->id, 'user_id' => $user->id])->create();
@@ -102,8 +102,8 @@ class UsersLastVerifiedAtTest extends TestCase
         $game = Game::factory()->state(['last_interval_at' => Carbon::now()])->create();
 
         // Create multiple users for testing te result
-        $user = User::factory()->state(['last_verified_at' => Carbon::now()->addSeconds(-5)])->create();
-        $user2 = User::factory()->state(['last_verified_at' => Carbon::now()->addSeconds(-10)])->create();
+        $user = User::factory()->state(['last_verified_at' => Carbon::now()->addSeconds(-60)])->create();
+        $user2 = User::factory()->state(['last_verified_at' => Carbon::now()->addSeconds(-120)])->create();
         $user3 = User::factory()->state(['last_verified_at' => Carbon::now()])->create();
         $user4 = User::factory()->state(['last_verified_at' => Carbon::now()->addSeconds(5)])->create();
         $user5 = User::factory()->state(['last_verified_at' => Carbon::now()->addSeconds(10)])->create();
