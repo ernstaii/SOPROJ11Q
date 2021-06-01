@@ -33,9 +33,11 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/games/{game}/notifications', [GameController::class, 'getNotifications']);
     $router->get('/games/{game}/logo', [GameController::class, 'getLogo']);
     $router->post('/games/{game}/notifications', [GameController::class, 'postNotification']);
+    $router->post('/users/{user}/trigger-alarm', [UserController::class, 'triggerAlarm']);
     $router->post('/app-errors', [AppErrorController::class, 'store']);
     $router->patch('/games/{game}/thieves-score/{score}', [GameController::class, 'updateThievesScore']);
     $router->patch('/games/{game}/police-score/{score}', [GameController::class, 'updatePoliceScore']);
     $router->patch('/users/{user}/catch', [UserController::class, 'catchThief']);
+    $router->patch('/users/{user}/gadgets/{gadget}', [UserController::class, 'updateGadget']);
     $router->delete('/loot/{loot}', [LootController::class, 'destroy']);
 });

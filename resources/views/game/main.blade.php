@@ -14,6 +14,7 @@
             crossorigin=""></script>
     <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
     <script src="{{asset('scripts/mapScript_gameOverview.js')}}" defer></script>
+    <script src="{{asset('scripts/gadgetScript.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -127,6 +128,70 @@
                 <h3>ID: {{$id}}</h3>
             </div>
         </div>
+        <div class="bottom-box shadow" id="gadget_box_background">
+            <div class="item-header">
+                <h2>GADGETS</h2>
+            </div>
+            <div class="item-box" id="gadget_box">
+                <button class="gadgets-add-all-button" onclick="addAllGadgets({{$id}})">Geef iedereen één gadget</button>
+                <div class="gadget-total-box">
+                    <div class="left-column">
+                        <h3 class="player-role-header">Politie</h3>
+                        @foreach($users as $user)
+                            @if($user->role === \App\Enums\Roles::Police)
+                                <div class="user-box">
+                                    <span class="user-box-name" id="user_{{$user->id}}">{{$user->username}}</span>
+                                    <div class="user-box-buttons-box">
+                                        <div class="user-box-buttons-divider">
+                                            <label id="alarm">Alarm</label>
+                                            @if($user->gadgets()->whereName(\App\Enums\Gadgets::Alarm)->first() !== null)
+                                                <label id="amount_of_alarms_{{$user->id}}">{{$user->gadgets()->whereName(\App\Enums\Gadgets::Alarm)->first()->pivot->amount}}</label>
+                                            @else
+                                                <label id="amount_of_alarms_{{$user->id}}">0</label>
+                                            @endif
+                                                <a class="user-box-button add-button" id="add_alarm_button" onclick="manageGadget('alarm', 'add', {{$user->id}})">+</a>
+                                                <a class="user-box-button remove-button" id="remove_alarm_button" onclick="manageGadget('alarm', 'remove', {{$user->id}})">─</a>
+                                        </div>
+                                        <div class="user-box-buttons-divider">
+                                            <label id="drone">Drone</label>
+                                            @if($user->gadgets()->whereName(\App\Enums\Gadgets::Drone)->first() !== null)
+                                                <label id="amount_of_drones_{{$user->id}}">{{$user->gadgets()->whereName(\App\Enums\Gadgets::Drone)->first()->pivot->amount}}</label>
+                                            @else
+                                                <label id="amount_of_drones_{{$user->id}}">0</label>
+                                            @endif
+                                            <a class="user-box-button add-button" id="add_drone_button" onclick="manageGadget('drone', 'add', {{$user->id}})">+</a>
+                                            <a class="user-box-button remove-button" id="remove_drone_button" onclick="manageGadget('drone', 'remove', {{$user->id}})">─</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                    <div class="right-column">
+                        <h3 class="player-role-header">Boeven</h3>
+                        @foreach($users as $user)
+                            @if($user->role === \App\Enums\Roles::Thief)
+                                <div class="user-box">
+                                    <span class="user-box-name" id="user_{{$user->id}}">{{$user->username}}</span>
+                                    <div class="user-box-buttons-box">
+                                        <div class="user-box-buttons-divider">
+                                            <label id="smokescreen">Rookgordijn</label>
+                                            @if($user->gadgets()->whereName(\App\Enums\Gadgets::Smokescreen)->first() !== null)
+                                                <label id="amount_of_smokescreens_{{$user->id}}">{{$user->gadgets()->whereName(\App\Enums\Gadgets::Smokescreen)->first()->pivot->amount}}</label>
+                                            @else
+                                                <label id="amount_of_smokescreens_{{$user->id}}">0</label>
+                                            @endif
+                                            <a class="user-box-button add-button" id="add_smokescreen_button" onclick="manageGadget('smokescreen', 'add', {{$user->id}})">+</a>
+                                            <a class="user-box-button remove-button" id="remove_smokescreen_button" onclick="manageGadget('smokescreen', 'remove', {{$user->id}})">─</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         window.addEventListener('DOMContentLoaded', function () {
@@ -149,6 +214,7 @@
             @endif
             applyExistingPoliceStation({{$police_station_location}});
             callGameDetails({{$id}});
+            getAllUserIds({{json_encode($userIds, JSON_HEX_TAG)}});
         });
     </script>
 @endsection

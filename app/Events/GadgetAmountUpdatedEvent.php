@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,22 +11,20 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SendNotificationEvent extends GameEvent
+class GadgetAmountUpdatedEvent extends GameEvent
 {
-    public function __construct($gameId, $message)
+    public $gadgets;
+    public $user;
+
+    public function __construct($gameId, User $user)
     {
-        $this->gameId = $gameId;
-        $this->message = $message;
-
-
-        Notification::create([
-            'game_id' => $gameId,
-            'message' => $message
-        ]);
+        parent::__construct($gameId);
+        $this->user = $user->getOriginal();
+        $this->gadgets = $user->gadgets()->get();
     }
 
     public function broadcastAs()
     {
-        return 'game.notification';
+        return 'gadgets.update';
     }
 }

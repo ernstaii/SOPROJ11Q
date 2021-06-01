@@ -2,17 +2,17 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\Gadgets;
 use App\Enums\Statuses;
 use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
 use App\Events\GameIntervalEvent;
 use App\Models\Game;
-use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use const Grpc\STATUS_ABORTED;
 
 class GameIntervalCommand extends Command
 {
@@ -43,7 +43,14 @@ class GameIntervalCommand extends Command
 
                     if ($difference >= $game->interval) {
                         $this->log('    Invoking interval event');
-                        event(new GameIntervalEvent($game->id, $game->get_users_filtered_on_last_verified(), $game->loot));
+                        $active_users = new Collection($game->get_users_filtered_on_last_verified());
+                        $this->log('    Active users: ' . json_encode($active_users));
+                        $active_users = $this->check_active_smokescreens($active_users);
+                        $this->log('    Game ID: ' . $game->id);
+                        $this->log('    Active users: ' . json_encode($active_users));
+                        $this->log('    Game loot: ' . json_encode($game->loot));
+                        $this->log('    Drone is active: ' . $this->drone_is_active($active_users));
+                        event(new GameIntervalEvent($game->id, $active_users, $game->loot, $this->drone_is_active($active_users), $game->time_left));
                         $game->last_interval_at = $now;
                     }
                 } else {
@@ -67,6 +74,57 @@ class GameIntervalCommand extends Command
         }
         $this->log('Interval ended');
         return 0;
+    }
+
+    private function drone_is_active(Collection $users)
+    {
+        $this->log('    Checking if drones are active...');
+        $drone_activated = 0;
+        $this->log('    drone_activated: ' . strval($drone_activated));
+        foreach ($users as $user) {
+            $this->log('      Checking user: ' . $user->username);
+            if ($user->gadgets->count() > 0) {
+                foreach ($user->gadgets as $gadget) {
+                    $this->log('        Checking gadget: ' . $gadget->name);
+                    if ($gadget->pivot->in_use && $gadget->name === Gadgets::Drone) {
+                        $this->log('        Active drone found');
+                        $gadget->pivot->in_use = null;
+                        $gadget->pivot->location = null;
+                        $gadget->pivot->activated_at = null;
+                        $gadget->pivot->save();
+                        $drone_activated = 1;
+                    }
+                }
+            }
+        }
+
+        $this->log('    drone_activated: ' . strval($drone_activated));
+        return ($drone_activated >= 1);
+    }
+
+    private function check_active_smokescreens(Collection $users)
+    {
+        $this->log('    Checking if smokescreens are active...');
+        for ($i = 0; $i < $users->count(); $i++) {
+            $this->log('      Checking user: ' . $users[$i]->username);
+            if ($users[$i]->gadgets->count() > 0) {
+                $removed_user_count = 0;
+                $this->log('      Gadgets: ' . json_encode($users[$i]->gadgets));
+                foreach ($users[$i]->gadgets as $gadget) {
+                    $this->log('        Checking gadget: ' . $gadget->name);
+                    if ($gadget->pivot->in_use && $gadget->name === Gadgets::Smokescreen) {
+                        $gadget->pivot->in_use = null;
+                        $gadget->pivot->location = null;
+                        $gadget->pivot->activated_at = null;
+                        $gadget->pivot->save();
+                        $users->splice($i - $removed_user_count, 1);
+                        $removed_user_count += 1;
+                    }
+                }
+            }
+        }
+
+        return $users;
     }
 
     private function hasGameTimeElapsed(Game $game, Carbon $now)
