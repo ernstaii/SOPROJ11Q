@@ -519,7 +519,7 @@ function applyEvents(marker) {
     });
 }
 
-function applySidebarHrefs(game_id) {
-    sideBarItem2.href = '/games/' + game_id;
-    sideBarItem3.href = '/games/' + game_id;
+function applySidebarHrefs(name) {
+    sideBarItem2.href = '/games/' + name;
+    sideBarItem3.href = '/games/' + name;
 }

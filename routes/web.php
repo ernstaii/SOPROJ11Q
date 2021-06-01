@@ -26,7 +26,7 @@ Route::get('/presets/{preset}/loot', [GameController::class, 'getPresetLoot'])->
 Route::delete('/games/{game}/loot', [GameController::class, 'clearExistingLoot'])->name('game.loot.delete');
 Route::get('/presets/{preset}/border-markers', [GameController::class, 'getPresetBorderMarkers'])->name('preset.border-markers');
 Route::delete('/games/{game}/border-markers', [GameController::class, 'clearExistingMarkers'])->name('game.border-markers.delete');
-Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
+Route::get('/games/{game_name}', [GameController::class, 'show'])->name('games.show');
 Route::put('/games/{game}', [GameController::class, 'update'])->name('games.update');
 Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy');
 Route::post('/games/{game}/invite-keys', [InviteKeyController::class, 'generateKeys'])->name('games.invite-keys.store');

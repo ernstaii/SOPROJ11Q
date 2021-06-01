@@ -26,7 +26,7 @@ class WebConfigTest extends TestCase
 
         $this->withSession(['password' => $game->password]);
 
-        $this->get('/games/' . $game->id)
+        $this->get('/games/' . $game->name)
             ->assertStatus(200)
             ->assertViewIs('config.main')
             ->assertViewHas(['police_keys', 'thief_keys', 'id']);
@@ -175,7 +175,7 @@ class WebConfigTest extends TestCase
             'interval' => '30',
             'state' => Statuses::Ongoing
         ])->assertStatus(302)
-            ->assertRedirect('/games/' . $game->id);
+            ->assertRedirect('/games/' . $game->name);
 
         $game->refresh();
         $this->assertEquals(Statuses::Ongoing, $game->status);
