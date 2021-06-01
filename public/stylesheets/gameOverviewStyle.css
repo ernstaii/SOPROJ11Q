@@ -72,6 +72,11 @@
     color:                      white;
 }
 
+#special_roles_box
+{
+    overflow-y:                 auto;
+}
+
 .thief-spec-role-box
 {
     display:                    flex;
@@ -84,7 +89,7 @@
 
 .thief-spec-role-checkbox
 {
-    margin:                     0 1vw 0 0;
+    margin:                     0 25px 0 0;
 }
 
 .thief-spec-role-checkbox-box
