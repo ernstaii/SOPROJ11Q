@@ -84,6 +84,11 @@
     width:                      15vw;
 }
 
+#message
+{
+    min-width:                  307px;
+}
+
 .messages
 {
     justify-content:            stretch;
@@ -107,6 +112,11 @@
 .right-column
 {
     padding-right:              1vw;
+}
+
+#reason
+{
+    min-width:                  307px;
 }
 
 .score-text
