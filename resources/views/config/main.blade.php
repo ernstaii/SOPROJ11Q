@@ -36,20 +36,32 @@
                             @csrf
                             @method('PUT')
                             <div class="form-item">
-                                <label class="form-label-0" for="duration">Speelduur (min)</label>
-                                <input name="duration" class="input-numeric-0" id="duration" type="number" min="10" max="1440" value="120">
+                                <label class="form-label-0" for="duration">Speelduur</label>
+                                <div class="tooltip">
+                                    <span class="tooltiptext-bottom"><b class="big-question-mark">?</b>Vul hier speelduur van het spel in. De ingevulde tijd is in minuten. Minimaal: 10, maximaal: 1440</span>
+                                    <input name="duration" class="input-numeric-0" id="duration" type="number" min="10" max="1440" value="120">
+                                </div>
                             </div>
                             <div class="form-item">
-                                <label class="form-label-0" for="interval">Locatieupdate interval (sec)</label>
-                                <input name="interval" class="input-numeric-0" id="interval" type="number" min="30" max="300" value="30">
+                                <label class="form-label-0" for="interval">Locatieupdate interval</label>
+                                <div class="tooltip">
+                                    <span class="tooltiptext-bottom"><b class="big-question-mark">?</b>Vul hier het interval tussen de locatieupdates in. De ingevulde tijd is in seconden. Minimaal: 30, maximaal: 300</span>
+                                    <input name="interval" class="input-numeric-0" id="interval" type="number" min="30" max="300" value="30">
+                                </div>
                             </div>
                             <div class="form-item">
-                                <label class="form-label-0" for="colour">Kleurthema (app)</label>
-                                <input name="colour" class="input-numeric-0" id="colour" type="color" value="#0099ff">
+                                <label class="form-label-0" for="colour">App Kleurthema</label>
+                                <div class="tooltip">
+                                    <span class="tooltiptext-bottom"><b class="big-question-mark">?</b>Selecteer de kleur welke voor het thema in de mobiele app gebruikt zal worden.</span>
+                                    <input name="colour" class="input-numeric-0" id="colour" type="color" value="#0099ff">
+                                </div>
                             </div>
                             <div class="form-item" id="upload_box">
-                                <label class="form-label-0" for="logo">Logo (app)</label>
-                                <input name="logo" class="input-numeric-0" id="logo" type="file" accept="image/*" onchange="changeImageElement()">
+                                <label class="form-label-0" for="logo">App Logo</label>
+                                <div class="tooltip" id="logo_tooltip">
+                                    <span class="tooltiptext-bottom"><b class="big-question-mark">?</b>Upload hier het logo welke in de mobiele app weergegeven zal worden. Dit is optioneel. Maximale grootte: 300x200 pixels.</span>
+                                    <input name="logo" class="input-numeric-0" id="logo" type="file" accept="image/*" onchange="changeImageElement()">
+                                </div>
                             </div>
                             <div class="form-item" id="img_element_box">
                             </div>
@@ -62,18 +74,19 @@
                         <div class="form-col-2">
                             <div class="form-item" id="code_input">
                                 <label class="form-label-0" for="num_participants">Aantal spelers</label>
-                                <input min="1" max="50" name="num_participants" class="input-numeric-0"
-                                       id="participants_number" type="number" value="20">
-                            </div>
-                            <div class="form-item" id="code_button">
-                                <button class="submit-button-0" id="send_number" onclick="generateKey({{$id}})">Genereer
-                                    codes
-                                </button>
+                                <div class="tooltip">
+                                    <span class="tooltiptext-bottom"><b class="big-question-mark">?</b>Vul hier het aantal spelers voor het spel in. Dit getal zal gebruikt worden voor het genereren van toegangscodes. Minimaal: 1, maximiaal: 50</span>
+                                    <input min="1" max="50" name="num_participants" class="input-numeric-0"
+                                            id="participants_number" type="number" value="20">
+                                </div>
                             </div>
                             <div class="form-item" id="ratio_slider">
                                 <label class="form-label-0" for="ratio-slider">Ratio Agenten : Boeven</label>
-                                <input name="ratio-slider" type="range" min="0" max="100" value="50" class="slider"
-                                       id="ratio_range">
+                                <div class="tooltip">
+                                    <span class="tooltiptext-bottom"><b class="big-question-mark">?</b>Selecteer het ratio voor agenten:boeven. Gebaseerd op dit ratio zullen de toegangscodes onder de twee rollen verdeeld worden.</span>
+                                    <input name="ratio-slider" type="range" min="0" max="100" value="50" class="slider"
+                                            id="ratio_range">
+                                </div>
                                 <div class="slider-labels">
                                     <p>0%</p>
                                     <p>50%</p>
@@ -83,6 +96,11 @@
                                     <p>Minder agenten</p>
                                     <p>Meer agenten</p>
                                 </div>
+                            </div>
+                            <div class="form-item" id="code_button">
+                                <button class="submit-button-0" id="send_number" onclick="generateKey({{$id}})">Genereer
+                                    codes
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -126,9 +144,18 @@
         </div>
         <div class="total-map-box">
             <div class="map-top-tabs">
-                <div class="map-top-tab" id="tab_1"><p>Spelgrenzen</p></div>
-                <div class="map-top-tab" id="tab_2"><p>Buit</p></div>
-                <div class="map-top-tab" id="tab_3"><p>Politiebureau</p></div>
+                <div class="tooltip">
+                    <span class="tooltiptext-maptab"><b class="big-question-mark">?</b>Plaats grens-pinnen door op de kaart te klikken. Als er meerdere grens-pinnen aanwezig zijn zullen er automatisch lijnen tussen de grens-pinnen getekend worden. Gebruik de 'Verwijder laatste marker' knop om de laatst geplaatste grens-pin weg te halen.</span>
+                    <div class="map-top-tab" id="tab_1"><p>Spelgrenzen</p></div>
+                </div>
+                <div class="tooltip">
+                    <span class="tooltiptext-maptab"><b class="big-question-mark">?</b>Plaats buit door in het invulveld onder de kaart een naam in te voeren en vervolgens op de kaart te klikken. Gebruik de 'Verwijder laatste buit' knop om de laatst geplaatste buit weg te halen.</span>
+                    <div class="map-top-tab" id="tab_2"><p>Buit</p></div>
+                </div>
+                <div class="tooltip">
+                    <span class="tooltiptext-maptab"><b class="big-question-mark">?</b>Plaats het politiebureau op de kaart door op de kaart te klikken. Gebruik de 'Verwijder politiebureau' knop om het politiebureau weg te halen.</span>
+                    <div class="map-top-tab" id="tab_3"><p>Politiebureau</p></div>
+                </div>
             </div>
             <div class="mapbox shadow">
                 <div id="map"></div>
@@ -138,7 +165,10 @@
         </div>
         <div class="bottom-box shadow">
             <div class="item-header">
-                <h2>TEMPLATES</h2>
+                <div class="tooltip">
+                    <span class="tooltiptext"><b class="big-question-mark">?</b>Dit scherm kan gebruikt worden om de huidige spelinstellingen op te slaan als een template. Dit template kan later hergebruikt worden door de onderstaande dropdown te gebruiken en een template uit de lijst te selecteren.</span>
+                    <h2>TEMPLATES</h2>
+                </div>
             </div>
             <div class="item-box">
                 <div class="form-item game-form" id="preset-box">

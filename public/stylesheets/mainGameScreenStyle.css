@@ -96,6 +96,11 @@ h2
     object-fit:                 contain;
 }
 
+.input-numeric-0
+{
+    min-width:                  152px;
+}
+
 .item-box
 {
     max-height:                 401px;
@@ -169,6 +174,11 @@ h2
     color:                      darkred;
 }
 
+#logo_tooltip
+{
+    max-width:                  350px;
+}
+
 .mouse-hover-event
 {
     background:                 gray;
@@ -205,6 +215,11 @@ h2
 #side_bar_link2
 {
     color:                      white;
+}
+
+.slider
+{
+    min-width:                  160px;
 }
 
 .slider-labels
