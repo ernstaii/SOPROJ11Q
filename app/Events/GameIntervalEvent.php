@@ -14,9 +14,10 @@ class GameIntervalEvent extends GameEvent
     public $loot;
     public $drone_is_active;
 
-    public function __construct($gameId, $users, $loot, $drone_is_active)
+    public function __construct($gameId, $users, $loot, $drone_is_active, $time_left)
     {
-        parent::__construct($gameId);
+        $this->gameId = $gameId;
+        $this->timeLeft = $time_left;
 
         $this->users = [];
         foreach ($users as $user){

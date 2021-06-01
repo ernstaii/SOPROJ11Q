@@ -426,8 +426,13 @@ function handleTimerElement(status, time_left, duration) {
     timerElmt.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
     if (status === 'on-going') {
         setInterval(() => {
-            seconds++;
-            timerElmt.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
+            if (seconds >= (duration * 60)) {
+                location.reload();
+            }
+            else {
+                seconds++;
+                timerElmt.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
+            }
         }, 1000);
     }
 }

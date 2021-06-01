@@ -275,7 +275,7 @@ class GameController extends Controller
                 if (is_null($message)) {
                     $message = "Het spel is gepauzeerd!";
                 }
-                event(new PauseGameEvent($game->id, $message));
+                event(new PauseGameEvent($game->id, $message, $game->time_left));
                 break;
         }
         $game->save();

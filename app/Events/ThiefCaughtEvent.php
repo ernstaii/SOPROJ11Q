@@ -31,7 +31,7 @@ class ThiefCaughtEvent extends GameEvent
 
         $users = new Collection($game->get_users_filtered_on_last_verified());
         $users = $this->check_active_smokescreens($users);
-        event(new GameIntervalEvent($game->id, $users, $game->loot, $this->drone_is_active($users)));
+        event(new GameIntervalEvent($game->id, $users, $game->loot, $this->drone_is_active($users), $game->time_left));
         $game->last_interval_at = Carbon::now();
         $game->save();
     }
