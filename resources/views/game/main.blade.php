@@ -123,7 +123,7 @@
                 <h2>SPEL DETAILS</h2>
             </div>
             <div class="item-box" id="id_box">
-                <p>Het hudige spel:</p>
+                <p>Het huidige spel:</p>
                 <h1>{{$name}}</h1>
                 <h3>ID: {{$id}}</h3>
             </div>
