@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
 
     protected function shortSchedule(ShortSchedule $shortSchedule)
     {
-        $shortSchedule->command('game:interval --log')->everySeconds(5);
+        $shortSchedule->command('game:interval')->everySeconds(5);
     }
 
     protected function commands()
