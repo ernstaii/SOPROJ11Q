@@ -150,12 +150,44 @@ label
     z-index:                    1;
 }
 
-.tooltip:hover .tooltiptext
+.tooltip .tooltiptext-bottom
+{
+    background-color:           white;
+    border-radius:              6px;
+    bottom:                     100%;
+    color:                      #C6002A;
+    left:                       50%;
+    margin-left:                -60px;
+    padding:                    5px 0;
+    position:                   absolute;
+    text-align:                 center;
+    visibility:                 hidden;
+    width:                      180px;
+    z-index:                    1;
+}
+
+.tooltip .tooltiptext-maptab
+{
+    background-color:           white;
+    border-radius:              6px;
+    bottom:                     100%;
+    color:                      #C6002A;
+    left:                       50%;
+    margin-left:                -60px;
+    padding:                    5px 0;
+    position:                   absolute;
+    text-align:                 center;
+    visibility:                 hidden;
+    width:                      300px;
+    z-index:                    1;
+}
+
+.tooltip:hover .tooltiptext, .tooltip:hover .tooltiptext-bottom, .tooltip:hover .tooltiptext-maptab
 {
     visibility:                 visible;
 }
 
-.tooltiptext
+.tooltiptext, .tooltiptext-bottom, .tooltiptext-maptab
 {
     border:                     1px black dotted;
 }

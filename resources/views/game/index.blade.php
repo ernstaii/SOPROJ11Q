@@ -15,10 +15,16 @@
             <form method="post" action="{{route('games.store')}}" id="game_create_form">
                 @csrf
                 <label for="name_create_input" id="game_name">Spel naam</label>
-                <input type="text" id="game_name" name="name" min="3" placeholder="Vul a.u.b. een naam in..." value="{{old('name')}}">
+                <div class="tooltip">
+                    <span class="tooltiptext"><b class="big-question-mark">?</b>Vul hier de naam van het spel in. De naam moet minstens 3 tekens bevatten. Alle tekens zijn toegestaan.</span>
+                    <input type="text" id="game_name" name="name" min="3" placeholder="Vul a.u.b. een naam in..." value="{{old('name')}}">
+                </div>
                 <label for="password_create_input" id="password_create_label">Spel wachtwoord</label>
                 <div class="password-box">
-                    <input type="password" id="password_create_input" name="password" placeholder="Vul a.u.b. een wachtwoord in...">
+                    <div class="tooltip">
+                        <span class="tooltiptext"><b class="big-question-mark">?</b>Vul hier het wachtwoord van het spel in. Het wachtwoord moet minstens 5 tekens bevatten. Alle tekens zijn toegestaan. Hoofdlettergevoelig.</span>
+                        <input type="password" id="password_create_input" name="password" placeholder="Vul a.u.b. een wachtwoord in...">
+                    </div>
                     <div>
                         <input type="checkbox" onclick="showPassword('create')">Wachtwoord weergeven
                     </div>

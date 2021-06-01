@@ -8,6 +8,8 @@ const sideBarItem3 = document.querySelector('#side_bar_link3');
 let gameData = [];
 let password_correct;
 let game_exists;
+let old_value;
+let is_occupied = false;
 
 function setGameData(data) {
     gameData = JSON.parse(data);
@@ -18,66 +20,72 @@ setInterval(() => {
 }, 300);
 
 async function changeNumberInputs(gameData) {
-    let openGameButton = document.querySelector('#open_game_button');
-    let deleteGameButton = document.querySelector('#delete_game_button');
+    if (is_occupied === false) {
+        let openGameButton = document.querySelector('#open_game_button');
+        let deleteGameButton = document.querySelector('#delete_game_button');
 
-    if (!game_exists || !password_correct) {
+        if (!game_exists || !password_correct || old_value !== gameInput.value) {
             if (openGameButton && deleteGameButton) {
-            buttonsBox.removeChild(openGameButton);
-            deleteGameForm.removeChild(deleteGameButton);
-            deleteGameForm.action = '';
-            sideBarItem2.href = '/games';
-            sideBarItem3.href = '/games';
-            openGameButton = document.querySelector('#open_game_button');
-            deleteGameButton = document.querySelector('#delete_game_button');
-        }
-    }
-
-    game_exists = false;
-
-    if (gameInput.value) {
-        game_id = -1;
-        game_name = "";
-        gameData.forEach(game =>{
-            if (game.name == gameInput.value) {
-                game_exists = true;
-                game_id = game.id;
-                game_name = game.name;
+                buttonsBox.removeChild(openGameButton);
+                deleteGameForm.removeChild(deleteGameButton);
+                deleteGameForm.action = '';
+                sideBarItem2.href = '/games';
+                sideBarItem3.href = '/games';
+                openGameButton = document.querySelector('#open_game_button');
+                deleteGameButton = document.querySelector('#delete_game_button');
             }
-        });
-
-        if (!game_exists) {
-            return;
         }
 
-        await checkPassword(game_id);
+        game_exists = false;
 
-        if (password_correct === false)
-            return;
+        if (gameInput.value) {
+            game_id = -1;
+            game_name = "";
+            gameData.forEach(game => {
+                if (game.name == gameInput.value) {
+                    game_exists = true;
+                    game_id = game.id;
+                    game_name = game.name;
+                }
+            });
 
-        if (!openGameButton && !deleteGameButton) {
-            let openButtonElem = document.createElement('a');
-            openButtonElem.id = 'open_game_button';
-            openButtonElem.href = '/games/' + game_name;
-            let openButtonTextElem = document.createElement('h3');
-            openButtonTextElem.textContent = 'Ga naar spel: ' + game_name;
-            openButtonElem.appendChild(openButtonTextElem);
+            if (!game_exists) {
+                return;
+            }
 
-            let deleteButtonElem = document.createElement('button');
-            deleteButtonElem.class = 'config-delete-button';
-            deleteButtonElem.id = 'delete_game_button';
-            deleteButtonElem.type = 'submit';
-            let deleteButtonTextElem = document.createElement('b');
-            deleteButtonTextElem.textContent = 'Verwijder spel: ' + game_name;
-            deleteButtonElem.appendChild(deleteButtonTextElem);
+            is_occupied = true;
+            await checkPassword(game_id);
 
-            buttonsBox.insertBefore(openButtonElem, deleteGameForm);
-            deleteGameForm.appendChild(deleteButtonElem);
-            deleteGameForm.action = '/games/' + game_id;
+            if (password_correct === false) {
+                return;
+            }
+
+            if (!openGameButton && !deleteGameButton) {
+                let openButtonElem = document.createElement('a');
+                openButtonElem.id = 'open_game_button';
+                openButtonElem.href = '/games/' + game_name;
+                let openButtonTextElem = document.createElement('h3');
+                openButtonTextElem.textContent = 'Ga naar spel: ' + game_name;
+                openButtonElem.appendChild(openButtonTextElem);
+
+                let deleteButtonElem = document.createElement('button');
+                deleteButtonElem.class = 'config-delete-button';
+                deleteButtonElem.id = 'delete_game_button';
+                deleteButtonElem.type = 'submit';
+                let deleteButtonTextElem = document.createElement('b');
+                deleteButtonTextElem.textContent = 'Verwijder spel: ' + game_name;
+                deleteButtonElem.appendChild(deleteButtonTextElem);
+
+                buttonsBox.insertBefore(openButtonElem, deleteGameForm);
+                deleteGameForm.appendChild(deleteButtonElem);
+                deleteGameForm.action = '/games/' + game_id;
+
+                old_value = game_name;
+            }
+
+            sideBarItem2.href = '/games/' + game_name;
+            sideBarItem3.href = '/games/' + game_name;
         }
-
-        sideBarItem2.href = '/games/' + game_name;
-        sideBarItem3.href = '/games/' + game_name;
     }
 }
 
@@ -99,6 +107,7 @@ async function checkPassword(game_id) {
             else {
                 password_correct = false;
             }
+            is_occupied = false;
         },
         error: function (err) {
             console.log(err);

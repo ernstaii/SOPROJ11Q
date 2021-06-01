@@ -32,7 +32,10 @@
                         @csrf
                         @method('PUT')
                         <label for="reason">Geef een reden voor het beëindigen</label>
-                        <input type="text" id="reason" name="reason">
+                        <div class="tooltip">
+                            <span class="tooltiptext-bottom"><b class="big-question-mark">?</b>Vul hier de reden voor het beëindigen van het spel in.</span>
+                            <input type="text" id="reason" name="reason">
+                        </div>
                         <button type="input" class="keys-share-button" type="submit" name="state"
                                 value="{{\App\Enums\Statuses::Finished}}">Beëindig spel
                         </button>
@@ -45,7 +48,10 @@
                         @csrf
                         @method('PUT')
                         <label for="reason">Geef een reden voor het pauzeren</label>
-                        <input type="text" id="reason" name="reason">
+                        <div class="tooltip">
+                            <span class="tooltiptext-bottom"><b class="big-question-mark">?</b>Vul hier de reden voor het pauzeren van het spel in.</span>
+                            <input type="text" id="reason" name="reason">
+                        </div>
                         <button type="input" class="keys-share-button" type="submit" name="state"
                                 value="{{\App\Enums\Statuses::Paused}}">Pauzeer spel
                         </button>
@@ -68,7 +74,10 @@
                     <div class="form-item game-form">
                         @csrf
                         <label for="message">Stuur een bericht naar de spelers</label>
-                        <input type="text" id="message" name="message">
+                        <div class="tooltip">
+                            <span class="tooltiptext-bottom"><b class="big-question-mark">?</b>Vul hier het bericht in dat naar de spelers gestuurd moet worden.</span>
+                            <input type="text" id="message" name="message">
+                        </div>
                         <button type="input" class="keys-share-button" type="submit" name="state">Stuur bericht</button>
                     </div>
                 </form>
@@ -77,8 +86,14 @@
         <div class="mapbox shadow">
             <div id="map">
             </div>
-            <button id="remove_loot_button" onclick="deletePrompt(selectedLootId)" disabled>Selecteer a.u.b. een buit</button>
-            <input type="text" id="loot_name_input" placeholder="Voer hier de buit naam in...">
+            <div class="tooltip">
+                <span class="tooltiptext"><b class="big-question-mark">?</b>Selecteer een buit door op een buit pin op de kaart te klikken. Klik vervolgens op deze knop om de buit uit het spel te verwijderen.</span>
+                <button id="remove_loot_button" onclick="deletePrompt(selectedLootId)" disabled>Selecteer a.u.b. een buit</button>
+            </div>
+            <div class="tooltip">
+                <span class="tooltiptext"><b class="big-question-mark">?</b>Vul hier de naam van de nieuwe buit in. Plaats de buit vervolgens door op de kaart te klikken.</span>
+                <input type="text" id="loot_name_input" placeholder="Voer hier de buit naam in...">
+            </div>
         </div>
         <div class="timer-box shadow">
             <div class="center-box">
