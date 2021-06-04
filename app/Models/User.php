@@ -8,13 +8,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 /**
  * App\Models\User
  *
- * @property int $id
- * @property string $username
- * @property string|null $location
- * @property string $status
- * @property int|null $triggered_alarm
- * @property string|null $caught_at
- * @property string $last_verified_at
+ * @property int                             $id
+ * @property string                          $username
+ * @property string|null                     $location
+ * @property string                          $status
+ * @property int|null                        $triggered_alarm
+ * @property string|null                     $caught_at
+ * @property boolean|null                    $is_fake_agent
+ * @property string                          $last_verified_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Gadget[] $gadgets
@@ -30,6 +31,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereLastVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsFakeAgent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereTriggeredAlarm($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
@@ -47,6 +49,7 @@ class User extends Authenticatable
         'triggered_alarm',
         'caught_at',
         'last_verified_at',
+        'is_fake_agent',
     ];
 
     public function inviteKey()

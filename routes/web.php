@@ -35,6 +35,7 @@ Route::post('/games/{game}/loot', [GameController::class, 'storeLoot'])->name('g
 Route::patch('/games/{game}/police-station', [GameController::class, 'setPoliceStationLocation'])->name('games.police-station.update');
 Route::post('/games/{game}/notifications', [GameController::class, 'sendNotification'])->name('games.sendMessage');
 Route::get('/games/{game}/password', [GameController::class, 'checkPassword'])->name('games.checkPassword');
+Route::patch('/users/{user}/special-role', [UserController::class, 'setSpecialRole'])->name('users.set-special-role');
 Route::post('/games/{game}/gadgets', [GameController::class, 'addGadgets'])->name('users.gadgets.add');
 
 Route::post('/users/{user}/gadgets', [UserController::class, 'manageGadget'])->name('users.gadgets.manage');

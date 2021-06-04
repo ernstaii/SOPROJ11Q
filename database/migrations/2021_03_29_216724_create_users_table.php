@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->boolean('triggered_alarm')->nullable();
             $table->timestamp('caught_at')->nullable();
             $table->timestamp('last_verified_at')->useCurrent();
+            $table->boolean('is_fake_agent')->nullable();
             $table->timestamps();
         });
     }

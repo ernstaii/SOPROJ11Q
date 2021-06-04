@@ -7,8 +7,10 @@ use App\Enums\UserStatuses;
 use App\Events\GadgetAmountUpdatedEvent;
 use App\Events\PlayerJoinedGameEvent;
 use App\Events\ThiefCaughtEvent;
+use App\Events\ThiefTurnedFakeAgentEvent;
 use App\Http\Requests\StoreGadgetRequest;
 use App\Http\Requests\UpdateLocationRequest;
+use App\Http\Requests\UpdateSpecialRoleRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Models\Gadget;
 use App\Models\InviteKey;
@@ -74,6 +76,15 @@ class UserController extends Controller
         return $user;
     }
 
+    public function setSpecialRole(UpdateSpecialRoleRequest $request, User $user)
+    {
+        $is_fake_agent = ($request->is_special_role == 'true') ? true : false;
+        $user->is_fake_agent = $is_fake_agent;
+        $user->save();
+
+        event(new ThiefTurnedFakeAgentEvent($request->game_id, $user, $is_fake_agent));
+    }
+  
     public function updateGadget(User $user, Gadget $gadget)
     {
         $gadgetObj = $user->gadgets()->find($gadget->id)->pivot;
