@@ -1,3 +1,12 @@
+.add-button
+{
+    background:                 #34eb64;
+    border-radius:              5px;
+    color:                      white;
+    font-size:                  14px;
+    padding:                    3px 7px 3px 7px;
+}
+
 .center-box
 {
     align-items:                center;
@@ -9,6 +18,38 @@
 .form-item
 {
     margin-top:                 0;
+}
+
+#gadget_box
+{
+    align-items:                center;
+    display:                    flex;
+    flex-direction:             column;
+    overflow-x:                 hidden;
+    overflow-y:                 auto;
+}
+
+#gadget_box_background
+{
+    min-width:                  500px;
+    width:                      30vw;
+}
+
+.gadget-total-box
+{
+    display:                    flex;
+    flex-direction:             row;
+    justify-content:            space-between;
+    min-width:                  425px;
+    width:                      29vw;
+}
+
+.gadgets-add-all-button
+{
+    margin-bottom:              10px;
+    margin-top:                 10px;
+    padding:                    1vh;
+    width:                      15vw;
 }
 
 .game-form
@@ -31,10 +72,51 @@
     text-align:                 center;
 }
 
+.left-column
+{
+    padding-left:               1vw;
+}
+
+.left-column, .right-column
+{
+    padding-top:                1vh;
+    min-width:                  175px;
+    width:                      15vw;
+}
+
+#message
+{
+    min-width:                  307px;
+}
+
 .messages
 {
     justify-content:            stretch;
     overflow-y:                 auto;
+}
+
+.player-role-header
+{
+    margin-bottom:              2vh;
+}
+
+.remove-button
+{
+    background:                 #e03434;
+    border-radius:              5px;
+    color:                      white;
+    font-weight:                bold;
+    padding:                    3px 7px 3px 7px;
+}
+
+.right-column
+{
+    padding-right:              1vw;
+}
+
+#reason
+{
+    min-width:                  307px;
 }
 
 .score-text
@@ -62,6 +144,46 @@
     color:                      white;
 }
 
+#special_roles_box
+{
+    overflow-y:                 auto;
+}
+
+.thief-spec-role-box
+{
+    display:                    flex;
+    flex-direction:             row;
+    justify-content:            space-between;
+    margin-top:                 5px;
+    min-width:                  375px;
+    width:                      20vw;
+}
+
+.thief-spec-role-checkbox
+{
+    margin:                     0 25px 0 0;
+}
+
+.thief-spec-role-checkbox-box
+{
+    align-items:                center;
+    display:                    flex;
+    flex-direction:             row;
+    justify-content:            space-between;
+    width:                      115px;
+}
+
+.thief-spec-role-checkbox-name
+{
+    margin:                     0;
+}
+
+.thief-spec-role-name
+{
+    margin:                     0;
+    padding-left:               2vw;
+}
+
 .timer
 {
     font-size:                  3vw;
@@ -80,6 +202,33 @@
     min-width:                  375px;
     text-align:                 center;
     width:                      20vw;
+}
+
+.user-box
+{
+    display:                    flex;
+    flex-direction:             row;
+    padding-bottom:             1vh;
+}
+
+.user-box-buttons-divider
+{
+    display:                    flex;
+    flex-direction:             row;
+    padding-bottom:             1vh;
+    width:                      6vw;
+}
+
+.user-box-buttons-divider a, .user-box-buttons-divider label
+{
+    margin-left:                0.5vw;
+}
+
+.user-box-name
+{
+    text-align:                 left;
+    width:                      60px;
+    word-wrap:                  break-word;
 }
 
 @media only screen and (max-width: 1511px)

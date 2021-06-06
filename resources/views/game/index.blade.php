@@ -14,9 +14,17 @@
         <div class="box shadow">
             <form method="post" action="{{route('games.store')}}" id="game_create_form">
                 @csrf
+                <label for="name_create_input" id="game_name">Spel naam</label>
+                <div class="tooltip">
+                    <span class="tooltiptext"><b class="big-question-mark">?</b>Vul hier de naam van het spel in. De naam moet minstens 3 tekens bevatten. Alle tekens zijn toegestaan.</span>
+                    <input type="text" id="game_name" name="name" min="3" placeholder="Vul a.u.b. een naam in..." value="{{old('name')}}">
+                </div>
                 <label for="password_create_input" id="password_create_label">Spel wachtwoord</label>
                 <div class="password-box">
-                    <input type="password" id="password_create_input" name="password" placeholder="Vul a.u.b. een wachtwoord in...">
+                    <div class="tooltip">
+                        <span class="tooltiptext"><b class="big-question-mark">?</b>Vul hier het wachtwoord van het spel in. Het wachtwoord moet minstens 5 tekens bevatten. Alle tekens zijn toegestaan. Hoofdlettergevoelig.</span>
+                        <input type="password" id="password_create_input" name="password" placeholder="Vul a.u.b. een wachtwoord in...">
+                    </div>
                     <div>
                         <input type="checkbox" onclick="showPassword('create')">Wachtwoord weergeven
                     </div>
@@ -27,16 +35,16 @@
                 <div class="mini-box shadow">
                     <h2>Vind een bestaand spel</h2>
                     <div class="text-box" id="buttons_box">
-                        <label for="get_game_input">Spel ID</label>
+                        <label for="get_game_input">Spel naam</label>
                         <div class="tooltip">
-                            <span class="tooltiptext"><b class="big-question-mark">?</b>Druk op enter of klik ergens anders op het scherm om naar een specifiek spel te zoeken.</span>
-                            <input type="number" id="get_game_input" name="id" onchange="changeNumberInputs({{json_encode($gameIds, JSON_HEX_TAG)}})" placeholder="Vul ID in">
+                            <span class="tooltiptext"><b class="big-question-mark">?</b>Vul hier de naam van het spel in.</span>
+                            <input type="text" id="get_game_input" name="name" placeholder="Vul de naam in">
                         </div>
                         <label id="password_label" for="password_get_input">Spel wachtwoord</label>
                         <div class="password-box">
                             <div class="tooltip">
-                                <span class="tooltiptext"><b class="big-question-mark">?</b>Druk op enter of klik ergens anders op het scherm om het wachtwoord te laten controleren.</span>
-                                <input type="password" id="password_get_input" name="password" onchange="changeNumberInputs({{json_encode($gameIds, JSON_HEX_TAG)}})" placeholder="Vul wachtwoord in">
+                                <span class="tooltiptext"><b class="big-question-mark">?</b>Vul hier het wachtwoord van het spel in.</span>
+                                <input type="password" id="password_get_input" name="password" placeholder="Vul wachtwoord in">
                             </div>
                             <div id="password_check_box_div">
                                 <input type="checkbox" onclick="showPassword('get')">Wachtwoord weergeven
@@ -51,5 +59,10 @@
             </div>
         </div>
     </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            setGameData('{!! json_encode($game_data, JSON_HEX_TAG) !!}');
+        });
+    </script>
 @endsection
 

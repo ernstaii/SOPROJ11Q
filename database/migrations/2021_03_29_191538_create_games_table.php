@@ -17,6 +17,7 @@ class CreateGamesTable extends Migration
     {
         Schema::create('games', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->unique();
             $table->string('password');
             $table->string('status', 20)->default(Statuses::Config);
             $table->integer('duration')->default(120);

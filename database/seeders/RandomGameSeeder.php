@@ -45,6 +45,7 @@ class RandomGameSeeder extends Seeder
 
             $game = Game::create([
                 'id' => $id,
+                'name' => 'Game ' . $id,
                 'password' => Hash::make('password'),
                 'police_station_location' => $this->getRandLocationNearOss()
             ]);

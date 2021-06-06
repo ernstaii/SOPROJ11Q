@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Gadgets;
 use App\Enums\Roles;
 use App\Enums\Statuses;
 use App\Enums\UserStatuses;
 use App\Events\EndGameEvent;
+use App\Events\GadgetAmountUpdatedEvent;
 use App\Events\PauseGameEvent;
 use App\Events\PlayerJoinedGameEvent;
 use App\Events\ResumeGameEvent;
@@ -20,6 +22,7 @@ use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Requests\UpdateGameStateRequest;
 use App\Http\Requests\UpdatePoliceStationLocationRequest;
 use App\Models\BorderMarker;
+use App\Models\Gadget;
 use App\Models\Game;
 use App\Models\GamePreset;
 use App\Models\Loot;
@@ -29,15 +32,19 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Session;
 
 class GameController extends Controller
 {
     public function index()
     {
-        $gameIds = array();
+        $game_data = array();
         foreach (Game::all() as $game)
-            array_push($gameIds, $game->id);
-        return view('game.index', ['gameIds' => $gameIds]);
+            array_push($game_data, [
+                'id' => $game->id,
+                'name' => $game->name
+            ]);
+        return view('game.index', ['game_data' => $game_data]);
     }
 
     public function get(Game $game)
@@ -56,10 +63,10 @@ class GameController extends Controller
         $diff = $game->get_users()->diffKeys($filtered_users);
 
         foreach ($diff as $missing_user){
-            if ($missing_user->status != UserStatuses::Disconnected){
+            if ($missing_user->status != UserStatuses::Disconnected && $missing_user->status != UserStatuses::InLobby){
                 Notification::create([
                     'game_id' => $game->id,
-                    'message' => "Gebruiker ".$missing_user->username." heeft het spel verlaten"
+                    'message' => $missing_user->username." heeft het spel verlaten"
                 ]);
                 $missing_user->status = UserStatuses::Disconnected;
                 $missing_user->save();
@@ -121,14 +128,27 @@ class GameController extends Controller
 
     public function checkPassword(Game $game)
     {
-        if (Hash::check(Request::get('password'), $game->password))
+        if (Hash::check(Request::get('password'), $game->password)) {
+            if (!Session::has('password') || !(Session::get('password')[0] === $game->password)) {
+                Session::put('password', $game->password);
+                Session::save();
+            }
             return true;
+        }
+        else {
+            Session::remove('password');
+        }
         return false;
     }
 
-    public function show(Game $game)
+    public function show($game_name)
     {
-        if (!Hash::check(Request::get('password'), $game->password))
+        $game = Game::whereName($game_name)->first();
+
+        if ($game == null)
+            abort(404);
+
+        if (!(Session::get('password') === $game->password))
             return redirect()->route('games.index');
 
         switch ($game->status) {
@@ -138,12 +158,15 @@ class GameController extends Controller
                     'thief_keys' => $game->get_keys_for_role(Roles::Thief),
                     'border_markers' => $game->border_markers,
                     'id' => $game->id,
+                    'name' => $game->name,
                     'loot' => $game->loot,
-                    'password' => $game->password,
                     'police_station_location' => $game->police_station_location,
                     'presets' => GamePreset::all()
                 ]);
             default:
+                $userIds = array();
+                foreach ($game->get_users() as $user)
+                    array_push($userIds, $user->id);
                 $status_text = '';
                 if ($game->status == Statuses::Ongoing) {
                     $game->time_left -= Carbon::now()->diffInSeconds(Carbon::parse($game->updated_at));
@@ -165,6 +188,7 @@ class GameController extends Controller
                 }
                 return view('game.main', [
                     'id' => $game->id,
+                    'name' => $game->name,
                     'loot' => $game->loot,
                     'users' => $game->get_users_with_role(),
                     'border_markers' => $game->border_markers,
@@ -176,7 +200,8 @@ class GameController extends Controller
                     'thieves_score' => $game->thieves_score,
                     'police_score' => $game->police_score,
                     'police_station_location' => $game->police_station_location,
-                    'status_text' => $status_text
+                    'status_text' => $status_text,
+                    'userIds' => $userIds
                 ]);
         }
     }
@@ -184,9 +209,14 @@ class GameController extends Controller
     public function store(StoreGameRequest $request)
     {
         $game = Game::create([
+            'name' => $request->name,
             'password' => Hash::make($request->password)
         ]);
-        return redirect()->route('games.show', [$game, 'password' => $request->password]);
+        if (!Session::has('password') || !(Session::get('password')[0] === $game->password)) {
+            Session::put('password', $game->password);
+            Session::save();
+        }
+        return redirect()->route('games.show', ['game_name' => $game->name]);
     }
 
     public function update(UpdateGameStateRequest $request, Game $game)
@@ -245,17 +275,17 @@ class GameController extends Controller
                 if (is_null($message)) {
                     $message = "Het spel is gepauzeerd!";
                 }
-                event(new PauseGameEvent($game->id, $message));
+                event(new PauseGameEvent($game->id, $message, $game->time_left));
                 break;
         }
         $game->save();
 
-        return redirect()->route('games.show', [$game, 'password' => Request::get('password')]);
+        return redirect()->route('games.show', ['game_name' => $game->name]);
     }
 
     public function destroy(Game $game)
     {
-        if (!Hash::check(Request::get('password'), $game->password))
+        if (!(Session::get('password') === $game->password))
             return redirect()->route('games.index');
 
         $invite_keys = $game->invite_keys();
@@ -305,7 +335,7 @@ class GameController extends Controller
 	public function sendNotification(StoreNotificationRequest $request, Game $game)
     {
         event(new SendNotificationEvent($game->id, $request->message));
-        return redirect()->route('games.show', [$game, 'password' => Request::get('password')]);
+        return redirect()->route('games.show', ['game_name' => $game->name]);
     }
 
     /**
@@ -429,5 +459,39 @@ class GameController extends Controller
                 'location' => strval($border_lats[$i]) . ',' . strval($border_lngs[$i])
             ]);
         }
+    }
+
+    /**
+     * AJAX function. Not to be called via manual routing.
+     *
+     * @param Game $game
+     */
+    public function addGadgets(Game $game)
+    {
+        foreach ($game->get_users_with_role() as $user) {
+            if ($user->role === Roles::Police) {
+                $this->checkGadgets(Gadgets::Alarm, $user);
+                $this->checkGadgets(Gadgets::Drone, $user);
+            }
+            else {
+                $this->checkGadgets(Gadgets::Smokescreen, $user);
+            }
+        }
+    }
+
+    private function checkGadgets($gadget_name, User $user)
+    {
+        $gadgets = $user->gadgets()->get();
+        foreach ($gadgets as $gadget) {
+            if ($gadget->name === $gadget_name) {
+                $gadget->pivot->amount += 1;
+                $gadget->pivot->update();
+                event(new GadgetAmountUpdatedEvent($user->get_game()->id, $user));
+                return;
+            }
+        }
+
+        $user->gadgets()->attach(Gadget::whereName($gadget_name)->first()->id, array('amount' => 1));
+        event(new GadgetAmountUpdatedEvent($user->get_game()->id, $user));
     }
 }

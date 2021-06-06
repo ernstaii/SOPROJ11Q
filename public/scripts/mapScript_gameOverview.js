@@ -11,6 +11,8 @@ const remove_loot_button = document.querySelector('#remove_loot_button');
 const lootNameInput = document.querySelector('#loot_name_input');
 const sideBarItem2 = document.querySelector('#side_bar_link2');
 const sideBarItem3 = document.querySelector('#side_bar_link3');
+const left_column = document.querySelector('.left-column');
+const right_column = document.querySelector('.right-column');
 
 let markerLatLngs = [];
 let markers = [];
@@ -22,6 +24,7 @@ let lootIds = [];
 
 let selectedLootId = -1;
 let gameId = -1;
+let gameName = "";
 
 const lootIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
@@ -88,14 +91,9 @@ function initMap() {
     mymap.on('click', addLoot);
 }
 
-function passwordFromURL(game_id) {
-    let url_string = window.location.href;
-    let url = new URL(url_string);
-    return url.searchParams.get('password');
-}
-
-function setGameId(game_id) {
+function setGameDetails(game_id, game_name) {
     gameId = game_id;
+    gameName = game_name;
 }
 
 function applyLootMarker(lat, lng, loot_name, loot_id) {
@@ -269,12 +267,79 @@ async function getLatestUserLocations(game_id) {
 
             data.forEach(user => {
                 applyUserMarker(Number(user.location.split(',')[0]), Number(user.location.split(',')[1]), user.username, user.role);
+                if (!gadgetBoxExists(user.id)) {
+                    user_ids.push(user.id);
+                    if (user.role === 'police') {
+                        let userBox = createGenericUserBox(user.username, user.id);
+                        userBox.children[1].appendChild(createGadgetButtons('alarm', 'Alarm', user.id));
+                        userBox.children[1].appendChild(createGadgetButtons('drone', 'Drone', user.id));
+                        left_column.appendChild(userBox);
+                    }
+                    else {
+                        let userBox = createGenericUserBox(user.username, user.id);
+                        userBox.children[1].appendChild(createGadgetButtons('smokescreen', 'Rookgordijn', user.id));
+                        right_column.appendChild(userBox);
+                    }
+                }
             });
         },
         error: function (err) {
             console.log(err);
         },
     });
+}
+
+function gadgetBoxExists(userId) {
+    let userWithId = document.querySelector('#user_' + userId);
+    return !!userWithId;
+}
+
+function createGenericUserBox(username, userId) {
+    let user_box = document.createElement('div');
+    user_box.className = 'user-box';
+
+    let user_box_name = document.createElement('span');
+    user_box_name.className = 'user-box-name';
+    user_box_name.id = 'user_' + userId;
+    user_box_name.textContent = username;
+
+    let user_box_buttons_box = document.createElement('div');
+    user_box_buttons_box.className = 'user-box-buttons-box';
+
+    user_box.appendChild(user_box_name);
+    user_box.appendChild(user_box_buttons_box);
+    return user_box;
+}
+
+function createGadgetButtons(labelId, gadgetName, userId) {
+    let user_box_buttons_divider = document.createElement('div');
+    user_box_buttons_divider.className = 'user-box-buttons-divider';
+
+    let gadgetLabel = document.createElement('label');
+    gadgetLabel.id = labelId;
+    gadgetLabel.textContent = gadgetName;
+
+    let amountOfGadgetsLabel = document.createElement('label');
+    amountOfGadgetsLabel.id = 'amount_of_' + labelId + 's_' + userId;
+    amountOfGadgetsLabel.textContent = '0';
+
+    let addButton = document.createElement('a');
+    addButton.className = 'user-box-button add-button';
+    addButton.id = 'add_' + labelId + '_button';
+    addButton.onclick = function() { manageGadget(labelId, 'add', userId) };
+    addButton.textContent = '+';
+
+    let removeButton = document.createElement('a');
+    removeButton.className = 'user-box-button remove-button';
+    removeButton.id = 'remove_' + labelId + '_button';
+    removeButton.onclick = function() { manageGadget(labelId, 'remove', userId) };
+    removeButton.textContent = '─';
+
+    user_box_buttons_divider.appendChild(gadgetLabel);
+    user_box_buttons_divider.appendChild(amountOfGadgetsLabel);
+    user_box_buttons_divider.appendChild(addButton);
+    user_box_buttons_divider.appendChild(removeButton);
+    return user_box_buttons_divider;
 }
 
 async function getLatestLoot(game_id) {
@@ -361,8 +426,13 @@ function handleTimerElement(status, time_left, duration) {
     timerElmt.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
     if (status === 'on-going') {
         setInterval(() => {
-            seconds++;
-            timerElmt.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
+            if (seconds >= (duration * 60)) {
+                location.reload();
+            }
+            else {
+                seconds++;
+                timerElmt.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
+            }
         }, 1000);
     }
 }
@@ -383,17 +453,8 @@ function callGameDetails(game_id) {
         getGameDetails(game_id);
         getGameNotifications(game_id);
     }, 5000);
-    let form_1 = document.querySelector('#form_1');
-    form_1.action = form_1.action + '?password=' + passwordFromURL(game_id);
-    let form_2 = document.querySelector('#form_2');
-    form_2.action = form_2.action + '?password=' + passwordFromURL(game_id);
-    let form_3 = document.querySelector('#form_3');
-    form_3.action = form_3.action + '?password=' + passwordFromURL(game_id);
-    let form_4 = document.querySelector('#form_4');
-    form_4.action = form_4.action + '?password=' + passwordFromURL(game_id);
-
-    sideBarItem2.href = '/games/' + game_id + '?password=' + passwordFromURL(game_id);
-    sideBarItem3.href = '/games/' + game_id + '?password=' + passwordFromURL(game_id);
+    sideBarItem2.href = '/games/' + gameName;
+    sideBarItem3.href = '/games/' + gameName;
 }
 
 async function getGameDetails(game_id) {

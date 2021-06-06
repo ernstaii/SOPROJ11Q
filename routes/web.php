@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\InviteKeyController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,7 +26,7 @@ Route::get('/presets/{preset}/loot', [GameController::class, 'getPresetLoot'])->
 Route::delete('/games/{game}/loot', [GameController::class, 'clearExistingLoot'])->name('game.loot.delete');
 Route::get('/presets/{preset}/border-markers', [GameController::class, 'getPresetBorderMarkers'])->name('preset.border-markers');
 Route::delete('/games/{game}/border-markers', [GameController::class, 'clearExistingMarkers'])->name('game.border-markers.delete');
-Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
+Route::get('/games/{game_name}', [GameController::class, 'show'])->name('games.show');
 Route::put('/games/{game}', [GameController::class, 'update'])->name('games.update');
 Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy');
 Route::post('/games/{game}/invite-keys', [InviteKeyController::class, 'generateKeys'])->name('games.invite-keys.store');
@@ -34,3 +35,7 @@ Route::post('/games/{game}/loot', [GameController::class, 'storeLoot'])->name('g
 Route::patch('/games/{game}/police-station', [GameController::class, 'setPoliceStationLocation'])->name('games.police-station.update');
 Route::post('/games/{game}/notifications', [GameController::class, 'sendNotification'])->name('games.sendMessage');
 Route::get('/games/{game}/password', [GameController::class, 'checkPassword'])->name('games.checkPassword');
+Route::patch('/users/{user}/special-role', [UserController::class, 'setSpecialRole'])->name('users.set-special-role');
+Route::post('/games/{game}/gadgets', [GameController::class, 'addGadgets'])->name('users.gadgets.add');
+
+Route::post('/users/{user}/gadgets', [UserController::class, 'manageGadget'])->name('users.gadgets.manage');

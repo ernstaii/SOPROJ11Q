@@ -1,5 +1,7 @@
 const presetBox = document.querySelector("#preset-box");
+const presetsInput = document.querySelector("#presets");
 const presetNameInput = document.querySelector("#preset_name");
+const presetPrivateInput = document.querySelector("#preset_is_private")
 const durationInput = document.querySelector("#duration");
 const intervalInput = document.querySelector("#interval");
 const colourInput = document.querySelector("#colour");
@@ -15,6 +17,7 @@ async function savePreset() {
     let lootLngs = [];
     let borderLats = [];
     let borderLngs = [];
+    let isPrivate = presetPrivateInput.checked;
 
     let mapDataValid = (lootLatLngs.length > 0 && markerLatLngs.length > 0 && policeStationLatLng != null);
     let durationInputValid = (durationInput.value && durationInput.checkValidity());
@@ -56,20 +59,62 @@ async function savePreset() {
     if (logoBase64 != null) {
         let imageElem = new Image();
 
-        imageElem.onload = function() {
+        imageElem.onload = function () {
             if (imageElem.width > 300 || imageElem.height > 200) {
                 showMessage('Upload a.u.b. een foto met een maximale grootte van 300x200 pixels.', 'red');
                 return;
             }
 
-            savePresetToDB(lootLats, lootLngs, borderLats, borderLngs, logoBase64); //やばい
+            if (!isPrivate)
+                savePresetToDB(lootLats, lootLngs, borderLats, borderLngs, logoBase64);
+            else
+                savePresetToLocalStorage(lootLats, lootLngs, borderLats, borderLngs, logoBase64);
         };
 
         imageElem.src = logoBase64;
+    } else {
+        if (!isPrivate)
+            await savePresetToDB(lootLats, lootLngs, borderLats, borderLngs, logoBase64);
+        else
+            savePresetToLocalStorage(lootLats, lootLngs, borderLats, borderLngs, logoBase64);
     }
-    else {
-        await savePresetToDB(lootLats, lootLngs, borderLats, borderLngs, logoBase64);
+}
+
+function savePresetToLocalStorage(lootLats, lootLngs, borderLats, borderLngs, logoBase64) {
+    if (localStorage.getItem("preset_" + presetNameInput.value) !== null) {
+        showMessage("Deze naam is al in gebruik, gebruik a.u.b. een andere.", 'red');
+        return;
     }
+
+    let loot = []
+    for (let i = 0; i < lootLatLngs.length; i++) {
+        loot.push({
+            name: lootNames[i],
+            location: lootLatLngs[i].lat + "," + lootLatLngs[i].lng
+        });
+    }
+
+    let borderMarkers = []
+    for (let i = 0; i < markerLatLngs.length; i++) {
+        borderMarkers.push({
+            location: markerLatLngs[i].lat + "," + markerLatLngs[i].lng
+        });
+    }
+
+    let preset = {
+        name: presetNameInput.value,
+        duration: durationInput.value,
+        interval: intervalInput.value,
+        police_station_location: policeStationLatLng.lat + "," + policeStationLatLng.lng,
+        loot: loot,
+        borderMarkers: borderMarkers,
+        colour_theme: colourInput.value,
+        logo: logoBase64
+    }
+
+    localStorage.setItem("preset_" + presetNameInput.value, JSON.stringify(preset));
+    location.reload();
+    showMessage('Het nieuwe template is succesvol aangemaakt.', 'green');
 }
 
 async function savePresetToDB(lootLats, lootLngs, borderLats, borderLngs, logoBase64) {
@@ -118,10 +163,12 @@ async function loadPreset(game_id) {
     if (presetSelector.value == -1)
         return;
 
+    let preset = JSON.parse(presetSelector.value);
+    let localSave = (localStorage.getItem("preset_" + preset.name) != null);
+
     presetSelector.disabled = true;
     savePresetButton.disabled = true;
 
-    let preset = JSON.parse(presetSelector.value);
     durationInput.value = preset.duration;
     intervalInput.value = preset.interval;
     colourInput.value = preset.colour_theme;
@@ -133,7 +180,10 @@ async function loadPreset(game_id) {
     if (preset.logo != null) {
         let newImageElement = document.createElement('img');
         newImageElement.id = 'logo_image';
-        newImageElement.src = 'data:image/png;base64,' + preset.logo;
+        if (!localSave)
+            newImageElement.src = 'data:image/png;base64,' + preset.logo;
+        else
+            newImageElement.src = preset.logo;
         newImageElement.name = 'logo_upload';
         let hiddenInput = document.createElement('input');
         hiddenInput.id = 'logo_image_input';
@@ -152,54 +202,79 @@ async function loadPreset(game_id) {
     applyExistingPoliceStation(latLng[0], latLng[1]);
     savePoliceStation(game_id);
 
+
+    if (localSave) {
+        let localPreset = JSON.parse(localStorage.getItem("preset_" + preset.name));
+        updateLoot(localPreset.loot, game_id);
+        updateBorderMarkers(localPreset.borderMarkers, game_id);
+    } else {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        await $.ajax({
+            url: '/presets/' + preset.id + '/loot',
+            type: 'GET',
+            success: function (loot) {
+                updateLoot(loot, game_id);
+            }
+        });
+
+        await $.ajax({
+            url: '/presets/' + preset.id + '/border-markers',
+            type: 'GET',
+            success: function (borderMarkers) {
+                updateBorderMarkers(borderMarkers, game_id);
+            }
+        });
+    }
+}
+
+function updateLoot (loot, game_id) {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    await $.ajax({
+    $.ajax({
         url: '/games/' + game_id + '/loot',
         type: 'DELETE',
         success: function () {
-            $.ajax({
-                url: '/presets/' + preset.id + '/loot',
-                type: 'GET',
-                success: function (loot) {
-                    removeAllLoot();
-                    loot.forEach(loot_item => {
-                        let latLng = loot_item.location.split(',');
-                        applyExistingLoot(latLng[0], latLng[1], loot_item.name);
-                    });
-                    saveLoot(game_id);
-                }
+            removeAllLoot();
+            loot.forEach(loot_item => {
+                let latLng = loot_item.location.split(',');
+                applyExistingLoot(latLng[0], latLng[1], loot_item.name);
             });
-        }
-    });
-
-    await $.ajax({
-        url: '/games/' + game_id + '/border-markers',
-        type: 'DELETE',
-        success: function () {
-            $.ajax({
-                url: '/presets/' + preset.id + '/border-markers',
-                type: 'GET',
-                success: function (borderMarkers) {
-                    removeAllMarkers();
-                    borderMarkers.forEach(marker => {
-                        let latLng = marker.location.split(',');
-                        applyExistingMarker(latLng[0], latLng[1]);
-                    });
-                    drawLinesForExistingMarkers();
-                    saveMarkers(game_id);
-                    presetSelector.disabled = false;
-                    savePresetButton.disabled = false;
-                }
-            });
+            saveLoot(game_id);
         }
     });
 }
 
-function showMessage (message, colour) {
+function updateBorderMarkers(borderMarkers, game_id) {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        url: '/games/' + game_id + '/border-markers',
+        type: 'DELETE',
+        success: function () {
+            removeAllMarkers();
+            borderMarkers.forEach(marker => {
+                let latLng = marker.location.split(',');
+                applyExistingMarker(latLng[0], latLng[1]);
+            });
+            drawLinesForExistingMarkers();
+            saveMarkers(game_id);
+            presetSelector.disabled = false;
+            savePresetButton.disabled = false;
+        }
+    });
+}
+
+function showMessage(message, colour) {
     let validationBox = document.querySelector('#template_validation_msg');
 
     if (validationBox == null) {
@@ -246,5 +321,29 @@ function changeImageElement() {
             imageElementBox.appendChild(hiddenInput);
         };
         fr.readAsDataURL(files[0]);
+    }
+}
+
+function showPrivatePresets() {
+    for (let i = 0; i < localStorage.length; i++) {
+        if (localStorage.key(i).includes("preset_")) {
+            let option = document.createElement('option');
+            option.value = localStorage.getItem(localStorage.key(i))
+            option.textContent = localStorage.key(i).replace('preset_', '');
+            presetsInput.appendChild(option);
+        }
+    }
+}
+
+function updateAvailablePresets() {
+    presets = [];
+    Array.from(presetsInput.children).forEach(option => {
+        presets.push(option.textContent);
+    });
+
+    for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if (key.includes("preset_"))
+            presets.push(key.trimLeft("preset_"));
     }
 }
