@@ -18,10 +18,12 @@ class GameIntervalCommand extends Command
 {
     protected $signature = 'game:interval {--log}';
     protected $description = 'Updates all on-going games';
+    private $smokescreened_users;
 
     public function __construct()
     {
         parent::__construct();
+        $this->smokescreened_users = new Collection();
     }
 
     public function handle()
@@ -50,7 +52,7 @@ class GameIntervalCommand extends Command
                         $this->log('    Active users: ' . json_encode($active_users));
                         $this->log('    Game loot: ' . json_encode($game->loot));
                         $this->log('    Drone is active: ' . $this->drone_is_active($active_users));
-                        event(new GameIntervalEvent($game->id, $active_users, $game->loot, $this->drone_is_active($active_users), $game->time_left));
+                        event(new GameIntervalEvent($game->id, $active_users, $game->loot, $this->drone_is_active($active_users), $game->time_left, $this->smokescreened_users));
                         $game->last_interval_at = $now;
                     }
                 } else {
@@ -117,6 +119,7 @@ class GameIntervalCommand extends Command
                         $gadget->pivot->location = null;
                         $gadget->pivot->activated_at = null;
                         $gadget->pivot->save();
+                        $this->smokescreened_users->push($users[$i]);
                         $users->splice($i - $removed_user_count, 1);
                         $removed_user_count += 1;
                     }
