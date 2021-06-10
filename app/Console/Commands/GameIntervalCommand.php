@@ -106,6 +106,7 @@ class GameIntervalCommand extends Command
 
     private function check_active_smokescreens(Collection $users)
     {
+        $removed_user_count = 0;
         $this->log('    Checking if smokescreens are active...');
         $users_with_smokescreens = [];
         for ($i = 0; $i < $users->count(); $i++) {
@@ -121,13 +122,14 @@ class GameIntervalCommand extends Command
                         $gadget->pivot->save();
                         $this->smokescreened_users->push($users[$i]);
                         array_push($users_with_smokescreens, $i);
+                        $removed_user_count++;
                     }
                 }
             }
         }
 
         foreach ($users_with_smokescreens as $i) {
-            $users->splice($i, 1);
+            $users->splice($i - $removed_user_count, 1);
         }
 
         return $users;
