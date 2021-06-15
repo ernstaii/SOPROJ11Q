@@ -24,6 +24,8 @@ async function manageGadget(actor, operator, user_id) {
                     amount_element.textContent = (parseInt(amount_element.textContent) - 1).toString();
                 }
             }
+
+            gadgetsEdited = true;
         },
         error: function (err) {
             console.log(err);

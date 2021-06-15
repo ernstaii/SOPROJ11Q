@@ -59,7 +59,7 @@ class GameController extends Controller
 
     public function getUsersWithRoleUnfiltered(Game $game)
     {
-        return $game->get_users_with_role();
+        return $game->get_users_with_role_and_gadget_counts();
     }
 
     public function getUsersWithRole(Game $game)

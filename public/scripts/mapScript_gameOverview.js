@@ -27,6 +27,9 @@ let selectedLootId = -1;
 let gameId = -1;
 let gameName = "";
 let userCount = 0;
+let gadgetCount = 0;
+let previousGadgetCount = 0;
+let gadgetsEdited = true;
 
 const lootIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
@@ -526,6 +529,7 @@ async function getUserDetails(game_id) {
         type: 'GET',
         data: {},
         success: function (users) {
+            gadgetCount = 0;
             player_table.children[1].innerHTML = '';
             users.forEach(user => {
                 let tableRowElement = document.createElement('tr');
@@ -544,7 +548,16 @@ async function getUserDetails(game_id) {
                 tableRowElement.appendChild(tdStatus);
 
                 player_table.children[1].appendChild(tableRowElement);
+
+                user.gadgets.forEach(gadget => {
+                    gadgetCount += gadget.pivot.amount;
+                });
             });
+            if (gadgetCount !== previousGadgetCount && !gadgetsEdited)
+                location.reload();
+            gadgetsEdited = false;
+            previousGadgetCount = gadgetCount;
+
             userCount = users.length;
         },
         error: function (err) {
