@@ -411,6 +411,19 @@ class GameController extends Controller
         if (isset($request->logo))
             $logo_value = base64_encode(file_get_contents($request->logo));
 
+        if (GamePreset::whereName($request->name)->exists()) {
+            $toDelete = GamePreset::whereName($request->name)->first();
+
+            foreach ($toDelete->loot as $item) {
+                $item->delete();
+            }
+            foreach ($toDelete->border_markers as $item) {
+                $item->delete();
+            }
+
+            $toDelete->delete();
+        }
+
         $preset = GamePreset::create([
             'name' => $request->name,
             'duration' => $request->duration,
