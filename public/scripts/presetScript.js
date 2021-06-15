@@ -81,10 +81,8 @@ async function savePreset() {
 }
 
 function savePresetToLocalStorage(lootLats, lootLngs, borderLats, borderLngs, logoBase64) {
-    if (localStorage.getItem("preset_" + presetNameInput.value) !== null) {
-        showMessage("Deze naam is al in gebruik, gebruik a.u.b. een andere.", 'red');
-        return;
-    }
+    if (localStorage.getItem("preset_" + presetNameInput.value) !== null)
+        localStorage.removeItem("preset_" + presetNameInput.value);
 
     let loot = []
     for (let i = 0; i < lootLatLngs.length; i++) {
