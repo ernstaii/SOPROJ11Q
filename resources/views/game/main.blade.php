@@ -112,6 +112,49 @@
                 <p class="score-text" id="score_2">Politie score: {{$police_score}}</p>
             </div>
         </div>
+        <div class="bottom-box shadow" id="players_list_box_background">
+            <div class="item-header">
+                <h2>SPELERS</h2>
+            </div>
+            <div class="item-box" id="players_list_box">
+                <table id="players_list_table">
+                    <thead>
+                        <tr>
+                            <th>Naam</th>
+                            <th>Rol</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($users as $user)
+                            <tr>
+                                <td>{{$user->username}}</td>
+                                @if ($user->role === \App\Enums\Roles::Thief)
+                                    @if ($user->is_fake_agent === 1)
+                                        <td>Boef (nep agent)</td>
+                                    @else
+                                        <td>Boef</td>
+                                    @endif
+                                @else
+                                    <td>Agent</td>
+                                @endif
+                                @if ($user->status === \App\Enums\UserStatuses::Caught)
+                                    <td>In de gevangenis</td>
+                                @elseif ($user->status === \App\Enums\UserStatuses::Disconnected)
+                                    <td>Verbinding verbroken</td>
+                                @elseif ($user->status === \App\Enums\UserStatuses::InLobby)
+                                    <td>In spel lobby</td>
+                                @elseif ($user->status === \App\Enums\UserStatuses::Playing)
+                                    <td>Spelende</td>
+                                @else
+                                    <td>Weggegaan</td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <div class="bottom-box shadow">
             <div class="item-header">
                 <h2>SPEL NOTIFICATIES</h2>

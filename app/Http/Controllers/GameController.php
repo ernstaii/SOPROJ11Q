@@ -57,6 +57,11 @@ class GameController extends Controller
         return $game->get_users();
     }
 
+    public function getUsersWithRoleUnfiltered(Game $game)
+    {
+        return $game->get_users_with_role();
+    }
+
     public function getUsersWithRole(Game $game)
     {
         $filtered_users = $game->get_users_filtered_on_last_verified();
@@ -281,35 +286,6 @@ class GameController extends Controller
         $game->save();
 
         return redirect()->route('games.show', ['game_name' => $game->name]);
-    }
-
-    public function destroy(Game $game)
-    {
-        if (!(Session::get('password') === $game->password))
-            return redirect()->route('games.index');
-
-        $invite_keys = $game->invite_keys();
-        $border_markers = $game->border_markers();
-        $notifications = $game->notifications();
-        $loot = $game->loot();
-
-        $users = new Collection();
-        foreach ($invite_keys->get() as $key) {
-            $users->push($key->user());
-        }
-
-        $invite_keys->delete();
-        $border_markers->delete();
-        $notifications->delete();
-        $loot->delete();
-
-        foreach ($users as $user) {
-            $user->delete();
-        }
-
-        $game->delete();
-
-        return redirect()->route('games.index');
     }
 
     public function updateThievesScore(Game $game, int $score)
