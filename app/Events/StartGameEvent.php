@@ -8,7 +8,7 @@ class StartGameEvent extends GameEvent
 {
     public function __construct($gameId)
     {
-        $this->gameId = $gameId;
+        parent::__construct($gameId);
         $this->message = 'Het spel is gestart.';
 
         Notification::create([

@@ -8,7 +8,7 @@ class PauseGameEvent extends GameEvent
 {
     public function __construct($gameId, $message, $time_left)
     {
-        $this->gameId = $gameId;
+        parent::__construct($gameId);
         $this->message = $message;
         $this->timeLeft = $time_left;
 
