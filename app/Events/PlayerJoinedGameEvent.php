@@ -15,8 +15,10 @@ class PlayerJoinedGameEvent extends GameEvent
 
     public function __construct($gameId, User $user)
     {
+        parent::__construct($gameId);
+        $user->role = $user->inviteKey()->getAttribute('role');
+
         $this->user = $user;
-        $this->gameId = $gameId;
         $this->message = 'Speler ' . $user->username . ' is tot het spel toegetreden.';
     }
 
