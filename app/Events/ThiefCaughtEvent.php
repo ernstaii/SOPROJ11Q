@@ -20,9 +20,13 @@ class ThiefCaughtEvent extends GameEvent
 
     public function __construct(User $user)
     {
-        $this->user = $user;
+        $fullUser = $user->toArray();
+        $fullUser["role"] = $user->inviteKey->role;
+        $this->user = $fullUser;
+
         $game = $user->get_game();
         parent::__construct($game->id);
+
         $this->message = 'Boef ' . $user->username . ' is zojuist gevangen!';
 
         Notification::create([
