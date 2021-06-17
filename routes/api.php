@@ -41,4 +41,6 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->patch('/users/{user}/catch', [UserController::class, 'catchThief']);
     $router->patch('/users/{user}/gadgets/{gadget}', [UserController::class, 'updateGadget']);
     $router->delete('/loot/{loot}', [LootController::class, 'destroy']);
+    $router->get('/images/money-bag.png', [GameController::class, 'getLootIcon']);
+    $router->get('/images/police-badge.png', [GameController::class, 'getPoliceStationIcon']);
 });

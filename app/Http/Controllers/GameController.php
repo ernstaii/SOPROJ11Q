@@ -30,6 +30,7 @@ use App\Models\Notification;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
@@ -119,6 +120,24 @@ class GameController extends Controller
         ];
 
         return response(base64_decode($game->logo), 200, $headers);
+    }
+
+    public function getLootIcon()
+    {
+        $headers = [
+            'Content-Type' => 'image/png'
+        ];
+
+        return response(File::get(resource_path() . '\..\public\images\map\money-bag.png'), 200, $headers);
+    }
+
+    public function getPoliceStationIcon()
+    {
+        $headers = [
+            'Content-Type' => 'image/png'
+        ];
+
+        return response(File::get(resource_path() . '\..\public\images\map\police-badge.png'), 200, $headers);
     }
 
     public function getPresetLoot(GamePreset $preset)
