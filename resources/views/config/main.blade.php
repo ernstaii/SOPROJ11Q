@@ -53,8 +53,12 @@
                                 <label class="form-label-0" for="colour">App Kleurthema</label>
                                 <div class="tooltip">
                                     <span class="tooltiptext-bottom"><b class="big-question-mark">?</b>Selecteer de kleur welke voor het thema in de mobiele app gebruikt zal worden.</span>
-                                    <input name="colour" class="input-numeric-0" id="colour" type="color" value="#0099ff">
+                                    <input name="colour" class="input-numeric-0" id="colour" type="color" value="#0099ff" onchange="setPreviewImageBackground()">
                                 </div>
+                            </div>
+                            <div class="form-item-horizontal" id="preview_box">
+                                <label class="form-label-0" for="preview" id="preview_label">Preview: </label>
+                                <img id="preview" alt="CHAT ICON PNG" src="{{asset('/images/gui/chat.png')}}">
                             </div>
                             <div class="form-item" id="upload_box">
                                 <label class="form-label-0" for="logo">App Logo</label>
@@ -222,6 +226,7 @@
             applySidebarHrefs('{{$name}}');
             updateAvailablePresets();
             showPrivatePresets();
+            setPreviewImageBackground();
         });
     </script>
 @endsection

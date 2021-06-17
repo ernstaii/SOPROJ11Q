@@ -322,6 +322,11 @@ function changeImageElement() {
     }
 }
 
+function setPreviewImageBackground() {
+    let previewImageElem = document.querySelector('#preview');
+    previewImageElem.style.background = document.querySelector('#colour').value;
+}
+
 function showPrivatePresets() {
     for (let i = 0; i < localStorage.length; i++) {
         if (localStorage.key(i).includes("preset_")) {
