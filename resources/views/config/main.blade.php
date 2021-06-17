@@ -16,6 +16,7 @@
     <script src="{{asset('scripts/resizeScript.js')}}" defer></script>
     <script src="{{asset('scripts/mapScript.js')}}" defer></script>
     <script src="{{asset('scripts/presetScript.js')}}" defer></script>
+    <script src="{{asset('scripts/fixedNameLengthScript.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -161,7 +162,7 @@
                     <div class="map-top-tab" id="tab_3"><p>Politiebureau</p></div>
                 </div>
             </div>
-            <div class="mapbox shadow">
+            <div class="mapbox shadow" id="mapbox_fixheight">
                 <div id="map"></div>
                 <button onclick="removeLastMarker()" id="button_remove_markers">Verwijder laatste marker</button>
                 <button onclick="saveMarkers({{$id}})" id="button_save_markers" title="Er zijn minstens 3 markers nodig voordat het veld opgeslagen kan worden.">Sla speelveld op</button>
@@ -199,7 +200,7 @@
             </div>
             <div class="item-box" id="id_box">
                 <p>Het huidige spel:</p>
-                <h1>{{$name}}</h1>
+                <h1 id="game_name_text">{{$name}}</h1>
                 <h3>ID: {{$id}}</h3>
             </div>
         </div>

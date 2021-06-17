@@ -60,7 +60,17 @@ async function changeNumberInputs(gameData) {
                 openButtonElem.id = 'open_game_button';
                 openButtonElem.href = '/games/' + game_name;
                 let openButtonTextElem = document.createElement('h3');
-                openButtonTextElem.textContent = 'Ga naar spel: ' + game_name;
+                let name_parts = game_name.match(/.{1,12}/g);
+                let separated_game_name = '';
+                if (name_parts.length > 1) {
+                    name_parts.forEach(part => {
+                        separated_game_name += part + '\r\n';
+                    });
+                }
+                else {
+                    separated_game_name = name_parts[0];
+                }
+                openButtonTextElem.textContent = 'Ga naar spel: \r\n' + separated_game_name;
                 openButtonElem.appendChild(openButtonTextElem);
 
                 buttonsBox.appendChild(openButtonElem);
