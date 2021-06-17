@@ -176,7 +176,7 @@
                     <select id="presets" onchange="loadPreset({{$id}})">
                             <option value="-1" selected>Kies een template...</option>
                         @foreach($presets as $preset)
-                            <option value="{{ $preset }}">{{ $preset->name }}</option>
+                            <option value="{{ $preset }}">{{ $preset->name }} [Publiek]</option>
                         @endforeach
                     </select>
                     <label for="preset_name">Maak een nieuwe template aan</label>

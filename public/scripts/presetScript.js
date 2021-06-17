@@ -327,7 +327,7 @@ function showPrivatePresets() {
         if (localStorage.key(i).includes("preset_")) {
             let option = document.createElement('option');
             option.value = localStorage.getItem(localStorage.key(i))
-            option.textContent = localStorage.key(i).replace('preset_', '');
+            option.textContent = localStorage.key(i).replace('preset_', '') + " [Privé]";
             presetsInput.appendChild(option);
         }
     }
@@ -336,7 +336,7 @@ function showPrivatePresets() {
 function updateAvailablePresets() {
     presets = [];
     Array.from(presetsInput.children).forEach(option => {
-        presets.push(option.textContent);
+        presets.push(option.textContent.replace(" [Privé]", "").replace(" [Publiek]", ""));
     });
 
     for (let i = 0; i < localStorage.length; i++) {
