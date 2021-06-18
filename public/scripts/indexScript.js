@@ -1,5 +1,4 @@
 const gameInput = document.querySelector('#get_game_input');
-const deleteGameForm = document.querySelector('#delete_game_form');
 const buttonsBox = document.querySelector('#buttons_box');
 const passwordFieldGet = document.querySelector('#password_get_input');
 const sideBarItem2 = document.querySelector('#side_bar_link2');
@@ -22,17 +21,13 @@ setInterval(() => {
 async function changeNumberInputs(gameData) {
     if (is_occupied === false) {
         let openGameButton = document.querySelector('#open_game_button');
-        let deleteGameButton = document.querySelector('#delete_game_button');
 
         if (!game_exists || !password_correct || old_value !== gameInput.value) {
-            if (openGameButton && deleteGameButton) {
+            if (openGameButton) {
                 buttonsBox.removeChild(openGameButton);
-                deleteGameForm.removeChild(deleteGameButton);
-                deleteGameForm.action = '';
                 sideBarItem2.href = '/games';
                 sideBarItem3.href = '/games';
                 openGameButton = document.querySelector('#open_game_button');
-                deleteGameButton = document.querySelector('#delete_game_button');
             }
         }
 
@@ -60,25 +55,25 @@ async function changeNumberInputs(gameData) {
                 return;
             }
 
-            if (!openGameButton && !deleteGameButton) {
+            if (!openGameButton) {
                 let openButtonElem = document.createElement('a');
                 openButtonElem.id = 'open_game_button';
                 openButtonElem.href = '/games/' + game_name;
                 let openButtonTextElem = document.createElement('h3');
-                openButtonTextElem.textContent = 'Ga naar spel: ' + game_name;
+                let name_parts = game_name.match(/.{1,12}/g);
+                let separated_game_name = '';
+                if (name_parts.length > 1) {
+                    name_parts.forEach(part => {
+                        separated_game_name += part + '\r\n';
+                    });
+                }
+                else {
+                    separated_game_name = name_parts[0];
+                }
+                openButtonTextElem.textContent = 'Ga naar spel: \r\n' + separated_game_name;
                 openButtonElem.appendChild(openButtonTextElem);
 
-                let deleteButtonElem = document.createElement('button');
-                deleteButtonElem.class = 'config-delete-button';
-                deleteButtonElem.id = 'delete_game_button';
-                deleteButtonElem.type = 'submit';
-                let deleteButtonTextElem = document.createElement('b');
-                deleteButtonTextElem.textContent = 'Verwijder spel: ' + game_name;
-                deleteButtonElem.appendChild(deleteButtonTextElem);
-
-                buttonsBox.insertBefore(openButtonElem, deleteGameForm);
-                deleteGameForm.appendChild(deleteButtonElem);
-                deleteGameForm.action = '/games/' + game_id;
+                buttonsBox.appendChild(openButtonElem);
 
                 old_value = game_name;
             }

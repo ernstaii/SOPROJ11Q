@@ -16,6 +16,7 @@
     <script src="{{asset('scripts/resizeScript.js')}}" defer></script>
     <script src="{{asset('scripts/mapScript.js')}}" defer></script>
     <script src="{{asset('scripts/presetScript.js')}}" defer></script>
+    <script src="{{asset('scripts/fixedNameLengthScript.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -53,8 +54,12 @@
                                 <label class="form-label-0" for="colour">App Kleurthema</label>
                                 <div class="tooltip">
                                     <span class="tooltiptext-bottom"><b class="big-question-mark">?</b>Selecteer de kleur welke voor het thema in de mobiele app gebruikt zal worden.</span>
-                                    <input name="colour" class="input-numeric-0" id="colour" type="color" value="#0099ff">
+                                    <input name="colour" class="input-numeric-0" id="colour" type="color" value="#0099ff" onchange="setPreviewImageBackground()">
                                 </div>
+                            </div>
+                            <div class="form-item-horizontal" id="preview_box">
+                                <label class="form-label-0" for="preview" id="preview_label">Preview: </label>
+                                <img id="preview" alt="CHAT ICON PNG" src="{{asset('/images/gui/chat.png')}}">
                             </div>
                             <div class="form-item" id="upload_box">
                                 <label class="form-label-0" for="logo">App Logo</label>
@@ -157,7 +162,7 @@
                     <div class="map-top-tab" id="tab_3"><p>Politiebureau</p></div>
                 </div>
             </div>
-            <div class="mapbox shadow">
+            <div class="mapbox shadow" id="mapbox_fixheight">
                 <div id="map"></div>
                 <button onclick="removeLastMarker()" id="button_remove_markers">Verwijder laatste marker</button>
                 <button onclick="saveMarkers({{$id}})" id="button_save_markers" title="Er zijn minstens 3 markers nodig voordat het veld opgeslagen kan worden.">Sla speelveld op</button>
@@ -176,7 +181,7 @@
                     <select id="presets" onchange="loadPreset({{$id}})">
                             <option value="-1" selected>Kies een template...</option>
                         @foreach($presets as $preset)
-                            <option value="{{ $preset }}">{{ $preset->name }}</option>
+                            <option value="{{ $preset }}">{{ $preset->name }} [Publiek]</option>
                         @endforeach
                     </select>
                     <label for="preset_name">Maak een nieuwe template aan</label>
@@ -195,7 +200,7 @@
             </div>
             <div class="item-box" id="id_box">
                 <p>Het huidige spel:</p>
-                <h1>{{$name}}</h1>
+                <h1 id="game_name_text">{{$name}}</h1>
                 <h3>ID: {{$id}}</h3>
             </div>
         </div>
@@ -222,6 +227,7 @@
             applySidebarHrefs('{{$name}}');
             updateAvailablePresets();
             showPrivatePresets();
+            setPreviewImageBackground();
         });
     </script>
 @endsection

@@ -14,7 +14,7 @@ class StorePresetRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'between:3,40', 'unique:game_presets,name'],
+            'name' => ['required', 'string', 'between:3,40'],
             'duration' => ['required', 'integer', 'between:10,1440'],
             'interval' => ['required', 'integer', 'between:30,300'],
             'police_station_lat' => ['required'],
@@ -35,7 +35,6 @@ class StorePresetRequest extends FormRequest
             'name.required' => 'Vul a.u.b. een naam in voor het template.',
             'name.string' => 'Vul a.u.b. een naam in voor het template van het type "string".',
             'name.between' => 'Vul a.u.b. een naam in voor het template met een minimum lengte van 3 tekens en een maximum lengte van 40 tekens.',
-            'name.unique' => 'Deze template naam bestaat al! Kies a.u.b. een andere naam.',
             'duration.required' => 'Vul a.u.b. een speelduur in.',
             'duration.integer' => 'Vul a.u.b. een getal in voor de speelduur.',
             'duration.between' => 'Vul a.u.b. een speelduur in van minimaal 10 minuten en maximaal 1440 minuten.',
