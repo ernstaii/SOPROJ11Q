@@ -100,6 +100,22 @@
     margin-bottom:              2vh;
 }
 
+#players_list_box
+{
+    align-items:                center;
+    display:                    flex;
+    flex-direction:             column;
+    justify-content:            space-between;
+    overflow-x:                 hidden;
+    overflow-y:                 auto;
+}
+
+#players_list_box_background, #players_list_table
+{
+    min-width:                  500px;
+    width:                      30vw;
+}
+
 .remove-button
 {
     background:                 #e03434;

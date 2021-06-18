@@ -148,6 +148,30 @@ class Game extends Model
         return $users;
     }
 
+    public function get_users_with_role_and_gadget_counts()
+    {
+        $keys = $this->invite_keys()->get();
+
+        $users = new \Illuminate\Support\Collection();
+        foreach ($keys as $key) {
+            $user = $key->user;
+
+            if ($user != null) {
+                $user->role = $key->role;
+                foreach ($user->gadgets as $gadget) {
+                    if (!isset($user->gadgets))
+                        $user->gadgets = [
+                            $gadget->name => $gadget->pivot->amount
+                        ];
+                }
+
+                $users = $users->push($user);
+            }
+        }
+
+        return $users;
+    }
+
     public function get_keys_for_role(string $role)
     {
         return $this->hasMany(InviteKey::class)->where('role', '=', $role)->get();
