@@ -22,7 +22,10 @@ class ThiefCaughtEvent extends GameEvent
     {
         $this->smokescreened_users = new Collection();
 
-        $this->user = $user;
+        $fullUser = $user->toArray();
+        $fullUser["role"] = $user->inviteKey->role;
+        $this->user = $fullUser;
+
         $game = $user->get_game();
         $this->gameId = $game->id;
         $this->message = 'Boef ' . $user->username . ' is zojuist gevangen!';

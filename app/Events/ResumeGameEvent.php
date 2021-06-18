@@ -9,7 +9,7 @@ class ResumeGameEvent extends GameEvent
 
     public function __construct($gameId, $timeLeft)
     {
-        $this->gameId = $gameId;
+        parent::__construct($gameId);
         $this->message = 'Het spel is hervat.';
         $this->timeLeft = $timeLeft;
 
