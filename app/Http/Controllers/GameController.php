@@ -79,7 +79,12 @@ class GameController extends Controller
             }
         }
 
-        return $filtered_users;
+        $users = [];
+        foreach ($filtered_users as $user){
+            array_push($users, $user);
+        }
+
+        return $users;
     }
 
     public function getLoot(Game $game)
