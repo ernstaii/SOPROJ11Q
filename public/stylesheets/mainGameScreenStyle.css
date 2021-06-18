@@ -72,6 +72,14 @@ h2
     text-align:                 left;
 }
 
+.form-item-horizontal
+{
+    display:                    flex;
+    flex-direction:             row;
+    margin-top:                 2vh;
+    text-align:                 left;
+}
+
 .game-form
 {
     padding:                    2vw;
@@ -205,6 +213,24 @@ h2
 #preset_is_private
 {
     margin-bottom:              1vh;
+}
+
+#preview
+{
+    height:                     40px;
+    overflow:                   hidden;
+    position:                   relative;
+    width:                      40px;
+}
+
+#preview_box
+{
+    align-items:                center;
+}
+
+#preview_label
+{
+    max-height:                 15px;
 }
 
 .side-bar-elem2

@@ -77,6 +77,11 @@
     padding:                    1.2vh;
 }
 
+#mapbox_fixheight
+{
+    min-height:                 475px;
+}
+
 #mapButton button
 {
     background:                 #DEDEDE;

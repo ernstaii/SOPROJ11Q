@@ -89,9 +89,12 @@ button
     cursor:                     auto;
     font-size:                  16px;
     margin:                     0 3vw 1vh 3vw;
+    min-height:                 54px;
+    min-width:                  135px;
     padding:                    8px 3px;
     text-align:                 center;
     text-decoration:            none;
+    white-space:                pre;
     width:                      10vw;
 }
 
@@ -165,6 +168,7 @@ button
     justify-content:            center;
     margin-top:                 2vh;
     padding-bottom:             2vh;
+    word-break:                 break-word;
 }
 
 @keyframes background

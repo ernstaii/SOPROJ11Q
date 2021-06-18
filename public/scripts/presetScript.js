@@ -81,10 +81,8 @@ async function savePreset() {
 }
 
 function savePresetToLocalStorage(lootLats, lootLngs, borderLats, borderLngs, logoBase64) {
-    if (localStorage.getItem("preset_" + presetNameInput.value) !== null) {
-        showMessage("Deze naam is al in gebruik, gebruik a.u.b. een andere.", 'red');
-        return;
-    }
+    if (localStorage.getItem("preset_" + presetNameInput.value) !== null)
+        localStorage.removeItem("preset_" + presetNameInput.value);
 
     let loot = []
     for (let i = 0; i < lootLatLngs.length; i++) {
@@ -324,12 +322,17 @@ function changeImageElement() {
     }
 }
 
+function setPreviewImageBackground() {
+    let previewImageElem = document.querySelector('#preview');
+    previewImageElem.style.background = document.querySelector('#colour').value;
+}
+
 function showPrivatePresets() {
     for (let i = 0; i < localStorage.length; i++) {
         if (localStorage.key(i).includes("preset_")) {
             let option = document.createElement('option');
             option.value = localStorage.getItem(localStorage.key(i))
-            option.textContent = localStorage.key(i).replace('preset_', '');
+            option.textContent = localStorage.key(i).replace('preset_', '') + " [Privé]";
             presetsInput.appendChild(option);
         }
     }
@@ -338,7 +341,7 @@ function showPrivatePresets() {
 function updateAvailablePresets() {
     presets = [];
     Array.from(presetsInput.children).forEach(option => {
-        presets.push(option.textContent);
+        presets.push(option.textContent.replace(" [Privé]", "").replace(" [Publiek]", ""));
     });
 
     for (let i = 0; i < localStorage.length; i++) {
