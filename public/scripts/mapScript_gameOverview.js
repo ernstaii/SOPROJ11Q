@@ -13,6 +13,7 @@ const sideBarItem2 = document.querySelector('#side_bar_link2');
 const sideBarItem3 = document.querySelector('#side_bar_link3');
 const left_column = document.querySelector('.left-column');
 const right_column = document.querySelector('.right-column');
+const player_table = document.querySelector('#players_list_table');
 
 let markerLatLngs = [];
 let markers = [];
@@ -25,11 +26,15 @@ let lootIds = [];
 let selectedLootId = -1;
 let gameId = -1;
 let gameName = "";
+let userCount = 0;
+let gadgetCount = 0;
+let previousGadgetCount = 0;
+let gadgetsEdited = true;
 
 const lootIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
+    iconUrl: '/api/images/money-bag.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-    iconSize: [25, 41],
+    iconSize: [32, 40],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
@@ -63,9 +68,9 @@ const borderIcon = new L.Icon({
 });
 
 const policeStationIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    iconUrl: '/api/images/police-badge.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-    iconSize: [25, 41],
+    iconSize: [32, 40],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
@@ -452,6 +457,11 @@ function callGameDetails(game_id) {
     setInterval(() => {
         getGameDetails(game_id);
         getGameNotifications(game_id);
+
+        getUserDetails(game_id).then(() => {
+            if (userCount !== user_ids.length)
+                location.reload();
+        });
     }, 5000);
     sideBarItem2.href = '/games/' + gameName;
     sideBarItem3.href = '/games/' + gameName;
@@ -505,4 +515,77 @@ async function getGameNotifications(game_id) {
             console.log(err);
         },
     });
+}
+
+async function getUserDetails(game_id) {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    await $.ajax({
+        url: '/api/games/' + game_id + '/users-with-role-unfiltered',
+        type: 'GET',
+        data: {},
+        success: function (users) {
+            gadgetCount = 0;
+            player_table.children[1].innerHTML = '';
+            users.forEach(user => {
+                let tableRowElement = document.createElement('tr');
+
+                let tdName = document.createElement('td');
+                tdName.textContent = user.username;
+
+                let tdRole = document.createElement('td');
+                tdRole.textContent = translatePlayerRole(user.role, user.is_fake_agent);
+
+                let tdStatus = document.createElement('td');
+                tdStatus.textContent = translatePlayerStatus(user.status);
+
+                tableRowElement.appendChild(tdName);
+                tableRowElement.appendChild(tdRole);
+                tableRowElement.appendChild(tdStatus);
+
+                player_table.children[1].appendChild(tableRowElement);
+
+                user.gadgets.forEach(gadget => {
+                    gadgetCount += gadget.pivot.amount;
+                });
+            });
+            if (gadgetCount !== previousGadgetCount && !gadgetsEdited)
+                location.reload();
+            gadgetsEdited = false;
+            previousGadgetCount = gadgetCount;
+
+            userCount = users.length;
+        },
+        error: function (err) {
+            console.log(err);
+        },
+    });
+}
+
+function translatePlayerStatus(status) {
+    switch(status) {
+        case 'caught':
+            return 'In de gevangenis';
+        case 'disconnected':
+            return 'Verbinding verbroken';
+        case 'in-lobby':
+            return 'In spel lobby';
+        case 'playing':
+            return 'Spelende';
+        default:
+            return 'Weggegaan';
+    }
+}
+
+function translatePlayerRole(role, fake_agent) {
+    if (role === 'thief') {
+        if (fake_agent == 1)
+            return 'Boef (nep agent)'
+        return 'Boef'
+    }
+    return 'Agent'
 }

@@ -1,6 +1,10 @@
 let user_ids = [];
 
 async function manageGadget(actor, operator, user_id) {
+    let amount_element = document.querySelector('#amount_of_' + actor + 's_' + user_id);
+    if (parseInt(amount_element.textContent) < 1 && operator === 'remove')
+        return;
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -16,7 +20,7 @@ async function manageGadget(actor, operator, user_id) {
         },
         success: function (data) {
             if (data == 1) {
-                let amount_element = document.querySelector('#amount_of_' + actor + 's_' + user_id);
+
                 if (operator === 'add') {
                     amount_element.textContent = (parseInt(amount_element.textContent) + 1).toString();
                 }
@@ -24,6 +28,8 @@ async function manageGadget(actor, operator, user_id) {
                     amount_element.textContent = (parseInt(amount_element.textContent) - 1).toString();
                 }
             }
+
+            gadgetsEdited = true;
         },
         error: function (err) {
             console.log(err);

@@ -16,6 +16,7 @@
     <script src="{{asset('scripts/mapScript_gameOverview.js')}}" defer></script>
     <script src="{{asset('scripts/specialRolesScript.js')}}" defer></script>
     <script src="{{asset('scripts/gadgetScript.js')}}" defer></script>
+    <script src="{{asset('scripts/fixedNameLengthScript.js')}}" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -44,33 +45,37 @@
                     </div>
                 </form>
             </div>
-            <div class="button-2">
-                <form id="form_2" action="{{route('games.update', ['game' => $id])}}" method="post">
-                    <div class="form-item game-form">
-                        @csrf
-                        @method('PUT')
-                        <label for="reason">Geef een reden voor het pauzeren</label>
-                        <div class="tooltip">
-                            <span class="tooltiptext-bottom"><b class="big-question-mark">?</b>Vul hier de reden voor het pauzeren van het spel in.</span>
-                            <input type="text" id="reason" name="reason">
+            @if($status_text === 'Gaande')
+                <div class="button-2">
+                    <form id="form_2" action="{{route('games.update', ['game' => $id])}}" method="post">
+                        <div class="form-item game-form">
+                            @csrf
+                            @method('PUT')
+                            <label for="reason">Geef een reden voor het pauzeren</label>
+                            <div class="tooltip">
+                                <span class="tooltiptext-bottom"><b class="big-question-mark">?</b>Vul hier de reden voor het pauzeren van het spel in.</span>
+                                <input type="text" id="reason" name="reason">
+                            </div>
+                            <button type="input" class="keys-share-button" type="submit" name="state"
+                                    value="{{\App\Enums\Statuses::Paused}}">Pauzeer spel
+                            </button>
                         </div>
-                        <button type="input" class="keys-share-button" type="submit" name="state"
-                                value="{{\App\Enums\Statuses::Paused}}">Pauzeer spel
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <div class="button-3">
-                <form id="form_3" action="{{route('games.update', ['game' => $id])}}" method="post">
-                    <div class="form-item game-form">
-                        @csrf
-                        @method('PUT')
-                        <button type="input" class="keys-share-button" type="submit" name="state"
-                                value="{{\App\Enums\Statuses::Ongoing}}">Hervat spel
-                        </button>
-                    </div>
-                </form>
-            </div>
+                    </form>
+                </div>
+            @endif
+            @if($status_text === 'Gepauzeerd')
+                <div class="button-3">
+                    <form id="form_3" action="{{route('games.update', ['game' => $id])}}" method="post">
+                        <div class="form-item game-form">
+                            @csrf
+                            @method('PUT')
+                            <button type="input" class="keys-share-button" type="submit" name="state"
+                                    value="{{\App\Enums\Statuses::Ongoing}}">Hervat spel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            @endif
             <div class="button-4">
                 <form id="form_4" action="{{route('games.sendMessage', ['game' => $id])}}" method="post">
                     <div class="form-item game-form">
@@ -85,7 +90,7 @@
                 </form>
             </div>
         </div>
-        <div class="mapbox shadow">
+        <div class="mapbox shadow" id="mapbox_fixheight">
             <div id="map">
             </div>
             <div class="tooltip">
@@ -112,21 +117,47 @@
                 <p class="score-text" id="score_2">Politie score: {{$police_score}}</p>
             </div>
         </div>
-        <div class="bottom-box shadow">
+        <div class="bottom-box shadow" id="players_list_box_background">
             <div class="item-header">
-                <h2>SPEL NOTIFICATIES</h2>
+                <h2>SPELERS</h2>
             </div>
-            <div class="messages">
-            </div>
-        </div>
-        <div class="bottom-box shadow">
-            <div class="item-header">
-                <h2>SPEL DETAILS</h2>
-            </div>
-            <div class="item-box" id="id_box">
-                <p>Het huidige spel:</p>
-                <h1>{{$name}}</h1>
-                <h3>ID: {{$id}}</h3>
+            <div class="item-box" id="players_list_box">
+                <table id="players_list_table">
+                    <thead>
+                        <tr>
+                            <th>Naam</th>
+                            <th>Rol</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($users as $user)
+                            <tr>
+                                <td>{{$user->username}}</td>
+                                @if ($user->role === \App\Enums\Roles::Thief)
+                                    @if ($user->is_fake_agent === 1)
+                                        <td>Boef (nep agent)</td>
+                                    @else
+                                        <td>Boef</td>
+                                    @endif
+                                @else
+                                    <td>Agent</td>
+                                @endif
+                                @if ($user->status === \App\Enums\UserStatuses::Caught)
+                                    <td>In de gevangenis</td>
+                                @elseif ($user->status === \App\Enums\UserStatuses::Disconnected)
+                                    <td>Verbinding verbroken</td>
+                                @elseif ($user->status === \App\Enums\UserStatuses::InLobby)
+                                    <td>In spel lobby</td>
+                                @elseif ($user->status === \App\Enums\UserStatuses::Playing)
+                                    <td>Spelende</td>
+                                @else
+                                    <td>Weggegaan</td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
         <div class="bottom-box shadow">
@@ -213,6 +244,23 @@
                         @endforeach
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="bottom-box shadow">
+            <div class="item-header">
+                <h2>SPEL NOTIFICATIES</h2>
+            </div>
+            <div class="messages">
+            </div>
+        </div>
+        <div class="bottom-box shadow">
+            <div class="item-header">
+                <h2>SPEL DETAILS</h2>
+            </div>
+            <div class="item-box" id="id_box">
+                <p>Het huidige spel:</p>
+                <h1 id="game_name_text">{{$name}}</h1>
+                <h3>ID: {{$id}}</h3>
             </div>
         </div>
     </div>

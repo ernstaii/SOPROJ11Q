@@ -191,32 +191,6 @@ class WebGameTest extends TestCase
         $this->assertEquals(Statuses::Paused, $game->status);
     }
 
-    public function test_can_destroy_game()
-    {
-        $game = Game::factory()->create();
-        $user = User::factory()->create();
-        InviteKey::factory()->state([
-            'game_id' => $game->id,
-            'user_id' => $user->id
-        ])->create();
-        Loot::factory()->state([
-            'lootable_id' => $game->id,
-            'lootable_type' => Game::class
-        ])->create();
-
-        $this->withSession(['password' => $game->password]);
-
-        $this->delete('/games/' . $game->id)
-            ->assertStatus(302)
-            ->assertRedirect('/games');
-
-        $this->assertDatabaseCount('games', 0);
-        $this->assertDatabaseCount('users', 0);
-        $this->assertDatabaseCount('invite_keys', 0);
-        $this->assertDatabaseCount('loot', 0);
-        $this->assertDatabaseCount('border_markers', 0);
-    }
-
     public function test_can_send_notification()
     {
         Event::fake();

@@ -27,6 +27,7 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/games/{game}', [GameController::class, 'get']);
     $router->get('/games/{game}/users', [GameController::class, 'getUsers']);
     $router->get('/games/{game}/users-with-role', [GameController::class, 'getUsersWithRole']);
+    $router->get('/games/{game}/users-with-role-unfiltered', [GameController::class, 'getUsersWithRoleUnfiltered']);
     $router->get('/games/{game}/loot', [GameController::class, 'getLoot']);
     $router->get('/games/{game}/invite-keys', [GameController::class, 'getInviteKeys']);
     $router->get('/games/{game}/border-markers', [GameController::class, 'getBorderMarkers']);
@@ -40,4 +41,6 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->patch('/users/{user}/catch', [UserController::class, 'catchThief']);
     $router->patch('/users/{user}/gadgets/{gadget}', [UserController::class, 'updateGadget']);
     $router->delete('/loot/{loot}', [LootController::class, 'destroy']);
+    $router->get('/images/money-bag.png', [GameController::class, 'getLootIcon']);
+    $router->get('/images/police-badge.png', [GameController::class, 'getPoliceStationIcon']);
 });
