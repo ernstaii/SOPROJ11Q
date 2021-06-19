@@ -16,10 +16,16 @@ class ThiefCaughtEvent extends GameEvent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $user;
+    private $smokescreened_users;
 
     public function __construct(User $user)
     {
-        $this->user = $user;
+        $this->smokescreened_users = new Collection();
+
+        $fullUser = $user->toArray();
+        $fullUser["role"] = $user->inviteKey->role;
+        $this->user = $fullUser;
+
         $game = $user->get_game();
         $this->gameId = $game->id;
         $this->message = 'Boef ' . $user->username . ' is zojuist gevangen!';
@@ -31,7 +37,7 @@ class ThiefCaughtEvent extends GameEvent
 
         $users = new Collection($game->get_users_filtered_on_last_verified());
         $users = $this->check_active_smokescreens($users);
-        event(new GameIntervalEvent($game->id, $users, $game->loot, $this->drone_is_active($users), $game->time_left));
+        event(new GameIntervalEvent($game->id, $users, $game->loot, $this->drone_is_active($users), $game->time_left, $this->smokescreened_users));
         $game->last_interval_at = Carbon::now();
         $game->save();
     }
@@ -62,6 +68,7 @@ class ThiefCaughtEvent extends GameEvent
                         $gadget->pivot->in_use = null;
                         $gadget->pivot->activated_at = null;
                         $gadget->pivot->save();
+                        $this->smokescreened_users->push($users[$i]);
                         $users->splice($i - $removed_user_count, 1);
                         $removed_user_count += 1;
                     }

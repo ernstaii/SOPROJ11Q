@@ -50,10 +50,6 @@
                                 <input type="checkbox" onclick="showPassword('get')">Wachtwoord weergeven
                             </div>
                         </div>
-                        <form id="delete_game_form" method="POST">
-                            @csrf
-                            @method('DELETE')
-                        </form>
                     </div>
                 </div>
             </div>

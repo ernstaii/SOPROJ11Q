@@ -15,9 +15,8 @@ class SendNotificationEvent extends GameEvent
 {
     public function __construct($gameId, $message)
     {
-        $this->gameId = $gameId;
+        parent::__construct($gameId);
         $this->message = $message;
-
 
         Notification::create([
             'game_id' => $gameId,

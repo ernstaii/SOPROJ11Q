@@ -18,10 +18,12 @@ class GameIntervalCommand extends Command
 {
     protected $signature = 'game:interval {--log}';
     protected $description = 'Updates all on-going games';
+    private $smokescreened_users;
 
     public function __construct()
     {
         parent::__construct();
+        $this->smokescreened_users = new Collection();
     }
 
     public function handle()
@@ -55,7 +57,7 @@ class GameIntervalCommand extends Command
                         $this->log('    Active users: ' . json_encode($active_users));
                         $this->log('    Game loot: ' . json_encode($game->loot));
                         $this->log('    Drone is active: ' . $this->drone_is_active($active_users));
-                        event(new GameIntervalEvent($game->id, $active_users, $game->loot, $this->drone_is_active($active_users), $game->time_left));
+                        event(new GameIntervalEvent($game->id, $active_users, $game->loot, $this->drone_is_active($active_users), $game->time_left, $this->smokescreened_users));
                         $game->last_interval_at = $now;
                     }
                 } else {
@@ -109,11 +111,12 @@ class GameIntervalCommand extends Command
 
     private function check_active_smokescreens(Collection $users)
     {
+        $removed_user_count = 0;
         $this->log('    Checking if smokescreens are active...');
+        $users_with_smokescreens = [];
         for ($i = 0; $i < $users->count(); $i++) {
             $this->log('      Checking user: ' . $users[$i]->username);
             if ($users[$i]->gadgets->count() > 0) {
-                $removed_user_count = 0;
                 $this->log('      Gadgets: ' . json_encode($users[$i]->gadgets));
                 foreach ($users[$i]->gadgets as $gadget) {
                     $this->log('        Checking gadget: ' . $gadget->name);
@@ -122,11 +125,16 @@ class GameIntervalCommand extends Command
                         $gadget->pivot->location = null;
                         $gadget->pivot->activated_at = null;
                         $gadget->pivot->save();
-                        $users->splice($i - $removed_user_count, 1);
-                        $removed_user_count += 1;
+                        $this->smokescreened_users->push($users[$i]);
+                        array_push($users_with_smokescreens, $i);
+                        $removed_user_count++;
                     }
                 }
             }
+        }
+
+        foreach ($users_with_smokescreens as $i) {
+            $users->splice($i - $removed_user_count, 1);
         }
 
         return $users;

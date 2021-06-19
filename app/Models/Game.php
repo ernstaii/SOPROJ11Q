@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserStatuses;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -127,6 +128,7 @@ class Game extends Model
 
         return $this->get_users_with_role()
             ->where('last_verified_at', '>=', $dateTime)
+            ->where('status', '<>', UserStatuses::Disconnected)
             ->all();
     }
 
@@ -139,6 +141,30 @@ class Game extends Model
             $user = $key->user;
             if ($user != null) {
                 $user->role = $key->role;
+                $users = $users->push($user);
+            }
+        }
+
+        return $users;
+    }
+
+    public function get_users_with_role_and_gadget_counts()
+    {
+        $keys = $this->invite_keys()->get();
+
+        $users = new \Illuminate\Support\Collection();
+        foreach ($keys as $key) {
+            $user = $key->user;
+
+            if ($user != null) {
+                $user->role = $key->role;
+                foreach ($user->gadgets as $gadget) {
+                    if (!isset($user->gadgets))
+                        $user->gadgets = [
+                            $gadget->name => $gadget->pivot->amount
+                        ];
+                }
+
                 $users = $users->push($user);
             }
         }

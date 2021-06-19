@@ -11,17 +11,23 @@ class GameIntervalEvent extends GameEvent
     const ALARM_ACTIVE_TIME = 300;
 
     public $users;
+    public $smokescreened_users;
     public $loot;
     public $drone_is_active;
 
-    public function __construct($gameId, $users, $loot, $drone_is_active, $time_left)
+    public function __construct($gameId, $users, $loot, $drone_is_active, $time_left, $smokescreened_users)
     {
-        $this->gameId = $gameId;
+        parent::__construct($gameId);
         $this->timeLeft = $time_left;
 
         $this->users = [];
-        foreach ($users as $user){
+        foreach ($users as $user) {
             array_push($this->users, $user);
+        }
+
+        $this->smokescreened_users = [];
+        foreach ($smokescreened_users as $user) {
+            array_push($this->smokescreened_users, $user);
         }
 
         $this->loot = $loot;

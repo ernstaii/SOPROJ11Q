@@ -58,6 +58,9 @@ class UserController extends Controller
         if (in_array($inviteKey->game->status, [Statuses::Ongoing, Statuses::Paused])) {
             $user->status = UserStatuses::Playing;
             event(new PlayerJoinedGameEvent($inviteKey->game->id, $user));
+        } else if ($inviteKey->game->status == Statuses::Config) {
+            $user->status = UserStatuses::InLobby;
+            event(new PlayerJoinedGameEvent($inviteKey->game->id, $user));
         }
 
         $user->save();
@@ -84,7 +87,7 @@ class UserController extends Controller
 
         event(new ThiefTurnedFakeAgentEvent($request->game_id, $user, $is_fake_agent));
     }
-  
+
     public function updateGadget(User $user, Gadget $gadget)
     {
         $gadgetObj = $user->gadgets()->find($gadget->id)->pivot;

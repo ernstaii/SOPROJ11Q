@@ -30,6 +30,7 @@ use App\Models\Notification;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
@@ -57,6 +58,11 @@ class GameController extends Controller
         return $game->get_users();
     }
 
+    public function getUsersWithRoleUnfiltered(Game $game)
+    {
+        return $game->get_users_with_role_and_gadget_counts();
+    }
+
     public function getUsersWithRole(Game $game)
     {
         $filtered_users = $game->get_users_filtered_on_last_verified();
@@ -73,7 +79,12 @@ class GameController extends Controller
             }
         }
 
-        return $filtered_users;
+        $users = [];
+        foreach ($filtered_users as $user){
+            array_push($users, $user);
+        }
+
+        return $users;
     }
 
     public function getLoot(Game $game)
@@ -114,6 +125,24 @@ class GameController extends Controller
         ];
 
         return response(base64_decode($game->logo), 200, $headers);
+    }
+
+    public function getLootIcon()
+    {
+        $headers = [
+            'Content-Type' => 'image/png'
+        ];
+
+        return response(File::get(resource_path() . '\..\public\images\map\money-bag.png'), 200, $headers);
+    }
+
+    public function getPoliceStationIcon()
+    {
+        $headers = [
+            'Content-Type' => 'image/png'
+        ];
+
+        return response(File::get(resource_path() . '\..\public\images\map\police-badge.png'), 200, $headers);
     }
 
     public function getPresetLoot(GamePreset $preset)
@@ -283,35 +312,6 @@ class GameController extends Controller
         return redirect()->route('games.show', ['game_name' => $game->name]);
     }
 
-    public function destroy(Game $game)
-    {
-        if (!(Session::get('password') === $game->password))
-            return redirect()->route('games.index');
-
-        $invite_keys = $game->invite_keys();
-        $border_markers = $game->border_markers();
-        $notifications = $game->notifications();
-        $loot = $game->loot();
-
-        $users = new Collection();
-        foreach ($invite_keys->get() as $key) {
-            $users->push($key->user());
-        }
-
-        $invite_keys->delete();
-        $border_markers->delete();
-        $notifications->delete();
-        $loot->delete();
-
-        foreach ($users as $user) {
-            $user->delete();
-        }
-
-        $game->delete();
-
-        return redirect()->route('games.index');
-    }
-
     public function updateThievesScore(Game $game, int $score)
     {
         $game->thieves_score += $score;
@@ -434,6 +434,19 @@ class GameController extends Controller
         $logo_value = null;
         if (isset($request->logo))
             $logo_value = base64_encode(file_get_contents($request->logo));
+
+        if (GamePreset::whereName($request->name)->exists()) {
+            $toDelete = GamePreset::whereName($request->name)->first();
+
+            foreach ($toDelete->loot as $item) {
+                $item->delete();
+            }
+            foreach ($toDelete->border_markers as $item) {
+                $item->delete();
+            }
+
+            $toDelete->delete();
+        }
 
         $preset = GamePreset::create([
             'name' => $request->name,
