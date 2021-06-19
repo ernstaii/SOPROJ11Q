@@ -24,6 +24,9 @@
 In order to run the api locally
   - `php artisan serve`
 
+If the API produces 404 errors on routes where it shouldn't, run the following command:
+  - `php artisan optimize`
+
 In order to run the api locally but allow access to other devices / emulators
   - `ipconfig`
   - Copy your ipv4 address
