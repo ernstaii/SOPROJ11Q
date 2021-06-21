@@ -133,7 +133,7 @@ class GameController extends Controller
             'Content-Type' => 'image/png'
         ];
 
-        return response(File::get(public_path() . '\images\map\money-bag.png'), 200, $headers);
+        return response(File::get(resource_path() . '\..\public\images\map\money-bag.png'), 200, $headers);
     }
 
     public function getPoliceStationIcon()
@@ -142,7 +142,7 @@ class GameController extends Controller
             'Content-Type' => 'image/png'
         ];
 
-        return response(File::get(public_path() . '\images\map\police-badge.png'), 200, $headers);
+        return response(File::get(resource_path() . '\..\public\images\map\police-badge.png'), 200, $headers);
     }
 
     public function getPresetLoot(GamePreset $preset)
