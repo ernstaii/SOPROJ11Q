@@ -168,7 +168,7 @@
                 <button onclick="saveMarkers({{$id}})" id="button_save_markers" title="Er zijn minstens 3 markers nodig voordat het veld opgeslagen kan worden.">Sla speelveld op</button>
             </div>
         </div>
-        <div class="bottom-box shadow">
+        <div class="bottom-box shadow templates-box">
             <div class="item-header">
                 <div class="tooltip">
                     <span class="tooltiptext"><b class="big-question-mark">?</b>Dit scherm kan gebruikt worden om de huidige spelinstellingen op te slaan als een template. Dit template kan later hergebruikt worden door de onderstaande dropdown te gebruiken en een template uit de lijst te selecteren.</span>

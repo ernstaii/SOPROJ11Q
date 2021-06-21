@@ -145,6 +145,11 @@ class GameController extends Controller
         return response(File::get(public_path('images/map/police-badge.png')), 200, $headers);
     }
 
+    public function getGameGadgets(Game $game)
+    {
+        return $game->get_users_with_role_and_gadget_counts();
+    }
+
     public function getPresetLoot(GamePreset $preset)
     {
        return $preset->loot()->get();

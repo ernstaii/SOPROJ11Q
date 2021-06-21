@@ -284,3 +284,35 @@ h2
         margin-top:             2.5vh;
     }
 }
+
+@media only screen and (max-width: 1202px)
+{
+    .templates-box
+    {
+        margin-left:            50px;
+    }
+}
+
+@media only screen and (max-width: 1128px)
+{
+    .templates-box
+    {
+        margin-left:            80px;
+    }
+}
+
+@media only screen and (max-width: 996px)
+{
+    .templates-box
+    {
+        margin-left:            105px;
+    }
+}
+
+@media only screen and (max-width: 926px)
+{
+    .templates-box
+    {
+        margin-left:            2vw;
+    }
+}

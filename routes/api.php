@@ -33,6 +33,9 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->get('/games/{game}/border-markers', [GameController::class, 'getBorderMarkers']);
     $router->get('/games/{game}/notifications', [GameController::class, 'getNotifications']);
     $router->get('/games/{game}/logo', [GameController::class, 'getLogo']);
+    $router->get('/images/money-bag.png', [GameController::class, 'getLootIcon']);
+    $router->get('/images/police-badge.png', [GameController::class, 'getPoliceStationIcon']);
+    $router->get('/games/{game}/gadgets', [GameController::class, 'getGameGadgets']);
     $router->post('/games/{game}/notifications', [GameController::class, 'postNotification']);
     $router->post('/users/{user}/trigger-alarm', [UserController::class, 'triggerAlarm']);
     $router->post('/app-errors', [AppErrorController::class, 'store']);
@@ -41,6 +44,4 @@ Route::group(['middleware' => ['api']], function (Router $router) {
     $router->patch('/users/{user}/catch', [UserController::class, 'catchThief']);
     $router->patch('/users/{user}/gadgets/{gadget}', [UserController::class, 'updateGadget']);
     $router->delete('/loot/{loot}', [LootController::class, 'destroy']);
-    $router->get('/images/money-bag.png', [GameController::class, 'getLootIcon']);
-    $router->get('/images/police-badge.png', [GameController::class, 'getPoliceStationIcon']);
 });
